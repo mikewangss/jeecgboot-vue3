@@ -83,17 +83,15 @@
         businessLicenseFile: [{ required: true, message: '请上传营业执照!' }],
         legalPersonPhone: [
           { required: true, message: '请输入法人手机号!' },
-          { ...rules.duplicateCheckRule('sys_user', 'phone', modelRef, { label: '手机号' })[0] },
           { pattern: /^1[3456789]\d{9}$/, message: '手机号码格式有误', trigger: 'blur' },
         ],
         legalPersonIdcard: [
           { required: true, message: '请输入法人身份证!' },
-          { ...rules.duplicateCheckRule('sys_user', 'phone', modelRef, { label: '手机号' })[0] },
           { pattern: '^\\d{6}(18|19|20)?\\d{2}(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|[xX])$', message: '身份证格式有误', trigger: 'blur' },
         ],
       };
       const { resetFields, validate, validateInfos } = useForm(modelRef, validatorRules, {
-        onValidate: (...args) => console.log(...args),
+        // onValidate: (...args) => console.log(...args),
       });
       const { notification, createErrorModal, createMessage } = useMessage();
       const back = () => {

@@ -1,16 +1,20 @@
-import {defHttp} from '/@/utils/http/axios';
-import { useMessage } from "/@/hooks/web/useMessage";
+import { defHttp } from '/@/utils/http/axios';
+import { useMessage } from '/@/hooks/web/useMessage';
 
 const { createConfirm } = useMessage();
 
 enum Api {
   list = '/settlement/applyFiles/list',
-  save='/settlement/applyFiles/add',
-  edit='/settlement/applyFiles/edit',
+  queryApplyFilesByBizId = '/settlement/applyFiles/queryApplyFilesByBizId',
+  queryApplyFilesByProjectId = '/settlement/applyFiles/queryApplyFilesByProjectId',
+  save = '/settlement/applyFiles/add',
+  addApplyFiles = '/settlement/applyFiles/addApplyFiles',
+  edit = '/settlement/applyFiles/edit',
   deleteOne = '/settlement/applyFiles/delete',
   deleteBatch = '/settlement/applyFiles/deleteBatch',
   importExcel = '/settlement/applyFiles/importExcel',
   exportXls = '/settlement/applyFiles/exportXls',
+  getSubFileMenu = '/settlement/applyFiles/getSubFileMenu',
 }
 /**
  * 导出api
@@ -25,17 +29,28 @@ export const getImportUrl = Api.importExcel;
  * 列表接口
  * @param params
  */
-export const list = (params) =>
-  defHttp.get({url: Api.list, params});
+export const requestFilesList = Api.queryApplyFilesByProjectId;
+export const queryApplyFilesByBizId = (params) => defHttp.get({ url: Api.queryApplyFilesByBizId, params });
+export const queryApplyFilesByProjectId = (params) => defHttp.get({ url: Api.queryApplyFilesByProjectId, params });
 
+/**
+ * 列表接口
+ * @param params
+ */
+export const list = (params) => defHttp.get({ url: Api.list, params });
+/**
+ * 列表接口
+ * @param params
+ */
+export const getSubFileMenu = (params) => defHttp.get({ url: Api.getSubFileMenu, params });
 /**
  * 删除单个
  */
-export const deleteOne = (params,handleSuccess) => {
-  return defHttp.delete({url: Api.deleteOne, params}, {joinParamsToUrl: true}).then(() => {
+export const deleteOne = (params, handleSuccess) => {
+  return defHttp.delete({ url: Api.deleteOne, params }, { joinParamsToUrl: true }).then(() => {
     handleSuccess();
   });
-}
+};
 /**
  * 批量删除
  * @param params
@@ -48,17 +63,25 @@ export const batchDelete = (params, handleSuccess) => {
     okText: '确认',
     cancelText: '取消',
     onOk: () => {
-      return defHttp.delete({url: Api.deleteBatch, data: params}, {joinParamsToUrl: true}).then(() => {
+      return defHttp.delete({ url: Api.deleteBatch, data: params }, { joinParamsToUrl: true }).then(() => {
         handleSuccess();
       });
-    }
+    },
   });
-}
+};
 /**
  * 保存或者更新
  * @param params
  */
 export const saveOrUpdate = (params, isUpdate) => {
-  let url = isUpdate ? Api.edit : Api.save;
-  return defHttp.post({url: url, params});
-}
+  const url = isUpdate ? Api.edit : Api.save;
+  return defHttp.post({ url: url, params });
+};
+/**
+ * 保存或者更新
+ * @param params
+ */
+export const saveOrUpdateFile = (params, isUpdate) => {
+  const url = isUpdate ? Api.edit : Api.addApplyFiles;
+  return defHttp.post({ url: url, params });
+};

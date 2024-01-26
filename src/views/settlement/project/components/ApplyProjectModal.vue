@@ -1,9 +1,9 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" destroyOnClose :title="title" :width="800" @ok="handleSubmit">
-      <BasicForm @register="registerForm" ref="formRef"/>
-  <!-- 子表单区域 -->
+  <BasicModal v-bind="$attrs" @register="registerModal" destroyOnClose :title="title" width="70%" @ok="handleSubmit">
+    <BasicForm @register="registerForm" :labelWidth="200" :actionColOptions="{ span: 24 }" :labelCol="{ span: 12 }" ref="formRef" />
+    <!-- 子表单区域 -->
     <a-tabs v-model:activeKey="activeKey" animated @change="handleChangeTabs">
-      <a-tab-pane tab="合同" key="applyContract" :forceRender="true">
+      <a-tab-pane tab="合同信息" key="applyContract" :forceRender="true">
         <JVxeTable
           keep-source
           resizable
@@ -16,99 +16,151 @@
           :rowSelection="true"
           :disabled="formDisabled"
           :toolbar="true"
-          />
+        />
+      </a-tab-pane>
+      <a-tab-pane tab="项目附件管理" key="applyFiles" :forceRender="true">
+        <JVxeTable
+          ref="applyFiles"
+          :loading="applyFilesTable.loading"
+          :columns="applyFilesTable.columns"
+          :dataSource="applyFilesTable.dataSource"
+          :height="340"
+          :rowNumber="true"
+          :rowSelection="true"
+          :disabled="formDisabled"
+          :toolbar="true"
+          :linkageConfig="linkageConfig"
+        />
       </a-tab-pane>
     </a-tabs>
   </BasicModal>
 </template>
 
 <script lang="ts" setup>
-    import {ref, computed, unref,reactive} from 'vue';
-    import {BasicModal, useModalInner} from '/@/components/Modal';
-    import {BasicForm, useForm} from '/@/components/Form/index';
-    import { JVxeTable } from '/@/components/jeecg/JVxeTable'
-    import { useJvxeMethod } from '/@/hooks/system/useJvxeMethods.ts'
-    import {formSchema,applyContractColumns} from '../ApplyProject.data';
-    import {saveOrUpdate,applyContractList} from '../ApplyProject.api';
-    import { VALIDATE_FAILED } from '/@/utils/common/vxeUtils'
-    // Emits声明
-    const emit = defineEmits(['register','success']);
-    const isUpdate = ref(true);
-    const formDisabled = ref(false);
-    const refKeys = ref(['applyContract', ]);
-    const activeKey = ref('applyContract');
-    const applyContract = ref();
-    const tableRefs = {applyContract, };
-    const applyContractTable = reactive({
-          loading: false,
-          dataSource: [],
-          columns:applyContractColumns
-    })
-    //表单配置
-    const [registerForm, {setProps,resetFields, setFieldsValue, validate}] = useForm({
-        //labelWidth: 150,
-        schemas: formSchema,
-        showActionButtonGroup: false,
-        baseColProps: {span: 24}
-    });
-     //表单赋值
-    const [registerModal, {setModalProps, closeModal}] = useModalInner(async (data) => {
-        //重置表单
-        await reset();
-        setModalProps({confirmLoading: false,showCancelBtn:data?.showFooter,showOkBtn:data?.showFooter});
-        isUpdate.value = !!data?.isUpdate;
-        formDisabled.value = !data?.showFooter;
-        if (unref(isUpdate)) {
-            //表单赋值
-            await setFieldsValue({
-                ...data.record,
-            });
-             requestSubTableData(applyContractList, {id:data?.record?.id}, applyContractTable)
-        }
-        // 隐藏底部时禁用整个表单
-       setProps({ disabled: !data?.showFooter })
-    });
-    //方法配置
-    const [handleChangeTabs,handleSubmit,requestSubTableData,formRef] = useJvxeMethod(requestAddOrEdit,classifyIntoFormData,tableRefs,activeKey,refKeys);
-
-    //设置标题
-    const title = computed(() => (!unref(isUpdate) ? '新增' : '编辑'));
-
-    async function reset(){
-      await resetFields();
-      activeKey.value = 'applyContract';
-      applyContractTable.dataSource = [];
+  import { ref, computed, unref, reactive, onMounted, nextTick } from 'vue';
+  import { BasicModal, useModalInner } from '/@/components/Modal';
+  import { BasicForm, useForm } from '/@/components/Form/index';
+  import { JVxeTable } from '/@/components/jeecg/JVxeTable';
+  import { useJvxeMethod } from '/@/hooks/system/useJvxeMethods.ts';
+  import { formSchema, applyContractColumns, applyFilesColumns } from '../ApplyProject.data';
+  import { saveOrUpdate, applyContractList, applyFilesList } from '../ApplyProject.api';
+  import { requestFilesList } from '@/views/settlement/files/ApplyFiles.api';
+  import { JVxeLinkageConfig, JVxeTableInstance } from '@/components/jeecg/JVxeTable/types';
+  import { getSubFileMenu } from '/@/views/settlement/files/ApplyFiles.api';
+  // Emits声明
+  const emit = defineEmits(['register', 'success']);
+  const isUpdate = ref(true);
+  const formDisabled = ref(false);
+  const refKeys = ref(['applyContract', 'applyFiles']);
+  const activeKey = ref('applyContract');
+  const applyContract = ref<JVxeTableInstance>();
+  const applyFiles = ref<JVxeTableInstance>();
+  const tableRefs = { applyContract, applyFiles };
+  const applyContractTable = reactive({
+    loading: false,
+    dataSource: [],
+    columns: applyContractColumns,
+  });
+  const applyFilesTable = reactive({
+    loading: false,
+    dataSource: [],
+    columns: applyFilesColumns,
+  });
+  //表单配置
+  const [registerForm, { setProps, resetFields, setFieldsValue, validate }] = useForm({
+    //labelWidth: 150,
+    schemas: formSchema,
+    showActionButtonGroup: false,
+    baseColProps: { span: 24 },
+  });
+  // 联动配置
+  const linkageConfig = ref<JVxeLinkageConfig[]>([
+    // 可配置多个联动
+    { requestData: requestFileType, key: 'fc' },
+  ]);
+  //表单赋值
+  const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
+    //重置表单
+    await reset();
+    setModalProps({ confirmLoading: false, showCancelBtn: data?.showFooter, showOkBtn: data?.showFooter });
+    isUpdate.value = !!data?.isUpdate;
+    formDisabled.value = !data?.showFooter;
+    if (unref(isUpdate)) {
+      //表单赋值
+      await setFieldsValue({
+        ...data.record,
+      });
+      requestSubTableData(applyContractList, { id: data?.record?.id }, applyContractTable);
+      requestSubTableData(requestFilesList, { projectId: data?.record?.id, fc: '2' }, applyFilesTable);
+      // debugger;
+      // console.log(applyFilesTable.dataSource.length);
+      // if (applyFilesTable.dataSource.length == 0) {
+      //   // 默认添加五行数据
+      //   applyFiles.value!.addRows([{ fileName: '工程施工合同', fc: '2', bizType: '1', flag: 1 }], {
+      //     setActive: false,
+      //   });
+      // }
     }
-    function classifyIntoFormData(allValues) {
-         let main = Object.assign({}, allValues.formValue)
-         return {
-           ...main, // 展开
-           applyContractList: allValues.tablesValue[0].tableData,
-         }
-       }
-    //表单提交事件
-    async function requestAddOrEdit(values) {
-        try {
-            setModalProps({confirmLoading: true});
-            //提交表单
-            await saveOrUpdate(values, isUpdate.value);
-            //关闭弹窗
-            closeModal();
-            //刷新列表
-            emit('success');
-        } finally {
-            setModalProps({confirmLoading: false});
-        }
+    // 隐藏底部时禁用整个表单
+    setProps({ disabled: !data?.showFooter });
+  });
+  //方法配置
+  const [handleChangeTabs, handleSubmit, requestSubTableData, formRef] = useJvxeMethod(
+    requestAddOrEdit,
+    classifyIntoFormData,
+    tableRefs,
+    activeKey,
+    refKeys
+  );
+
+  //设置标题
+  const title = computed(() => (!unref(isUpdate) ? '新增' : '编辑'));
+
+  async function reset() {
+    await resetFields();
+    activeKey.value = 'applyContract';
+    applyContractTable.dataSource = [];
+    applyFilesTable.dataSource = [];
+  }
+  function classifyIntoFormData(allValues) {
+    let main = Object.assign({}, allValues.formValue);
+    return {
+      ...main, // 展开
+      applyContractList: allValues.tablesValue[0].tableData,
+      applyFilesList: allValues.tablesValue[1].tableData,
+    };
+  }
+  //表单提交事件
+  async function requestAddOrEdit(values) {
+    try {
+      setModalProps({ confirmLoading: true });
+      //提交表单
+      await saveOrUpdate(values, isUpdate.value);
+      //关闭弹窗
+      closeModal();
+      //刷新列表
+      emit('success');
+    } finally {
+      setModalProps({ confirmLoading: false });
     }
+  }
+  /** 查询后台真实数据 */
+  async function requestFileType(parent) {
+    let result;
+    result = await getSubFileMenu({ parent: parent });
+    console.log(result);
+    // 返回的数据里必须包含 value 和 text 字段
+    return result.filter((item) => item.id === '2' || item.parent === '2').map((item) => ({ value: item.id, text: item.name }));
+  }
 </script>
 
 <style lang="less" scoped>
-	/** 时间和数字输入框样式 */
-    :deep(.ant-input-number){
-		width: 100%
-	}
+  /** 时间和数字输入框样式 */
+  :deep(.ant-input-number) {
+    width: 100%;
+  }
 
-	:deep(.ant-calendar-picker){
-		width: 100%
-	}
+  :deep(.ant-calendar-picker) {
+    width: 100%;
+  }
 </style>

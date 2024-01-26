@@ -46,22 +46,36 @@ export const searchFormSchema: FormSchema[] = [];
 //表单数据
 export const formSchema: FormSchema[] = [
   {
-    label: '文件类型',
-    field: 'bizType',
-    component: 'JDictSelectTag',
-    defaultValue: '1',
-    componentProps: {
-      dictCode: 'apply_file_type',
-    },
-    show: false,
-  },
-
-  {
-    label: '分册',
     field: 'fc',
-    component: 'JDictSelectTag',
+    component: 'Select',
+    label: '分册',
+    colProps: {
+      span: 8,
+    },
+    componentProps: ({ formModel, formActionType }) => {
+      return {
+        dictCode: 'apply_fc',
+        onChange: (e: any) => {
+          const { updateSchema } = formActionType;
+          updateSchema({
+            field: 'bizType',
+            componentProps: {
+              options: [{ label: '国内订单', value: '1', key: '1' }],
+            },
+          });
+        },
+      };
+    },
+  },
+  {
+    field: 'bizType',
+    component: 'Select',
+    label: '文件类型',
+    colProps: {
+      span: 8,
+    },
     componentProps: {
-      dictCode: 'apply_fc',
+      options: [], // defalut []
     },
   },
   {

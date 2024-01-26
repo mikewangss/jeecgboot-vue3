@@ -2,7 +2,8 @@ import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { rules } from '/@/utils/helper/validator';
 import { render } from '/@/utils/common/renderUtils';
-import { JVxeTypes, JVxeColumn } from '/@/components/jeecg/JVxeTable/types';
+import {JVxeTypes, JVxeColumn, JVxeLinkageConfig} from '/@/components/jeecg/JVxeTable/types';
+import {ref} from "vue/dist/vue";
 //列表数据
 export const columns: BasicColumn[] = [
   {
@@ -41,14 +42,9 @@ export const columns: BasicColumn[] = [
     dataIndex: 'bidder_dictText',
   },
   {
-    title: '描述',
+    title: '是否结案',
     align: 'center',
-    dataIndex: 'description',
-  },
-  {
-    title: '附件',
-    align: 'center',
-    dataIndex: 'file',
+    dataIndex: 'status',
   },
 ];
 //查询数据
@@ -57,13 +53,13 @@ export const searchFormSchema: FormSchema[] = [
     label: '项目名称',
     field: 'name',
     component: 'Input',
-    //colProps: {span: 6},
+    colProps: { span: 6 },
   },
   {
     label: '项目编号',
     field: 'code',
     component: 'Input',
-    //colProps: {span: 6},
+    colProps: { span: 6 },
   },
   {
     label: '中标单位',
@@ -72,7 +68,7 @@ export const searchFormSchema: FormSchema[] = [
     componentProps: {
       dictCode: 'sys_depart,depart_name,id',
     },
-    //colProps: {span: 6},
+    colProps: { span: 6 },
   },
 ];
 //表单数据
@@ -81,6 +77,7 @@ export const formSchema: FormSchema[] = [
     label: '项目名称',
     field: 'name',
     component: 'Input',
+    colProps: { span: 12 },
     dynamicRules: ({ model, schema }) => {
       return [{ required: true, message: '请输入项目名称!' }];
     },
@@ -89,24 +86,31 @@ export const formSchema: FormSchema[] = [
     label: '项目编号',
     field: 'code',
     component: 'Input',
+    colProps: { span: 12 },
     dynamicRules: ({ model, schema }) => {
       return [{ required: true, message: '请输入项目编号!' }];
     },
   },
   {
-    label: '所属单位',
     field: 'unit',
-    component: 'JDictSelectTag',
+    component: 'JTreeSelect',
+    label: '所属单位',
+    colProps: { span: 12 },
+    helpMessage: ['component模式'],
     componentProps: {
-      dictCode: 'sys_depart,depart_name,id',
+      dict: 'sys_depart,depart_name,id',
+      pidField: 'parent_id',
+      hasChildField: 'iz_leaf',
+      converIsLeafVal: 0,
     },
     dynamicRules: ({ model, schema }) => {
       return [{ required: true, message: '请输入所属单位!' }];
     },
   },
   {
-    label: '负责主体',
+    label: '负责人',
     field: 'onwer',
+    colProps: { span: 12 },
     component: 'JDictSelectTag',
     componentProps: {
       dictCode: '',
@@ -115,6 +119,7 @@ export const formSchema: FormSchema[] = [
   {
     label: '开始时间',
     field: 'startDate',
+    colProps: { span: 12 },
     component: 'DatePicker',
     componentProps: {
       showTime: true,
@@ -127,6 +132,7 @@ export const formSchema: FormSchema[] = [
   {
     label: '结束时间',
     field: 'endDate',
+    colProps: { span: 12 },
     component: 'DatePicker',
     componentProps: {
       showTime: true,
@@ -139,6 +145,7 @@ export const formSchema: FormSchema[] = [
   {
     label: '中标单位',
     field: 'bidder',
+    colProps: { span: 12 },
     component: 'JDictSelectTag',
     componentProps: {
       dictCode: 'sys_depart,depart_name,id',
@@ -148,15 +155,28 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    label: '描述',
-    field: 'description',
-    component: 'InputTextArea',
+    field: 'status',
+    component: 'RadioButtonGroup',
+    label: '是否结案',
+    colProps: { span: 12 },
+    componentProps: {
+      options: [
+        {
+          label: '结案',
+          value: '1',
+        },
+        {
+          label: '未结',
+          value: '0',
+        },
+      ],
+    },
   },
   {
-    label: '附件',
-    field: 'file',
-    component: 'JUpload',
-    componentProps: {},
+    label: '描述',
+    colProps: { span: 12 },
+    field: 'description',
+    component: 'InputTextArea',
   },
   // TODO 主键隐藏字段，目前写死为ID
   {
@@ -202,15 +222,23 @@ export const applyContractColumns: JVxeColumn[] = [
     type: JVxeTypes.select,
     options: [],
     dictCode: 'contract_type',
-    component: 'JDictSelectTag',
-    componentProps: {
-      dictCode: 'contract_type',
-    },
     width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
+  {
+    title: '专业类型',
+    key: 'major',
+    type: JVxeTypes.select,
+    options: [],
+    dictCode: 'major_type',
+    width: '200px',
+    placeholder: '请输入${title}',
+    defaultValue: '',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
+  },
+
   {
     title: '合同状态',
     key: 'status',
@@ -247,6 +275,49 @@ export const applyContractColumns: JVxeColumn[] = [
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
+  },
+];
+export const applyFilesColumns: JVxeColumn[] = [
+  {
+    title: '文件名称',
+    key: 'fileName',
+    type: JVxeTypes.input,
+    width: '200px',
+    placeholder: '请输入${title}',
+    defaultValue: '',
+  },
+  {
+    title: '分册',
+    key: 'fc',
+    type: JVxeTypes.select,
+    width: '180px',
+    // 联动字段（即下一级的字段）
+    linkageKey: 'bizType',
+  },
+  {
+    title: '文件类型',
+    key: 'bizType',
+    type: JVxeTypes.select,
+    width: '180px',
+    placeholder: '请选择${title}',
+  },
+  {
+    title: '描述',
+    key: 'description',
+    type: JVxeTypes.input,
+    width: '200px',
+    placeholder: '请输入${title}',
+    defaultValue: '',
+  },
+  {
+    title: '文件',
+    key: 'file',
+    type: JVxeTypes.file,
+    token: true,
+    responseName: 'message',
+    width: '200px',
+    placeholder: '请选择文件',
+    defaultValue: '',
   },
 ];
 

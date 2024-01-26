@@ -124,6 +124,26 @@ export const rules = {
       },
     ] as ArrayRule;
   },
+  fileCheckRule(schema, required?) {
+    return [
+      {
+        validator: (_, value) => {
+          if (!value && required) {
+            return Promise.reject(`请输入${schema.label}`);
+          } else if (value.length > 0) {
+            const failArray = value.filter((item) => item.status == 'error');
+            if (failArray.length > 0) {
+              return Promise.reject(`请删除错误的文件${schema.label}并重新上传`);
+            } else {
+              return Promise.resolve();
+            }
+          } else {
+            return Promise.resolve();
+          }
+        },
+      },
+    ] as ArrayRule;
+  },
 };
 
 //update-begin-author:taoyan date:2022-6-16 for: 代码生成-原生表单用
@@ -136,7 +156,7 @@ export const rules = {
  */
 export async function duplicateValidate(tableName, fieldName, fieldVal, dataId) {
   try {
-    let params = {
+    const params = {
       tableName,
       fieldName,
       fieldVal,

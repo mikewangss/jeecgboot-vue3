@@ -96,7 +96,7 @@
         ],
       };
       const { resetFields, validate, validateInfos } = useForm(modelRef, validatorRules, {
-        onValidate: (...args) => console.log(...args),
+        // onValidate: (...args) => console.log(...args),
       });
       //是否显示获取验证码
       const showInterval = ref<boolean>(true);

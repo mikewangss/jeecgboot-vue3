@@ -4,10 +4,11 @@
     <BasicTable @register="registerTable" :rowSelection="rowSelection">
       <!--操作栏-->
       <template #action="{ record }">
+        <act-historic-detail-btn :data-id="record.id" />
         <TableAction :actions="getTableAction(record)" />
       </template>
     </BasicTable>
-    <ProcessDetail @register="register1" :task_id="taskId" :process_instance_id="processInstanceId" :showApplyButton="false" />
+    <ProcessDetail @register="register1" :showApplyButton="false" />
   </div>
 </template>
 
@@ -16,16 +17,18 @@
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { useListPage } from '/@/hooks/system/useListPage';
   import { columns, searchFormSchema } from './applyInfo.data';
-  import { list, queryProcessId } from './applyInfo.api';
+  import { list, queryById } from './applyInfo.api';
   import { useUserStore } from '/@/store/modules/user';
   import { useDrawer } from '@/components/Drawer';
   import { defineComponent } from 'vue';
   import ProcessDetail from '@/views/settlement/workflow/compoments/process_detail.vue';
+  import ActHistoricDetailBtn from '@/views/flowable/components/ActHistoricDetailBtn.vue';
   export default defineComponent({
-    components: { ProcessDetail, BasicTable, TableAction },
+    components: { ActHistoricDetailBtn, ProcessDetail, BasicTable, TableAction },
     setup() {
       let info = ref(null);
       const taskId = ref('');
+      const bizId = ref('');
       const processInstanceId = ref('');
       const searchInfo = {};
       const userStore = useUserStore();
@@ -66,23 +69,22 @@
       /**
        * 选择事件
        */
-      function onSelectChange(selectedRowKeys: (string | number)[]) {
-
-      }
+      function onSelectChange(selectedRowKeys: (string | number)[]) {}
       /**
        * 获取单个
        */
       async function detailInfo(record) {
-        processInstanceId.value = await queryProcessId({ id: record.id });
-        console.log(processInstanceId.value);
-        openDrawer1(true, info);
+        bizId.value = record.id;
+        openDrawer1(true, {
+          process_instance_id: processInstanceId,
+          bizId: bizId,
+        });
       }
 
       /**
        * 编辑事件
        */
       function handleEdit(record: Recordable) {
-        console.log('111');
         detailInfo(record);
       }
 
@@ -119,6 +121,7 @@
         getTableAction,
         searchInfo,
         rowSelection,
+        bizId,
       };
     },
   });

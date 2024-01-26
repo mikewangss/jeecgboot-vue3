@@ -10,7 +10,8 @@
       </template>
     </BasicTable>
     <!-- 表单区域 -->
-    <ProcessDetail @register="register1" :task_id="taskId" :process_instance_id="processInstanceId" :showApplyButton="false" />
+    <ProcessDetail @register="register1" :showApplyButton="false" />
+    <SupplierUpdate @register="register2" :showApplyButton="false" />
   </div>
 </template>
 
@@ -23,11 +24,11 @@
   import { useDrawer } from '@/components/Drawer';
   import { useUserStore } from '@/store/modules/user';
   import ProcessDetail from '@/views/settlement/workflow/compoments/process_detail.vue';
+  import SupplierUpdate from '@/views/settlement/workflow/compoments/supplier_update.vue';
 
   export default defineComponent({
-    components: { ProcessDetail, BasicTable, TableAction },
+    components: { SupplierUpdate, ProcessDetail, BasicTable, TableAction },
     setup() {
-      let info = ref(null);
       const taskId = ref('');
       const processInstanceId = ref('');
       const searchInfo = {};
@@ -36,6 +37,7 @@
       searchInfo['userId'] = username;
       //注册table数据
       const [register1, { openDrawer: openDrawer1 }] = useDrawer();
+      const [register2, { openDrawer: openDrawer2 }] = useDrawer();
       const { tableContext } = useListPage({
         tableProps: {
           title: '我的已办',
@@ -62,11 +64,19 @@
        * 获取单个
        */
       async function detailInfo(record) {
-        taskId.value = record.task_id;
-        processInstanceId.value = record.process_instance_id;
-        // info.value = await queryByProcessId({ process_id: record.process_instance_id });
-        console.log(processInstanceId.value);
-        openDrawer1(true, info);
+        taskId.value = record.taskId;
+        processInstanceId.value = record.procInsId;
+        if (record.procDefName.includes('结算')) {
+          openDrawer1(true, {
+            process_instance_id: processInstanceId,
+            bizId: '',
+          });
+        } else {
+          openDrawer2(true, {
+            process_instance_id: processInstanceId,
+            bizId: '',
+          });
+        }
       }
 
       /**
@@ -93,6 +103,7 @@
         processInstanceId,
         taskId,
         register1,
+        register2,
         registerTable,
         getTableAction,
         searchInfo,

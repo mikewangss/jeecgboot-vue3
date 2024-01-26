@@ -6,7 +6,6 @@ const { createConfirm } = useMessage();
 enum Api {
   list = '/settlement/applyInfo/list',
   queryById = '/settlement/applyInfo/queryById',
-  queryProcessId = '/settlement/applyInfo/queryProcessId',
   save = '/settlement/applyInfo/add',
   edit = '/settlement/applyInfo/edit',
   deleteOne = '/settlement/applyInfo/delete',
@@ -14,6 +13,7 @@ enum Api {
   importExcel = '/settlement/applyInfo/importExcel',
   exportXls = '/settlement/applyInfo/exportXls',
 }
+
 /**
  * 导出api
  * @param params
@@ -23,11 +23,7 @@ export const getExportUrl = Api.exportXls;
  * 导入api
  */
 export const getImportUrl = Api.importExcel;
-/**
- * 列表接口
- * @param params
- */
-export const queryProcessId = (params) => defHttp.get({ url: Api.queryProcessId, params });
+
 /**
  * 列表接口
  * @param params
@@ -71,6 +67,6 @@ export const batchDelete = (params, handleSuccess) => {
  * @param params
  */
 export const saveOrUpdate = (params, isUpdate) => {
-  const url = Api.save;
+  const url = isUpdate ? Api.edit : Api.save;
   return defHttp.post({ url: url, params });
 };

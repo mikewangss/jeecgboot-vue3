@@ -3,41 +3,39 @@ import { FormSchema } from '/@/components/Table';
 //列表数据
 export const columns: BasicColumn[] = [
   {
+    title: '任务节点名称',
+    align: 'center',
+    dataIndex: 'taskName',
+  },
+  {
     title: '任务ID',
     align: 'center',
-    dataIndex: 'task_id',
+    dataIndex: 'taskId',
   },
   {
-    title: '办理人',
+    title: '流程名称',
     align: 'center',
-    dataIndex: 'assignee',
+    dataIndex: 'procDefName',
   },
   {
-    title: '优先级',
+    title: '申请人',
     align: 'center',
-    dataIndex: 'priority',
+    dataIndex: 'startUserName',
   },
   {
-    title: '节点名称',
+    title: '申请人所在部门',
     align: 'center',
-    dataIndex: 'name',
+    dataIndex: 'startDeptName',
   },
   {
-    title: 'ProcessInstanceId',
+    title: 'procDefId',
     align: 'center',
-    dataIndex: 'process_instance_id',
+    dataIndex: 'procDefId',
   },
   {
     title: '创建时间',
     align: 'center',
-    dataIndex: 'create_time',
-  },
-  {
-    title: '办理状态',
-    align: 'center',
-    dataIndex: 'end_time',
-    // 使用插槽渲染列内容，根据结束时间的有无显示不同的状态
-    slots: { customRender: 'endTimeSlot' },
+    dataIndex: 'createTime',
   },
 ];
 

@@ -3,7 +3,7 @@
     <!--引用表格-->
     <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <!--插槽:table标题-->
-      <template #tableTitle></template>
+      <template #tableTitle> </template>
       <!--操作栏-->
       <template #action="{ record }">
         <TableAction :actions="getTableAction(record)" />
@@ -14,14 +14,16 @@
         <a-tag type="success" v-else class="pending">已办理</a-tag>
       </template>
     </BasicTable>
-    <ProcessDetail @register="register1" :task_id="taskId" :process_instance_id="processInstanceId" :showApplyButton="true" />
+    <ProcessUpdate @register="register1" :showApplyButton="true" @success="handeleSuccess" />
+    <SupplierUpdate @register="register2" :showApplyButton="true" @success="handeleSuccess" />
   </div>
 </template>
 
 <script lang="ts" name="settlement-workflow">
   import { ref, unref } from 'vue';
   import { useListPage } from '/@/hooks/system/useListPage';
-  import ProcessDetail from '@/views/settlement/workflow/compoments/process_detail.vue';
+  import ProcessUpdate from '@/views/settlement/workflow/compoments/process_update.vue';
+  import SupplierUpdate from '@/views/settlement/workflow/compoments/supplier_update.vue';
   import { columns, searchFormSchema } from './todoList.data';
   import { todoList } from './todoList.api';
   import { useDrawer } from '@/components/Drawer';
@@ -30,9 +32,9 @@
   import { BasicTable, TableAction } from '@/components/Table';
 
   export default defineComponent({
-    components: { ProcessDetail, BasicTable, TableAction },
+    components: { SupplierUpdate, ProcessUpdate, BasicTable, TableAction },
     setup() {
-      let info = ref(null);
+      const procDefName = ref('');
       const taskId = ref('');
       const processInstanceId = ref('');
       const searchInfo = {};
@@ -40,8 +42,9 @@
       const username = userStore.getUserInfo?.username;
       searchInfo['userId'] = username;
       //注册table数据
-      const [register1, { openDrawer: openDrawer1 }] = useDrawer();
-      const { tableContext } = useListPage({
+      const [register1, { openDrawer: openDrawer1, closeDrawer: closeDrawer1 }] = useDrawer();
+      const [register2, { openDrawer: openDrawer2, closeDrawer: closeDrawer2 }] = useDrawer();
+      const { tableContext, doRequest } = useListPage({
         tableProps: {
           title: '我的待办',
           api: todoList,
@@ -67,20 +70,29 @@
        * 获取单个
        */
       async function detailInfo(record) {
-        taskId.value = record.task_id;
-        processInstanceId.value = record.process_instance_id;
-        // info.value = await queryByProcessId({ process_id: record.process_instance_id });
+        taskId.value = record.taskId;
+        processInstanceId.value = record.procInsId;
         console.log(processInstanceId.value);
-        openDrawer1(true, info);
+        procDefName.value = record.procDefName;
+        if (record.procDefName.includes('结算')) {
+          openDrawer1(true, {
+            process_instance_id: processInstanceId,
+            bizId: '',
+          });
+        } else {
+          openDrawer2(true, {
+            process_instance_id: processInstanceId,
+            bizId: '',
+          });
+        }
       }
-      /**
-       * 获取单个
-       */
-      async function taskDetailInfo(queryTaskId, queryProcessInstanceId) {
-        taskId.value = queryTaskId;
-        processInstanceId.value = queryProcessInstanceId;
-        console.log(processInstanceId.value);
-        openDrawer1(true, info);
+      function handeleSuccess() {
+        if (procDefName.value.includes('结算')) {
+          closeDrawer1();
+        } else {
+          closeDrawer2();
+        }
+        reload();
       }
       /**
        * 编辑事件
@@ -103,7 +115,7 @@
       function getTableAction(record) {
         return [
           {
-            label: '查看',
+            label: '去处理',
             onClick: handleEdit.bind(null, record),
           },
         ];
@@ -113,21 +125,23 @@
         processInstanceId,
         taskId,
         register1,
+        register2,
         registerTable,
         getTableAction,
         searchInfo,
-        taskDetailInfo,
+        handeleSuccess,
       };
     },
-    mounted() {
-      // 通过this.$route.params来访问参数
-      const queryTaskId = this.$route.query.taskId;
-      const queryProcessInstanceId = this.$route.query.processInstanceId;
-      if (queryTaskId != null && queryProcessInstanceId != null) {
-        console.log('Received parameter:', queryTaskId);
-        this.taskDetailInfo(queryTaskId, queryProcessInstanceId);
-      }
-    },
+    // mounted() {
+    //   // 通过this.$route.params来访问参数
+    //   // const queryTaskId = this.$route.query.taskId;
+    //   // const queryProcessInstanceId = this.$route.query.processInstanceId;
+    //   // if (queryTaskId != null && queryProcessInstanceId != null) {
+    //   //   debugger;
+    //   //   console.log('Received parameter:', queryTaskId);
+    //   //   this.taskDetailInfo(queryTaskId, queryProcessInstanceId);
+    //   // }
+    // },
   });
 </script>
 

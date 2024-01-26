@@ -5,6 +5,7 @@ const { createConfirm } = useMessage();
 
 enum Api {
   list = '/settlement/applySupplier/list',
+  mySupplierList = '/settlement/applySupplier/mySupplierList',
   save = '/settlement/applySupplier/add',
   edit = '/settlement/applySupplier/edit',
   deleteOne = '/settlement/applySupplier/delete',
@@ -12,6 +13,7 @@ enum Api {
   importExcel = '/settlement/applySupplier/importExcel',
   exportXls = '/settlement/applySupplier/exportXls',
 }
+export const supplierListApi = (params) => defHttp.get({ url: Api.mySupplierList, params });
 /**
  * 导出api
  * @param params

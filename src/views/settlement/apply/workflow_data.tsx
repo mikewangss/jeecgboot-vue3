@@ -1,10 +1,344 @@
 import { BasicColumn } from '/src/components/Table/src/types/table';
 
 import { Badge } from 'ant-design-vue';
-import {render} from "@/utils/common/renderUtils";
-import {FormSchema} from "@/components/Form";
+import { render } from '@/utils/common/renderUtils';
+import { FormSchema } from '@/components/Form';
+import { Button } from '@/components/Button';
+import { DescItem } from '@/components/Description';
+export const schemas: FormSchema[] = [
+  {
+    field: 'id',
+    component: 'Input',
+    label: 'id',
+    ifShow: false,
+  },
+  {
+    field: 'divider-basic',
+    component: 'Divider',
+    label: '结算申请信息',
+  },
+  {
+    field: 'createBy',
+    component: 'Input',
+    label: '创建人',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'createTime',
+    component: 'Input',
+    label: '创建时间',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'reviewDate',
+    component: 'Input',
+    label: '承包单位送审时间',
+    defaultValue: '',
 
+    colProps: {
+      span: 12,
+    },
+  },
+  {
+    field: 'amounts',
+    component: 'Input',
+    label: '承包单位送审额',
+    defaultValue: '',
+
+    colProps: {
+      span: 12,
+    },
+  },
+  {
+    field: 'firstAmounts',
+    component: 'InputNumber',
+    label: '初审审批金额',
+    subLabel: '(单位:元 )',
+    defaultValue: '',
+    componentProps: {
+      disabled: true,
+    },
+    colProps: {
+      span: 12,
+    },
+  },
+  {
+    field: 'secondAmounts',
+    component: 'InputNumber',
+    label: '复审审批金额',
+    defaultValue: '',
+    componentProps: {
+      disabled: true,
+    },
+    colProps: {
+      span: 12,
+    },
+  },
+  {
+    field: 'thirdAmounts',
+    component: 'InputNumber',
+    label: '终审审批金额',
+    defaultValue: '',
+    componentProps: {
+      disabled: true,
+    },
+    colProps: {
+      span: 12,
+    },
+  },
+  {
+    field: 'divider-basic',
+    component: 'Divider',
+    label: '项目基本信息',
+  },
+  {
+    field: 'projectName',
+    component: 'Input',
+    label: '项目名称',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'unit',
+    component: 'Input',
+    label: '所属单位',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'bidder',
+    component: 'Input',
+    label: '中标单位',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'status',
+    component: 'Input',
+    label: '项目状态',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'divider-basic',
+    component: 'Divider',
+    label: '合同基本信息',
+  },
+  {
+    field: 'contractNum',
+    component: 'Input',
+    label: '合同编号',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'contractName',
+    component: 'Input',
+    label: '合同名称',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'signDate',
+    component: 'Input',
+    label: '签订时间',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'totalPrice',
+    component: 'Input',
+    label: '合同总价',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'startDate',
+    component: 'Input',
+    label: '合同开始时间',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+];
+export const schema: DescItem[] = [
+  {
+    field: 'createBy',
+    label: '创建人',
+  },
+  {
+    field: 'createTime',
+    label: '创建时间',
+  },
+  {
+    field: 'amounts',
+    label: '承包单位送审额',
+  },
+  {
+    field: 'reviewDate',
+    label: '承包单位送审时间',
+  },
+  {
+    field: 'firstAmounts',
+    label: '初审审批金额',
+  },
+  {
+    field: 'secondAmounts',
+    label: '复审审批金额',
+  },
+  {
+    field: 'thirdAmounts',
+    label: '终审审批金额',
+  },
+];
+export const schema2: DescItem[] = [
+  {
+    field: 'projectName',
+    label: '项目名称',
+  },
+  {
+    field: 'unit',
+    label: '所属单位',
+  },
+  {
+    field: 'bidder',
+    label: '中标单位',
+  },
+  {
+    field: 'status',
+    label: '项目状态',
+  },
+];
+export const schema3: DescItem[] = [
+  {
+    field: 'contractNum',
+    label: '合同编号',
+  },
+  {
+    field: 'contractName',
+    label: '合同名称',
+  },
+  {
+    field: 'signDate',
+    label: '签订时间',
+  },
+  {
+    field: 'totalPrice',
+    label: '合同总价',
+  },
+  {
+    field: 'startDate',
+    label: '合同开始时间',
+  },
+  {
+    field: 'endDate',
+    label: '合同结束时间',
+  },
+];
 export const columns: BasicColumn[] = [
+  {
+    title: '任务节点名称',
+    align: 'center',
+    dataIndex: 'taskName',
+  },
+  {
+    title: '任务ID',
+    align: 'center',
+    dataIndex: 'taskId',
+  },
+  {
+    title: '流程名称',
+    align: 'center',
+    dataIndex: 'procDefName',
+  },
+  {
+    title: '审批人',
+    width: 150,
+    dataIndex: 'assigneeId',
+  },
+  {
+    title: '发起人',
+    width: 150,
+    dataIndex: 'startUserName',
+  },
+  {
+    title: '所属部门',
+    width: 150,
+    dataIndex: 'startDeptName',
+  },
+  {
+    title: '开始时间',
+    width: 150,
+    dataIndex: 'createTime',
+  },
+  {
+    title: '结束时间',
+    width: 150,
+    dataIndex: 'finishTime',
+  },
+  {
+    title: '办理时长',
+    width: 150,
+    dataIndex: 'duration',
+  },
+];
+
+export const fileColumns: BasicColumn[] = [
   {
     title: 'ProcessInstanceId',
     align: 'center',
@@ -65,7 +399,6 @@ export const columns: BasicColumn[] = [
     dataIndex: 'duration',
   },
 ];
-
 export const refundTimeTableData: any[] = [];
 
 //查询数据

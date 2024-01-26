@@ -1,186 +1,341 @@
 <template>
-  <BasicDrawer v-bind="$attrs" @register="register2" title="Drawer Title" width="50%">
-    <PageWrapper title="详情组件示例">
-      <Description
-        title="流程基本信息"
-        :collapseOptions="{ canExpand: true, helpMessage: 'help me' }"
-        :column="3"
-        :data="mockData"
-        :schema="schema"
-      />
-      <Description
-        title="流程表单信息"
-        :collapseOptions="{ canExpand: true, helpMessage: 'help me' }"
-        :column="3"
-        :data="mockData2"
-        :schema="schema2"
-      />
-      <a-divider />
-      <BasicTable @register="registerTimeTable" />
-      <a-divider />
-      <a-row v-if="showApplyButton">
-        <a-textarea v-model="approvalComment" rows="5" style="width: 90%; margin-bottom: 20px" placeholder="请输入你的审批意见"></a-textarea>
-      </a-row>
-      <a-row v-if="showApplyButton">
-        <div class="demo-drawer__footer">
-          <a-button type="primary" class="ml-2" @click="handleApply('approval')"> 同意</a-button>
-          <a-button type="dashed" class="ml-2" @click="handleApply('reject')"> 拒绝</a-button>
-        </div>
-      </a-row>
+  <BasicDrawer v-bind="$attrs" @register="register2" title="结算申请流程" width="50%">
+    <PageWrapper title="申请详情">
+      <template #footer>
+        <a-tabs v-model:activeKey="activeKey" @tabClick="handleChangePanel">
+          <a-tab-pane tab="申请明细" key="applyInfo" :forceRender="true">
+            <Description
+              title="结算申请信息"
+              :collapseOptions="{ canExpand: true, helpMessage: 'help me' }"
+              :column="2"
+              :data="mockData"
+              :schema="schema"
+            />
+            <Description
+              title="项目基本信息"
+              :collapseOptions="{ canExpand: true, helpMessage: 'help me' }"
+              :column="2"
+              :data="mockData2"
+              :schema="schema2"
+            />
+            <Description
+              title="合同基本信息"
+              :collapseOptions="{ canExpand: true, helpMessage: 'help me' }"
+              :column="2"
+              :data="mockData3"
+              :schema="schema3"
+            />
+            <a-divider />
+            <a-card style="margin-top: 10px">
+              <p slot="title">
+                <span>流程审批进度历史</span>
+              </p>
+              <a-row style="position: relative">
+                <div class="block">
+                  <el-timeline>
+                    <el-timeline-item v-for="(item, index) in flowRecordList" :key="index" :color="setColor(item.finishTime)">
+                      <p style="font-weight: 700"
+                        >{{ item.taskName }}
+                        <i v-if="!item.finishTime" style="color: orange">(待办中。。。)</i>
+                      </p>
+
+                      <a-card :body-style="{ padding: '10px' }">
+                        <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px"
+                          >实际办理人： {{ item.assigneeName }} <a-tag type="info" size="mini">{{ item.deptName }}</a-tag></label
+                        >
+                        <label v-if="item.candidate" style="font-weight: normal; margin-right: 30px">候选办理人： {{ item.candidate }}</label>
+                        <label style="font-weight: normal">接收时间： </label
+                        ><label style="color: #8a909c; font-weight: normal">{{ item.createTime }}</label>
+                        <label v-if="item.finishTime" style="margin-left: 30px; font-weight: normal">办结时间： </label
+                        ><label style="color: #8a909c; font-weight: normal">{{ item.finishTime }}</label>
+                        <label v-if="item.duration" style="margin-left: 30px; font-weight: normal">耗时： </label
+                        ><label style="color: #8a909c; font-weight: normal">{{ item.duration }}</label>
+
+                        <p v-if="item.comment">
+                          <!--  1 正常意见  2 退回意见 3 驳回意见                -->
+                          <a-tag color="green" v-if="item.comment.type === '1'">
+                            <span v-if="item.comment.comment != '重新提交'">通过：</span>
+                            {{ item.comment.comment }}
+                          </a-tag>
+                          <a-tag color="orange" v-if="item.comment.type === '2'">退回： {{ item.comment.comment }}</a-tag>
+                          <a-tag color="red" v-if="item.comment.type === '3'">驳回： {{ item.comment.comment }}</a-tag>
+                        </p>
+                      </a-card>
+                    </el-timeline-item>
+                  </el-timeline>
+                </div>
+              </a-row>
+            </a-card>
+          </a-tab-pane>
+          <a-tab-pane tab="报审结算材料" key="requestFiles" :forceRender="true">
+            <JVxeTable
+              keep-source
+              resizable
+              ref="requestFiles"
+              :loading="requestFilesTable.loading"
+              :columns="requestFilesTable.columns"
+              :dataSource="requestFilesTable.dataSource"
+              :height="340"
+              :rowNumber="true"
+              :rowSelection="true"
+              :toolbar="false"
+              :disabled="true"
+              :linkageConfig="linkageConfig"
+            />
+          </a-tab-pane>
+          <a-tab-pane tab="项目附件" key="projectFiles" :forceRender="true">
+            <JVxeTable
+              keep-source
+              resizable
+              ref="projectFiles"
+              :loading="projectFilesTable.loading"
+              :columns="projectFilesTable.columns"
+              :dataSource="projectFilesTable.dataSource"
+              :height="340"
+              :rowNumber="true"
+              :rowSelection="true"
+              :toolbar="false"
+              :disabled="true"
+              :linkageConfig="linkageConfig"
+            />
+          </a-tab-pane>
+          <a-tab-pane tab="变更签证" key="changeFiles" :forceRender="true">
+            <JVxeTable
+              keep-source
+              resizable
+              ref="changeFiles"
+              :loading="changeFilesTable.loading"
+              :columns="changeFilesTable.columns"
+              :dataSource="changeFilesTable.dataSource"
+              :height="340"
+              :rowNumber="true"
+              :rowSelection="true"
+              :toolbar="false"
+              :disabled="true"
+              :linkageConfig="linkageConfig"
+            />
+          </a-tab-pane>
+          <a-tab-pane tab="初审材料" key="preliminaryFiles" :forceRender="true">
+            <JVxeTable
+              keep-source
+              resizable
+              ref="preliminaryFiles"
+              :loading="preliminaryFilesTable.loading"
+              :columns="preliminaryFilesTable.columns"
+              :dataSource="preliminaryFilesTable.dataSource"
+              :height="340"
+              :rowNumber="true"
+              :rowSelection="true"
+              :toolbar="false"
+              :disabled="true"
+              :linkageConfig="linkageConfig"
+            />
+          </a-tab-pane>
+          <a-tab-pane tab="复审材料" key="reviewFiles" :forceRender="true">
+            <JVxeTable
+              keep-source
+              resizable
+              ref="reviewFiles"
+              :loading="reviewFilesTable.loading"
+              :columns="reviewFilesTable.columns"
+              :dataSource="reviewFilesTable.dataSource"
+              :height="340"
+              :rowNumber="true"
+              :rowSelection="true"
+              :toolbar="false"
+              :disabled="true"
+              :linkageConfig="linkageConfig"
+            />
+          </a-tab-pane>
+          <a-tab-pane tab="终审材料" key="finalFiles" :forceRender="true">
+            <JVxeTable
+              keep-source
+              resizable
+              ref="finalFiles"
+              :loading="finalFilesTable.loading"
+              :columns="finalFilesTable.columns"
+              :dataSource="finalFilesTable.dataSource"
+              :height="340"
+              :rowNumber="true"
+              :rowSelection="true"
+              :toolbar="false"
+              :disabled="true"
+              :linkageConfig="linkageConfig"
+            />
+          </a-tab-pane>
+        </a-tabs>
+      </template>
     </PageWrapper>
   </BasicDrawer>
 </template>
 
 <script lang="tsx">
-  import { defineComponent, ref, toRefs, watch, watchEffect } from 'vue';
+  import { defineComponent, reactive, ref, Ref } from 'vue';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
-  import { Description, DescItem } from '/@/components/Description/index';
+  import { Description } from '/@/components/Description/index';
   import { PageWrapper } from '/@/components/Page';
-  import { apply, queryByProcessId, reject, taskHiList } from '../todoList.api';
+  import { taskHiList } from '../todoList.api';
   import { useGlobSetting } from '@/hooks/setting';
-  import { BasicTable, useTable } from '@/components/Table';
-  import { columns } from '@/views/settlement/apply/workflow_data';
+  import { BasicTable } from '@/components/Table';
+  import { schema, schema2, schema3 } from '@/views/settlement/apply/workflow_data';
+  import { getSubFileMenu, queryApplyFilesByBizId, queryApplyFilesByProjectId } from '@/views/settlement/files/ApplyFiles.api';
+  import { JVxeTable } from '@/components/jeecg/JVxeTable';
+  import { applyFilesColumns } from '@/views/settlement/project/ApplyProject.data';
+  import WorkHandleBtn from './WorkHandleBtn.vue';
+  import { JVxeLinkageConfig } from '@/components/jeecg/JVxeTable/src/types';
 
-  const mockData = ref({});
-  const mockData2 = ref({});
-  const approvalComment = ref('');
+  interface flowRecord {
+    id: string;
+    taskName: string;
+    createTime: string;
+    deptName: string;
+    assigneeName: string;
+    candidate: string;
+    finishTime: string;
+    duration: string;
+    assigneeId: string;
+    taskDefKey: string;
+    comment: {
+      comment: string;
+      type: string;
+    };
+  }
   export default defineComponent({
-    components: { BasicTable, Description, PageWrapper, BasicDrawer },
+    components: { JVxeTable, BasicTable, Description, PageWrapper, BasicDrawer, WorkHandleBtn },
     props: {
-      task_id: {
-        type: [String] as PropType<string>,
-        default: '0',
-      },
-      process_instance_id: {
-        type: [String] as PropType<string>,
-        default: '0',
-      },
       showApplyButton: {
         type: Boolean,
         default: false,
       },
     },
     setup(props) {
-      const { task_id, process_instance_id, showApplyButton } = toRefs(props);
-      watch(
-        () => props.process_instance_id,
-        (newVal, oldVal) => {
-          console.log('process_instance_id changed:', newVal, oldVal);
-          fetchDataBasedOnPropChange(newVal);
-          reloadTable();
-        }
-      );
-      const glob = useGlobSetting();
-      const [register2] = useDrawerInner();
-      const [registerTimeTable, { setTableData }] = useTable({
-        title: '审批记录',
-        columns: columns,
-        pagination: false,
-        showIndexColumn: false,
-        scroll: { y: 300 },
+      const mockData = ref({});
+      const mockData2 = ref({});
+      const mockData3 = ref({});
+      const approvalComment = ref('');
+      const bizId = ref('');
+      const projectId = ref('');
+      const requestFilesTable = reactive({
+        loading: false,
+        dataSource: [],
+        columns: applyFilesColumns,
+        show: false,
       });
-      const reloadTable = async () => {
-        const newData = await taskHiList({ process_instance_id: process_instance_id.value });
-        // Assuming setTableData is a function that sets the fetched data to the table
-        setTableData(newData);
-      };
-      // 示例的 render 函数，负责渲染文件列表
-      const renderFileList = (filePaths: string) => {
-        const fileList = filePaths.split(','); // 假设文件路径使用逗号分隔
-        return (
-          <ul>
-            {fileList.map((filePath, index) => {
-              // 从文件路径中提取文件名
-              const pathSegments = filePath.split('/');
-              const fileName = pathSegments[pathSegments.length - 1];
-              // 构建完整的文件路径href="http://localhost:8080/jeecg-boot/sys/common/static/temp/合同管理_1700626538167.docx"
-              const fullFilePath = `${glob.domainUrl}/sys/common/static/${filePath}`;
-              return (
-                <li key={index}>
-                  <a href={fullFilePath} target="_blank" rel="noopener noreferrer">
-                    {fileName}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        );
-      };
-
-      async function fetchDataBasedOnPropChange(newProcessInstanceId) {
-        // Fetch data using the new process_instance_id
-        const newData = await queryByProcessId({ process_id: newProcessInstanceId });
-        // Update reactive variables or perform other actions
-        mockData.value = newData;
-        mockData2.value = newData;
+      const projectFilesTable = reactive({
+        loading: false,
+        dataSource: [],
+        columns: applyFilesColumns,
+        show: false,
+      });
+      const changeFilesTable = reactive({
+        loading: false,
+        dataSource: [],
+        columns: applyFilesColumns,
+        show: false,
+      });
+      const preliminaryFilesTable = reactive({
+        loading: false,
+        dataSource: [],
+        columns: applyFilesColumns,
+        show: false,
+      });
+      const reviewFilesTable = reactive({
+        loading: false,
+        dataSource: [],
+        columns: applyFilesColumns,
+        show: false,
+      });
+      const finalFilesTable = reactive({
+        loading: false,
+        dataSource: [],
+        columns: applyFilesColumns,
+        show: false,
+      });
+      const submitLoading = ref(false);
+      const activeKey = ref('applyInfo');
+      const glob = useGlobSetting();
+      const flowRecordList: Ref<flowRecord[]> = ref([]); // 流程流转数据
+      async function initaildata(process_instance_id, dataId) {
+        const newData = await taskHiList({ process_instance_id: process_instance_id, dataId: dataId });
+        mockData.value = newData.formData;
+        mockData2.value = newData.formData;
+        mockData3.value = newData.formData;
+        bizId.value = newData.formData.id;
+        projectId.value = newData.formData.projectId;
+        flowRecordList.value = newData.flowList;
       }
-
-      const schema: DescItem[] = [
-        {
-          field: 'bondholdersName',
-          label: '用户名',
-        },
-        {
-          field: 'accountName',
-          label: '昵称',
-        },
-        {
-          field: 'phoneNumber',
-          label: '联系电话',
-        },
-        {
-          field: 'idCode',
-          label: '证件号',
-        },
-      ];
-      const schema2: DescItem[] = [
-        {
-          field: 'bondholdersType',
-          label: '债权类型',
-        },
-        {
-          field: 'money',
-          label: '金额',
-        },
-        {
-          field: 'remark',
-          label: '说明',
-        },
-        {
-          field: 'file',
-          label: '附件',
-          render: (val: any, data: Recordable) => {
-            // 假设你的数据中包含一个名为 'attachments' 的字段，存储了文件列表
-            const filePaths: string = data['file'] || '';
-            // 调用 renderFileList 渲染文件列表
-            return renderFileList(filePaths);
-          },
-        },
-      ];
-
-      async function handleApply(state) {
-        await apply({
-          taskId: props.task_id,
-          approval_comment: approvalComment.value,
-          state: state,
-        });
-        handleReset();
-      }
-
+      const [register2] = useDrawerInner((data) => {
+        initaildata(data.process_instance_id, data.bizId);
+      });
       function handleReset() {
         approvalComment.value = '';
       }
-
+      async function handleChangePanel(key) {
+        activeKey.value = key;
+        console.log(key);
+        if (key == 'requestFiles') {
+          const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 3 });
+          requestFilesTable.dataSource = groupedArray;
+        } else if (key == 'projectFiles') {
+          const groupedArray = await queryApplyFilesByProjectId({ projectId: projectId.value, fc: 2 });
+          projectFilesTable.dataSource = groupedArray;
+        } else if (key == 'changeFiles') {
+          const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 1 });
+          changeFilesTable.dataSource = groupedArray;
+        } else if (key == 'preliminaryFiles') {
+          const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 4 });
+          preliminaryFilesTable.dataSource = groupedArray;
+        } else if (key == 'reviewFiles') {
+          const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 5 });
+          reviewFilesTable.dataSource = groupedArray;
+        } else if (key == 'finalFiles') {
+          const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 6 });
+          finalFilesTable.dataSource = groupedArray;
+        }
+      }
+      function setColor(val) {
+        if (val) {
+          return '#2bc418';
+        } else {
+          return '#b3bdbb';
+        }
+      }
+      // 联动配置
+      const linkageConfig = ref<JVxeLinkageConfig[]>([
+        // 可配置多个联动
+        { requestData: requestFileType, key: 'fc' },
+      ]);
+      /** 查询后台真实数据 */
+      async function requestFileType(parent) {
+        let result;
+        result = await getSubFileMenu({ parent: parent });
+        // 返回的数据里必须包含 value 和 text 字段
+        return result.map((item) => ({ value: item.id, text: item.name }));
+      }
+      function handeleSuccess() {}
       return {
         mockData,
         mockData2,
+        mockData3,
         schema,
         schema2,
+        schema3,
         register2,
         glob,
-        handleApply,
-        registerTimeTable,
+        linkageConfig,
+        activeKey,
+        requestFilesTable,
+        projectFilesTable,
+        changeFilesTable,
+        finalFilesTable,
+        preliminaryFilesTable,
+        reviewFilesTable,
         approvalComment,
+        handeleSuccess,
+        bizId,
+        flowRecordList,
+        setColor,
+        handleChangePanel,
       };
     },
   });

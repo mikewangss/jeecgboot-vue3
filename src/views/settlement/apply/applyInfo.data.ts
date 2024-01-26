@@ -10,17 +10,27 @@ export const columns: BasicColumn[] = [
     dataIndex: 'name',
   },
   {
-    title: '债券人姓名',
+    title: '项目名称',
     align: 'center',
-    dataIndex: 'bondholdersName',
+    dataIndex: 'projectId',
   },
   {
-    title: '债券类型',
+    title: '合同名称',
     align: 'center',
-    dataIndex: 'bondholders_type',
+    dataIndex: 'contractId',
     customRender: ({ text }) => {
       return text;
     },
+  },
+  {
+    title: '承包单位送审额',
+    align: 'center',
+    dataIndex: 'amounts',
+  },
+  {
+    title: '承包单位送审时间',
+    align: 'center',
+    dataIndex: 'reviewDate',
   },
   {
     title: '创建人',
