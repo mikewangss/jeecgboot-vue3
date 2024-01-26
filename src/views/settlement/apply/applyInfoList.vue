@@ -22,9 +22,8 @@
   import { useDrawer } from '@/components/Drawer';
   import { defineComponent } from 'vue';
   import ProcessDetail from '@/views/settlement/workflow/compoments/process_detail.vue';
-  import ActHistoricDetailBtn from '@/views/flowable/components/ActHistoricDetailBtn.vue';
   export default defineComponent({
-    components: { ActHistoricDetailBtn, ProcessDetail, BasicTable, TableAction },
+    components: { ProcessDetail, BasicTable, TableAction },
     setup() {
       let info = ref(null);
       const taskId = ref('');
