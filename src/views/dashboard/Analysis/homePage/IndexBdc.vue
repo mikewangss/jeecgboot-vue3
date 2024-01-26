@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <ChartGroupCard class="enter-y" :loading="loading" type="bdc" />
+    <!--    <ChartGroupCard class="enter-y" :loading="loading" type="bdc" />-->
     <BdcTabCard class="!my-4 enter-y" :loading="loading" />
     <a-row>
       <a-col :span="24">
@@ -9,8 +9,8 @@
             <template #rightExtra>
               <div class="extra-wrapper">
                 <a-radio-group v-model:value="indexRegisterType" @change="changeRegisterType">
-                  <a-radio-button value="转移登记">转移登记</a-radio-button>
-                  <a-radio-button value="抵押登记">抵押登记</a-radio-button>
+                  <a-radio-button value="结算申请">结算申请</a-radio-button>
+                  <a-radio-button value="业务受理">业务受理</a-radio-button>
                   <a-radio-button value="">所有</a-radio-button>
                 </a-radio-group>
               </div>
@@ -76,7 +76,7 @@
   }, 500);
 
   const indexBottomTab = ref('1');
-  const indexRegisterType = ref('转移登记');
+  const indexRegisterType = ref('结算申请');
   const dataSource = ref([]);
   const dataSource1 = ref([]);
   const ipagination = ref(table.ipagination);

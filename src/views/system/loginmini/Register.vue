@@ -1,18 +1,24 @@
 <template>
-  <PageWrapper title="供应商注册" contentBackground content=" 欢迎注册供应商结算平台。请仔细阅读注册说明~" contentClass="p-4">
-    <div class="step-form-form">
-      <a-steps :current="current">
-        <a-step title="账号注册" />
-        <a-step title="供应商基本信息" />
-        <a-step title="完成注册" />
-      </a-steps>
-    </div>
-    <div class="mt-5">
-      <Step1 @next="handleStep1Next" v-show="current === 0" />
-      <Step2 @prev="handleStepPrev" @next="handleStep2Next" @commit="commit" v-show="current === 1" v-if="initSetp2" />
-      <Step3 v-show="current === 2" @redo="handleRedo" v-if="initSetp3" />
-    </div>
-  </PageWrapper>
+  <a-layout class="layout">
+    <Header />
+    <a-layout-content>
+      <div :style="{ background: '#fff', padding: '80px', minHeight: '280px' }">
+        <div class="step-form-form">
+          <a-alert message="欢迎注册供应商结算平台。请仔细阅读注册说明~" show-icon style="margin: 0 20px 20px 20px" />
+          <a-steps :current="current">
+            <a-step title="账号注册" />
+            <a-step title="供应商基本信息" />
+            <a-step title="完成注册" />
+          </a-steps>
+        </div>
+        <div class="mt-5">
+          <Step1 @next="handleStep1Next" v-show="current === 0" />
+          <Step2 @prev="handleStepPrev" @next="handleStep2Next" v-show="current === 1" v-if="initSetp2" />
+          <Step3 v-show="current === 2" @redo="handleRedo" v-if="initSetp3" :result="result" />
+        </div> </div
+    ></a-layout-content>
+    <Footer />
+  </a-layout>
 </template>
 <script lang="ts">
   import { defineComponent, ref, reactive, toRefs } from 'vue';
@@ -23,10 +29,13 @@
   import { Steps } from 'ant-design-vue';
   import { supplierRegister } from '@/views/system/loginmini/register.api';
   import { useUserStore } from '/@/store/modules/user';
-  const userStore = useUserStore();
+  import Header from '@/views/home/Header.vue';
+  import Footer from '@/views/home/Footer.vue';
   export default defineComponent({
     name: 'FormStepPage',
     components: {
+      Footer,
+      Header,
       Step1,
       Step2,
       Step3,
@@ -36,6 +45,7 @@
     },
 
     setup() {
+      const result = ref(false);
       const current = ref(0);
       const state = reactive({
         initSetp2: false,
@@ -55,8 +65,6 @@
       }
 
       function handleStep2Next(step2Values: any) {
-        current.value++;
-        state.initSetp3 = true;
         state.formDataStep2 = step2Values;
         console.log(step2Values);
         commit();
@@ -77,17 +85,34 @@
           //   },
           // });
           debugger;
-          let formData = { ...state.formDataStep1, ...state.formDataStep2 }; // 展开;
+          let formData = { ...state.formDataStep1 }; // 展开;
+          // 遍历 formDataStep2 的属性
+          for (const key in state.formDataStep2) {
+            if (state.formDataStep2.hasOwnProperty(key)) {
+              const fileArr = state.formDataStep2[key]; //上传组件返回数组，其他为字符串
+              // 使用 map 函数获取所有 name 属性的值
+              if (Array.isArray(fileArr)) {
+                const nameArray = fileArr.filter((item) => item.status == 'done').map((item) => item.response.message);
+                // 使用 join 函数将数组中的值用逗号拼接成一个字符串
+                const formField = nameArray.join(', ');
+                if (formField == '') {
+                  formData[key] = fileArr; //是数组但是不是上传组件
+                } else {
+                  formData[key] = formField;
+                }
+              } else {
+                // 如果不是文件上传组件，则直接复制到 applyInfo 对象中
+                formData[key] = fileArr;
+              }
+            }
+          }
           console.log('表单数据', formData);
-          await supplierRegister(formData);
-          // setTimeout(() => {
-          //   setProps({
-          //     submitButtonOptions: {
-          //       loading: false,
-          //     },
-          //   });
-          //   emit('next', values);
-          // }, 1500);
+          const res = await supplierRegister(formData);
+          console.log('。。', res);
+          debugger;
+          result.value = res.success;
+          current.value++;
+          state.initSetp3 = true;
         } catch (error) {}
       }
       return {
@@ -98,6 +123,7 @@
         handleStepPrev,
         commit,
         ...toRefs(state),
+        result,
       };
     },
   });

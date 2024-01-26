@@ -2,8 +2,9 @@ import { UploadApiResult } from './model/uploadModel';
 import { defHttp } from '/@/utils/http/axios';
 import { UploadFileParams } from '/#/axios';
 import { useGlobSetting } from '/@/hooks/setting';
-
-const { uploadUrl = '' } = useGlobSetting();
+const globSetting = useGlobSetting();
+const baseUploadUrl = globSetting.uploadUrl;
+const uploadUrl = `${baseUploadUrl}/sys/common/upload`;
 
 /**
  * @description: Upload interface

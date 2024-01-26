@@ -2,7 +2,7 @@
   <a-list class="demo-loadmore-list" :loading="initLoading" item-layout="horizontal" :data-source="list">
     <template #loadMore>
       <div v-if="!initLoading && !loading" :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
-        <a-button @click="onLoadMore">loading more</a-button>
+<!--        <a-button @click="onLoadMore">loading more</a-button>-->
       </div>
     </template>
     <template #renderItem="{ item }">

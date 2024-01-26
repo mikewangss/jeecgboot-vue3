@@ -1,8 +1,9 @@
 export enum PageEnum {
   // basic login path
   BASE_LOGIN = '/login',
+  REGISTER_LOGIN = '/register',
   // basic home path
-  BASE_HOME = '/dashboard/analysis',
+  BASE_HOME = '/dashboard/workbench',
   // error page path
   ERROR_PAGE = '/exception',
   // error log page path
@@ -12,5 +13,8 @@ export enum PageEnum {
   //文件路由
   SYS_FILES_PATH = '/file/share',
   // 邮件中的跳转地址
-  TOKEN_LOGIN = '/tokenLogin'
+  TOKEN_LOGIN = '/tokenLogin',
+  HOME = '/home',
+  NEWS_DETAIL = '/newsDetail',
+  NEWS_LIST = '/newsList',
 }

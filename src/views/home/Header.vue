@@ -2,13 +2,13 @@
   <a-layout-header class="header">
     <a-row>
       <a-col :span="6" class="logo-col"
-        ><div class="logo"><img src="/resource/img/logo.png" /><h1>供应商协同平台</h1></div></a-col
+        ><div class="logo"><img src="/resource/img/logo.png" /><h1>润巣网</h1></div></a-col
       >
       <a-col :span="18">
         <a-row justify="end">
           <a-menu mode="horizontal" theme="light" style="">
             <a-menu-item key="home"> <router-link to="/home">首页</router-link></a-menu-item>
-            <a-menu-item key="bids"><router-link to="/newsList">企业招投标信息</router-link></a-menu-item>
+            <a-menu-item key="bids"><router-link to="/newsList">集采平台</router-link></a-menu-item>
             <a-menu-item key="settlement"> <router-link to="/settlement">结算平台</router-link></a-menu-item>
             <a-menu-item key="recruitment"><router-link to="/register">招募入驻</router-link></a-menu-item>
             <a-menu-item key="about"> <router-link to="/about">关于我们</router-link></a-menu-item>
@@ -46,7 +46,7 @@
 
   .logo h1 {
     margin: 0;
-    font-size: 1.5em; /* 根据需要调整标题的字体大小 */
+    font-size: 2.0em; /* 根据需要调整标题的字体大小 */
   }
   .logo-col {
     display: flex;
@@ -60,8 +60,8 @@
   }
 
   .logo {
-    height: 40px;
-    line-height: 40px;
+    height: 60px;
+    line-height: 60px;
     display: flex;
   }
 </style>

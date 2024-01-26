@@ -27,7 +27,7 @@
                 <a-input
                   ref="inputRef2"
                   v-if="tagIndx == currentTagIndex && index == currentNameIndex"
-                  type="text"
+                  type="primary"
                   size="small"
                   :style="{ width: '190px' }"
                   v-model:value="state.inputValue"
@@ -49,7 +49,7 @@
               <a-input
                 ref="inputRef"
                 v-if="state.inputVisible && index == currentNameIndex"
-                type="text"
+                type="primary"
                 size="small"
                 :style="{ width: '100px' }"
                 v-model:value="state.inputValue"

@@ -109,10 +109,10 @@ const setting: ProjectConfig = {
     type: MenuTypeEnum.SIDEBAR,
     // 菜单主题
     theme: ThemeEnum.DARK,
-    // 分割菜单
-    split: false,
+    // // 分割菜单
+    // split: false,
     // 顶部菜单布局
-    topMenuAlign: 'center',
+    topMenuAlign: 'left',
     // 折叠触发器的位置
     trigger: TriggerEnum.HEADER,
     // 手风琴模式，只展示一个菜单
@@ -140,7 +140,7 @@ const setting: ProjectConfig = {
     // 是否显示折叠按钮
     showFold: true,
     // 标签页样式
-    theme: TabsThemeEnum.CARD,
+    theme: TabsThemeEnum.SMOOTH,
   },
 
   // 动画配置

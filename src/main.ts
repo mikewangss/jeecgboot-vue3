@@ -1,5 +1,7 @@
 import 'uno.css';
 import '/@/design/index.less';
+import MyPD from '/@/package/index.js';
+
 // 注册图标
 import 'virtual:svg-icons-register';
 import App from './App.vue';
@@ -16,15 +18,26 @@ import { registerThirdComp } from '/@/settings/registerThirdComp';
 import { useSso } from '/@/hooks/web/useSso';
 // 注册online模块lib
 import { registerPackages } from '/@/utils/monorepo/registerPackages';
-
+import * as icons from '@element-plus/icons';
 // 在本地开发中引入的,以提高浏览器响应速度
 if (import.meta.env.DEV) {
   // @ts-ignore
   import('ant-design-vue/dist/antd.less');
 }
+// import zhCn from 'element-plus/es/locale/lang/zh-cn';
+// import * as icons from '@element-plus/icons'
+// element-plus
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
+import '/@/package/theme/index.scss';
 async function bootstrap() {
   // 创建应用实例
   const app = createApp(App);
+  app.use(ElementPlus, {});
+  Object.keys(icons).forEach((key) => {
+    app.component(key, icons[key]);
+  });
+  app.use(MyPD);
 
   // 多语言配置,异步情况:语言文件可以从服务器端获得
   await setupI18n(app);
@@ -65,7 +78,7 @@ async function bootstrap() {
   // 挂载应用
   app.mount('#app', true);
 
-  console.log(" vue3 app 加载完成！")
+  console.log(' vue3 app 加载完成！');
 }
 
 bootstrap();

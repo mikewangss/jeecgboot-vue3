@@ -153,6 +153,7 @@ export interface GlobConfig {
   urlPrefix?: string;
   // Project abbreviation
   shortName: string;
+  wfUrl: string;
 }
 export interface GlobEnvConfig {
   // Site title
@@ -171,6 +172,7 @@ export interface GlobEnvConfig {
   //单点服务端地址
   VITE_GLOB_APP_CAS_BASE_URL: string;
   VITE_GLOB_DOMAIN_URL: string;
+  VITE_WF_DOMAIN_URL: string;
   // Upload url
   VITE_GLOB_UPLOAD_URL?: string;
   // view url

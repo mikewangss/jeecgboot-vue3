@@ -1,37 +1,37 @@
 <template>
-  <Header />
-  <a-layout>
-    <a-layout-content :style="{ padding: '70px 160px 30px 160px' }">
-      <a-list item-layout="vertical" :pagination="pagination" size="large" :data-source="listData">
-        <template #renderItem="{ item }">
-          <a-list-item key="item.title">
-            <template #actions>
-              <span v-for="{ type, text } in actions" :key="type">
-                <component :is="type" style="margin-right: 8px" />
-                {{ text }}
-              </span>
-              <div style="padding-left: 60px"
-                ><span>
-                 发布时间： {{ item.updateTime }}
-                </span></div
-              >
-            </template>
-
-            <template #extra>
-              <img width="272" alt="logo" :src="`${glob.domainUrl}/sys/common/static/${item.img}`" />
-            </template>
-            <a-list-item-meta :description="item.description">
-              <template #title>
-                <a @click="jumpToHandlePage(item.id)">{{ item.title }}</a>
+  <a-layout class="layout">
+    <Header />
+    <a-layout-content>
+      <div :style="{ background: '#fff', padding: '80px', minHeight: '280px' }">
+        <a-list item-layout="vertical" :pagination="pagination" size="large" :data-source="listData">
+          <template #renderItem="{ item }">
+            <a-list-item key="item.title">
+              <template #actions>
+                <span v-for="{ type, text } in actions" :key="type">
+                  <component :is="type" style="margin-right: 8px" />
+                  {{ text }}
+                </span>
+                <div style="padding-left: 60px"
+                  ><span> 发布时间： {{ item.updateTime }} </span></div
+                >
               </template>
-              <!--          <template #avatar><a-avatar :src="item.avatar" /></template>-->
-            </a-list-item-meta>
-          </a-list-item>
-        </template>
-      </a-list></a-layout-content
-    ></a-layout
-  >
-  <Footer />
+
+              <template #extra>
+                <img width="272" alt="logo" :src="`${glob.domainUrl}/sys/common/static/${item.img}`" />
+              </template>
+              <a-list-item-meta :description="item.description">
+                <template #title>
+                  <a @click="jumpToHandlePage(item.id)">{{ item.title }}</a>
+                </template>
+                <!--          <template #avatar><a-avatar :src="item.avatar" /></template>-->
+              </a-list-item-meta>
+            </a-list-item>
+          </template>
+        </a-list></div
+      ></a-layout-content
+    >
+    <Footer
+  /></a-layout>
 </template>
 <script lang="ts">
   import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';

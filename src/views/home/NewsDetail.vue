@@ -1,14 +1,15 @@
 <!-- Details.vue -->
 <template>
-  <Header />
-  <a-layout>
-    <a-layout-content :style="{ padding: '70px 214px 0' }">
-      <div v-if="details" style="background-color: #fff; padding: 0px 34px">
+  <a-layout class="layout">
+    <Header />
+    <a-layout-content>
+      <div v-if="details" :style="{ background: '#fff', padding: '80px', minHeight: '280px' }">
         <h1 class="title">{{ details.title }}</h1>
-        <div v-html="details.content"></div>
-      </div> </a-layout-content
-  ></a-layout>
-  <Footer />
+        <div v-html="details.content" class="mt-25"></div>
+      </div>
+    </a-layout-content>
+    <Footer />
+  </a-layout>
 </template>
 
 <script>

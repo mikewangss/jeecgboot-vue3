@@ -13,7 +13,7 @@
             <a-range-picker :style="{ width: '256px' }" />
           </div>
         </template>
-        <a-tab-pane loading="true" tab="受理监管" key="1">
+        <a-tab-pane loading="true" tab="结算申请" key="1">
           <a-row>
             <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
               <Bar :chartData="barData" :option="{ title: { text: '受理量统计', textStyle: { fontWeight: 'lighter' } } }" height="40vh" />
@@ -23,12 +23,12 @@
             </a-col>
           </a-row>
         </a-tab-pane>
-        <a-tab-pane tab="交互监管" key="2">
+        <a-tab-pane tab="结算状态" key="2">
           <a-row>
             <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
               <BarMulti
                 :chartData="barMultiData"
-                :option="{ title: { text: '平台与部门交互量统计', textStyle: { fontWeight: 'lighter' } } }"
+                :option="{ title: { text: '结算业务办理状态', textStyle: { fontWeight: 'lighter' } } }"
                 height="40vh"
               />
             </a-col>
@@ -40,8 +40,8 @@
         <a-tab-pane tab="存储监管" key="3">
           <a-row>
             <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24" style="display: flex">
-              <Gauge :chartData="{ name: 'C盘', value: 70 }" height="30vh"></Gauge>
-              <Gauge :chartData="{ name: 'D盘', value: 50 }" height="30vh"></Gauge>
+              <Gauge :chartData="{ name: 'C盘', value: 70 }" height="30vh" />
+              <Gauge :chartData="{ name: 'D盘', value: 50 }" height="30vh" />
             </a-col>
             <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
               <QuickNav :loading="loading" class="enter-y" :bordered="false" :body-style="{ padding: 0 }" />
@@ -84,7 +84,7 @@
   for (let j = 0; j < 2; j++) {
     for (let i = 0; i < 12; i += 1) {
       barMultiData.push({
-        type: j == 0 ? 'jeecg' : 'jeebt',
+        type: j == 0 ? '结算完成' : '结算作废',
         name: `${i + 1}月`,
         value: Math.floor(Math.random() * 1000) + 200,
       });

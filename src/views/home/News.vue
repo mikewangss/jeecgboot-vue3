@@ -3,7 +3,7 @@
     <template #renderItem="{ item }">
       <a-list-item key="item.title">
         <template #actions>
-          <div> 发布时间： {{ item.updateTime }} </div>
+          <div> {{ item.updateTime }} </div>
         </template>
         <template #extra>
           <img width="272" alt="logo" :src="`${glob.domainUrl}/sys/common/static/${item.img}`" />
@@ -42,7 +42,7 @@
 
       const fetchLists = async () => {
         const response = await getNewsList({});
-        listData.value = response.records.slice(0, 4);
+        listData.value = response.records.slice(0, 3);
         console.log(listData.value);
       };
       return {

@@ -16,8 +16,8 @@
   .ant-layout-footer {
     margin-top:30px;
     padding: 24px 50px;
-    color: rgb(225 233 225 / 85%);
+    /*color: rgb(225 233 225 / 85%);*/
     font-size: 14px;
-    background: #3885cc;
+    /*background: #3885cc;*/
   }
 </style>

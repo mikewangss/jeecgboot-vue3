@@ -18,19 +18,19 @@
                   <a-form-item>
                     <div class="aui-input-line">
                       <Icon class="aui-icon" icon="ant-design:user-outlined"/>
-                      <a-input class="fix-auto-fill" type="text" :placeholder="t('sys.login.userName')" v-model:value="formData.username" />
+                      <a-input class="fix-auto-fill" type="primary" :placeholder="t('sys.login.userName')" v-model:value="formData.username" />
                     </div>
                   </a-form-item>
                   <a-form-item>
                     <div class="aui-input-line">
                       <Icon class="aui-icon" icon="ant-design:mobile-outlined"/>
-                      <a-input class="fix-auto-fill" type="text" :placeholder="t('sys.login.mobile')" v-model:value="formData.mobile" />
+                      <a-input class="fix-auto-fill" type="primary" :placeholder="t('sys.login.mobile')" v-model:value="formData.mobile" />
                     </div>
                   </a-form-item>
                   <a-form-item>
                     <div class="aui-input-line">
                       <Icon class="aui-icon" icon="ant-design:mail-outlined"/>
-                      <a-input class="fix-auto-fill" type="text" :placeholder="t('sys.login.smsCode')" v-model:value="formData.smscode" />
+                      <a-input class="fix-auto-fill" type="primary" :placeholder="t('sys.login.smsCode')" v-model:value="formData.smscode" />
                       <div v-if="showInterval" class="aui-code-line" @click="getLoginCode">{{t('component.countdown.normalText')}}</div>
                       <div v-else class="aui-code-line">{{t('component.countdown.sendText',[unref(timeRuning)])}}</div>
                     </div>

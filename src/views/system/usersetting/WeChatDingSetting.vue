@@ -147,7 +147,7 @@
           await bindThirdAccount();
         }else{
           if(token){
-            createMessage.warning('该敲敲云账号已被其它第三方账号绑定,请解绑或绑定其它敲敲云账号');
+            createMessage.warning('该雨润账号已被其它第三方账号绑定,请解绑或绑定其它雨润账号');
           }
         }
       } else {
