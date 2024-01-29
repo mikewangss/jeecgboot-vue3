@@ -5,7 +5,9 @@ enum Api {
 }
 
 /**
- * 列表接口
+ * 供应商注册
  * @param params
  */
-export const supplierRegister = (params) => defHttp.post({ url: Api.supplierRegister, params });
+export const supplierRegister = (params) => {
+  return defHttp.post({ url: Api.supplierRegister, params });
+};

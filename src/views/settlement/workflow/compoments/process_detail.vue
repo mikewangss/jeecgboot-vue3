@@ -115,7 +115,7 @@
               :linkageConfig="linkageConfig"
             />
           </a-tab-pane>
-          <a-tab-pane tab="初审材料" key="preliminaryFiles" :forceRender="true">
+          <a-tab-pane tab="初审材料" key="preliminaryFiles" :forceRender="true"  v-if="preliminaryFilesShow">
             <JVxeTable
               keep-source
               resizable
@@ -131,7 +131,7 @@
               :linkageConfig="linkageConfig"
             />
           </a-tab-pane>
-          <a-tab-pane tab="复审材料" key="reviewFiles" :forceRender="true">
+          <a-tab-pane tab="复审材料" key="reviewFiles" :forceRender="true"  v-if="reviewFilesShow">
             <JVxeTable
               keep-source
               resizable
@@ -147,7 +147,7 @@
               :linkageConfig="linkageConfig"
             />
           </a-tab-pane>
-          <a-tab-pane tab="终审材料" key="finalFiles" :forceRender="true">
+          <a-tab-pane tab="终审材料" key="finalFiles" :forceRender="true" v-if="finalFilesShow">
             <JVxeTable
               keep-source
               resizable
@@ -183,6 +183,7 @@
   import { applyFilesColumns } from '@/views/settlement/project/ApplyProject.data';
   import WorkHandleBtn from './WorkHandleBtn.vue';
   import { JVxeLinkageConfig } from '@/components/jeecg/JVxeTable/src/types';
+  import { useUserStore } from '@/store/modules/user';
 
   interface flowRecord {
     id: string;
@@ -209,9 +210,15 @@
       },
     },
     setup(props) {
+      const userStore = useUserStore();
+      const username = userStore.getUserInfo?.username;
+      const currentFlowNodeId = ref('');
       const mockData = ref({});
       const mockData2 = ref({});
       const mockData3 = ref({});
+      const finalFilesShow = ref(true);
+      const preliminaryFilesShow = ref(true);
+      const reviewFilesShow = ref(true);
       const approvalComment = ref('');
       const bizId = ref('');
       const projectId = ref('');
@@ -262,7 +269,14 @@
         mockData3.value = newData.formData;
         bizId.value = newData.formData.id;
         projectId.value = newData.formData.projectId;
+        currentFlowNodeId.value = newData.currentFlowNodeId;
         flowRecordList.value = newData.flowList;
+        if (newData.formData.createBy === username) {
+          //申请节点
+          preliminaryFilesShow.value = false;
+          reviewFilesShow.value = false;
+          finalFilesShow.value = false;
+        }
       }
       const [register2] = useDrawerInner((data) => {
         initaildata(data.process_instance_id, data.bizId);
@@ -336,6 +350,9 @@
         flowRecordList,
         setColor,
         handleChangePanel,
+        finalFilesShow,
+        preliminaryFilesShow,
+        reviewFilesShow,
       };
     },
   });

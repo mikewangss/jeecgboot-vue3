@@ -14,8 +14,8 @@
         <a-tag type="success" v-else class="pending">已办理</a-tag>
       </template>
     </BasicTable>
-    <ProcessUpdate @register="register1" :showApplyButton="true" @success="handeleSuccess" />
-    <SupplierUpdate @register="register2" :showApplyButton="true" @success="handeleSuccess" />
+    <ProcessUpdate @register="register1" :showApplyButton="true" @success="handeleSuccess" v-show="active === '1'" />
+    <SupplierUpdate @register="register2" :showApplyButton="true" @success="handeleSuccess" v-show="active === '2'" />
   </div>
 </template>
 
@@ -35,6 +35,7 @@
     components: { SupplierUpdate, ProcessUpdate, BasicTable, TableAction },
     setup() {
       const procDefName = ref('');
+      const active = ref('');
       const taskId = ref('');
       const processInstanceId = ref('');
       const searchInfo = {};
@@ -75,11 +76,13 @@
         console.log(processInstanceId.value);
         procDefName.value = record.procDefName;
         if (record.procDefName.includes('结算')) {
+          active.value = '1';
           openDrawer1(true, {
             process_instance_id: processInstanceId,
             bizId: '',
           });
         } else {
+          active.value = '2';
           openDrawer2(true, {
             process_instance_id: processInstanceId,
             bizId: '',
@@ -130,6 +133,7 @@
         getTableAction,
         searchInfo,
         handeleSuccess,
+        active,
       };
     },
     // mounted() {

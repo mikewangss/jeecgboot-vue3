@@ -66,9 +66,6 @@ export const schemas: FormSchema[] = [
     label: '初审审批金额',
     subLabel: '(单位:元 )',
     defaultValue: '',
-    componentProps: {
-      disabled: true,
-    },
     colProps: {
       span: 12,
     },
@@ -78,9 +75,6 @@ export const schemas: FormSchema[] = [
     component: 'InputNumber',
     label: '复审审批金额',
     defaultValue: '',
-    componentProps: {
-      disabled: true,
-    },
     colProps: {
       span: 12,
     },
@@ -90,9 +84,15 @@ export const schemas: FormSchema[] = [
     component: 'InputNumber',
     label: '终审审批金额',
     defaultValue: '',
-    componentProps: {
-      disabled: true,
+    colProps: {
+      span: 12,
     },
+  },
+  {
+    field: 'totalArea',
+    component: 'InputNumber',
+    label: '总面积',
+    defaultValue: '',
     colProps: {
       span: 12,
     },
@@ -244,6 +244,10 @@ export const schema: DescItem[] = [
   {
     field: 'thirdAmounts',
     label: '终审审批金额',
+  },
+  {
+    field: 'totalArea',
+    label: '总面积',
   },
 ];
 export const schema2: DescItem[] = [

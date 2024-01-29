@@ -46,7 +46,7 @@
       <template #footer>
         <a-tabs v-model:activeKey="activeKey" @tabClick="handleChangePanel">
           <a-tab-pane tab="申请明细" key="applyInfo" :forceRender="true">
-            <BasicForm @register="registerForm" :disabled="currentFlowNodeId != 'start'" />
+            <BasicForm @register="registerForm" />
             <a-divider />
             <a-card style="margin-top: 10px">
               <p slot="title">
@@ -358,13 +358,13 @@
         }
       }
       onMounted(async () => {});
-      function updateDisabledStatus(fieldName) {
+      function updateDisabledStatus(fieldName, disabled) {
         // 直接访问要更新的字段
         const targetField = schemas.find((field) => field.field === fieldName);
         // targetField.componentProps.disabled = false;
         if (targetField) {
           // 更新字段的 disabled 属性
-          updateSchema({ ...targetField, required: true, componentProps: { disabled: false } });
+          updateSchema({ ...targetField, required: true, componentProps: { disabled: disabled } });
         }
       }
       async function initaildata(process_instance_id, dataId) {
@@ -373,6 +373,12 @@
         projectId.value = newData.formData.projectId;
         currentFlowNodeId.value = newData.currentFlowNodeId;
         flowRecordList.value = newData.flowList;
+        updateDisabledStatus('amounts', true);
+        updateDisabledStatus('reviewDate', true);
+        updateDisabledStatus('firstAmounts', true);
+        updateDisabledStatus('secondAmounts', true);
+        updateDisabledStatus('thirdAmounts', true);
+        updateDisabledStatus('totalArea', true);
         if (currentFlowNodeId.value) {
           console.log(currentFlowNodeId);
           if (currentFlowNodeId.value == 'start') {
@@ -380,13 +386,16 @@
             preliminaryFilesShow.value = false;
             reviewFilesShow.value = false;
             finalFilesShow.value = false;
+            updateDisabledStatus('amounts', false);
+            updateDisabledStatus('reviewDate', false);
           } else if (currentFlowNodeId.value == 'Activity_061uiis' || currentFlowNodeId.value == 'Activity_0ujjxwl') {
             //当前审批节点-初审
-            updateDisabledStatus('firstAmounts');
+            updateDisabledStatus('firstAmounts', false);
+            updateDisabledStatus('totalArea', false);
           } else if (currentFlowNodeId.value == 'Activity_1ltzfvn' || currentFlowNodeId.value == 'Activity_1vhi94l') {
-            updateDisabledStatus('secondAmounts');
+            updateDisabledStatus('secondAmounts', false);
           } else if (currentFlowNodeId.value == 'Activity_18zvw97' || currentFlowNodeId.value == 'Activity_1ltzfvn') {
-            updateDisabledStatus('thirdAmounts');
+            updateDisabledStatus('thirdAmounts', false);
           } else {
           }
         }
