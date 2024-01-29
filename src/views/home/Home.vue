@@ -1,7 +1,7 @@
 <template>
   <a-layout class="layout">
     <Header />
-    <a-layout-content style="margin-top: 90px">
+    <a-layout-content style="margin-top: 90px; min-width: 1600px">
       <a-row :gutter="[16, 16]">
         <a-col :span="4" :offset="3">
           <div class="main-left">
@@ -31,34 +31,21 @@
           >
         </a-col>
         <a-col :span="10">
-          <!-- 跑马灯 -->
-          <a-carousel arrows dots-class="slick-dots slick-thumb">
-            <template #customPaging="props">
-              <a>
-                <img :src="getImgUrl(props.i)" />
-              </a>
+          <a-carousel arrows>
+            <template #prevArrow>
+              <div class="custom-slick-arrow" style="left: 10px; z-index: 1">
+                <left-circle-outlined />
+              </div>
             </template>
-            <div v-for="item in 2" :key="item">
-              <img :src="getImgUrl(item - 1)" />
-            </div>
+            <template #nextArrow>
+              <div class="custom-slick-arrow" style="right: 10px">
+                <right-circle-outlined />
+              </div>
+            </template>
+            <div class="imgDiv"><img src="/src/assets/images/home/home1.jpg" alt="Promo 2" /></div>
+            <div class="imgDiv"><img src="/src/assets/images/home/home2.jpg" alt="Promo 3" /></div>
+            <div class="imgDiv"><img src="/src/assets/images/home/home3.jpg" alt="Promo 4" /></div>
           </a-carousel>
-          <!--          <a-carousel :autoplay="true" :dots="true" arrows>-->
-          <!--            <template #prevArrow>-->
-          <!--              <div class="custom-slick-arrow" style="left: 10px; z-index: 1">-->
-          <!--                <left-circle-outlined />-->
-          <!--              </div>-->
-          <!--            </template>-->
-          <!--            <template #nextArrow>-->
-          <!--              <div class="custom-slick-arrow" style="right: 10px">-->
-          <!--                <right-circle-outlined />-->
-          <!--              </div>-->
-          <!--            </template>-->
-          <!--            <div class="imgDiv"><img src="/src/assets/images/home/home0.jpg" alt="Promo 1" /></div>-->
-          <!--            <div class="imgDiv"><img src="/src/assets/images/home/home1.jpg" alt="Promo 2" /></div>-->
-          <!--            <div class="imgDiv"><img src="/src/assets/images/home/home2.jpg" alt="Promo 3" /></div>-->
-          <!--            <div class="imgDiv"><img src="/src/assets/images/home/home3.jpg" alt="Promo 4" /></div>-->
-          <!--            &lt;!&ndash; 添加更多宣传图片 &ndash;&gt;-->
-          <!--          </a-carousel>-->
         </a-col>
         <a-col :span="4">
           <div class="user-panel">
@@ -71,8 +58,8 @@
               <p class="user-welcome">欢迎来到润巣网</p>
             </div>
             <div class="user-btns">
-              <a-button>登录</a-button>
-              <a-button type="primary">新用户注册</a-button>
+              <a-button @click="login">登录</a-button>
+              <a-button @click="login" type="primary">新用户注册</a-button>
             </div>
           </div>
           <div class="publish-entry-wrap">
@@ -81,7 +68,7 @@
                 <div class="icon"><img src="/resource/img/fly.png" alt="" /></div>
                 <div class="desc">
                   <div style="font-weight: 500">发布招募需求</div>
-                  <div style="margin-top: 2px; color: #7e8288">专人服务 储备优质资源</div>
+                  <div style="margin-top: 2px; color: #7e8288">发布优质资源</div>
                 </div>
               </div>
             </a-card>
@@ -89,8 +76,8 @@
               <div class="publish-item">
                 <div class="icon"><img src="/resource/img/fly.png" alt="" /></div>
                 <div class="desc">
-                  <div style="font-weight: 500">发布招募需求</div>
-                  <div style="margin-top: 2px; color: #7e8288">专人服务 储备优质资源</div>
+                  <div style="font-weight: 500">找资源</div>
+                  <div style="margin-top: 2px; color: #7e8288">寻找优质供应商资源</div>
                 </div>
               </div>
             </a-card>
@@ -124,15 +111,17 @@
 <script lang="ts">
   import News from './News.vue';
   import Bids from './Bids.vue';
-  import { Carousel } from 'ant-design-vue';
+
   import Header from '@/views/home/Header.vue';
   import Footer from '@/views/home/Footer.vue';
   import { defineComponent, reactive, toRefs } from 'vue';
-  import { MailOutlined, CalendarOutlined, AppstoreOutlined, SettingOutlined, RightOutlined } from '@ant-design/icons-vue';
+  import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons-vue';
   import type { MenuProps } from 'ant-design-vue';
+  import {useGlobSetting} from "@/hooks/setting";
+  const globSetting = useGlobSetting();
   const baseUrl = '';
   export default defineComponent({
-    components: { Footer, Header, News, Bids, Carousel, MailOutlined, CalendarOutlined, AppstoreOutlined, SettingOutlined, RightOutlined },
+    components: { LeftCircleOutlined, RightCircleOutlined, Footer, News, Bids, Header },
     setup() {
       const getImgUrl = (i: number) => {
         return `${baseUrl}/src/assets/images/home/home${i + 1}.jpg`;
@@ -141,6 +130,9 @@
         selectedKeys: [],
         openKeys: [],
       });
+      function login(){
+        window.location.href ='/login';
+      }
       const handleClick: MenuProps['onClick'] = (menuInfo) => {
         console.log('click ', menuInfo);
       };
@@ -148,34 +140,25 @@
         ...toRefs(state),
         handleClick,
         getImgUrl,
+        login,
       };
     },
   });
+
+  function login() {
+    throw new Error('Function not implemented.');
+}
 </script>
-<style scoped>
-  .slick-dots slick-thumb {
-    /*margin-top: -20px;*/
-  }
-  #components-back-top-demo-custom .ant-back-top {
-    bottom: 100px;
-  }
-  #components-back-top-demo-custom .ant-back-top-inner {
-    height: 40px;
-    width: 40px;
-    line-height: 40px;
-    border-radius: 4px;
-    background-color: #1088e9;
-    color: #fff;
-    text-align: center;
-    font-size: 20px;
-  }
-</style>
 <style>
   /* 添加自定义样式 */
   .section {
     margin: 20px 0;
   }
-
+  .imgDiv img {
+    height: 463px;
+    width: 100%;
+    min-width: 760px;
+  }
   .main-left {
     height: 463px;
     /*padding: 22px 10px;*/
@@ -273,7 +256,7 @@
   }
   .user-btns {
     display: flex;
-    padding: 0 20px;
+    padding: 0 30px;
     margin: 12px 0;
     align-items: center;
     justify-content: space-between;
@@ -294,35 +277,31 @@
 </style>
 <style scoped>
   /* For demo */
-  .ant-carousel :deep(.slick-dots) {
-    position: relative;
-    height: auto;
+  .ant-carousel :deep(.slick-slide) {
+    text-align: center;
+    height: 463px;
+    line-height: 463px;
+    background: #364d79;
+    overflow: hidden;
   }
-  .ant-carousel :deep(.slick-slide img) {
-    /*border: 5px solid #fff;*/
-    /*display: block;*/
-    /*margin: auto;*/
-    height: 100%;
-    width: 100%; /* 图片宽度占满父容器 */
-    object-fit: fill;
+
+  .ant-carousel :deep(.slick-arrow.custom-slick-arrow) {
+    width: 25px;
+    height: 25px;
+    font-size: 25px;
+    color: #fff;
+    background-color: rgba(31, 45, 61, 0.11);
+    opacity: 0.3;
+    z-index: 1;
   }
-  .ant-carousel :deep(.slick-arrow) {
-    display: none !important;
+  .ant-carousel :deep(.custom-slick-arrow:before) {
+    display: none;
   }
-  .ant-carousel :deep(.slick-thumb) {
-    bottom: 0px;
+  .ant-carousel :deep(.custom-slick-arrow:hover) {
+    opacity: 0.5;
   }
-  .ant-carousel :deep(.slick-thumb li) {
-    width: 70px;
-    height: 30px;
-  }
-  .ant-carousel :deep(.slick-thumb li img) {
-    width: 100%;
-    height: 100%;
-    filter: grayscale(100%);
-    display: block;
-  }
-  .ant-carousel :deep .slick-thumb li.slick-active img {
-    filter: grayscale(0%);
+
+  .ant-carousel :deep(.slick-slide h3) {
+    color: #fff;
   }
 </style>

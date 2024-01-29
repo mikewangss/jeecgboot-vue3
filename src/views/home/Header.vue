@@ -1,10 +1,10 @@
 <template>
   <a-layout-header class="header">
     <a-row>
-      <a-col :span="6" class="logo-col"
-        ><div class="logo"><img src="/resource/img/logo.png" /><h1>润巣网</h1></div></a-col
-      >
-      <a-col :span="18">
+      <a-col :span="6" :offset="1" class="logo-col"
+        ><div class="logo"><img src="/resource/img/logo.png" /></div
+      ></a-col>
+      <a-col :span="17">
         <a-row justify="end">
           <a-menu mode="horizontal" theme="light" style="">
             <a-menu-item key="home"> <router-link to="/home">首页</router-link></a-menu-item>
@@ -46,7 +46,7 @@
 
   .logo h1 {
     margin: 0;
-    font-size: 2.0em; /* 根据需要调整标题的字体大小 */
+    font-size: 2em; /* 根据需要调整标题的字体大小 */
   }
   .logo-col {
     display: flex;
@@ -60,8 +60,8 @@
   }
 
   .logo {
-    height: 60px;
-    line-height: 60px;
+    height: 42px;
+    line-height: 42px;
     display: flex;
   }
 </style>

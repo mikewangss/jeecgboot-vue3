@@ -15,10 +15,10 @@
     <div v-show="type === 'login'">
       <div class="aui-content">
         <div class="aui-container">
-          <div class="aui-form">
+          <div class="aui-form" style="min-height: 570px">
             <div class="aui-image">
               <div class="aui-image-text">
-<!--                <img :src="adTextImg" />-->
+                <!--                <img :src="adTextImg" />-->
               </div>
             </div>
             <div class="aui-formBox">
