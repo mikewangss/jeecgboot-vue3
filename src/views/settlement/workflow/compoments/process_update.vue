@@ -33,14 +33,23 @@
           :candidateUsers="[]"
           :variables="{ assigneeList: [], outcome: '通过' }"
         />
+        <!--        <WorkHandleBtn-->
+        <!--          @handleSuccess="handleSuccess"-->
+        <!--          :dataId="bizId"-->
+        <!--          :type="1"-->
+        <!--          text="驳回"-->
+        <!--          v-if="currentFlowNodeId != 'start'"-->
+        <!--          :candidateUsers="[]"-->
+        <!--          :variables="{ assigneeList: [], outcome: '驳回' }"-->
+        <!--        />-->
         <WorkHandleBtn
           @handleSuccess="handleSuccess"
           :dataId="bizId"
-          :type="1"
-          text="驳回"
+          :type="2"
+          text="退回"
           v-if="currentFlowNodeId != 'start'"
           :candidateUsers="[]"
-          :variables="{ assigneeList: [], outcome: '驳回' }"
+          :variables="{ assigneeList: [], outcome: '退回' }"
         />
       </template>
       <template #footer>
@@ -230,14 +239,21 @@
   import { useGlobSetting } from '@/hooks/setting';
   import { BasicTable } from '@/components/Table';
   import { schemas } from '@/views/settlement/apply/workflow_data';
-  import { queryApplyFilesByProjectId, queryApplyFilesByBizId, getSubFileMenu } from '@/views/settlement/files/ApplyFiles.api';
+  import {
+    queryApplyFilesByProjectId,
+    queryApplyFilesByBizId,
+    getSubFileMenu,
+    batchDelete,
+  } from '@/views/settlement/files/ApplyFiles.api';
   import { JVxeTable } from '@/components/jeecg/JVxeTable';
   import { applyFilesColumns } from '@/views/settlement/project/ApplyProject.data';
   import WorkHandleBtn from './WorkHandleBtn.vue';
   import { BasicForm, useForm } from '@/components/Form';
   import { saveOrUpdate } from '@/views/settlement/apply/applyInfo.api';
-  import { saveOrUpdateFile, batchDelete as batchDeleteFile } from '@/views/settlement/files/ApplyFiles.api';
+  import { saveOrUpdateFile, batchDelete as batchDeleteFile,saveOrUpdate as saveOrUpdateFiles } from '@/views/settlement/files/ApplyFiles.api';
   import { JVxeLinkageConfig } from '@/components/jeecg/JVxeTable/src/types';
+  import { useMessage } from '@/hooks/web/useMessage';
+  const { createMessage, createWarningModal } = useMessage();
   interface FormState {
     name: string;
     delivery: boolean;
@@ -452,9 +468,11 @@
           }
         });
       }
-
+      function handleDeleteSuccess() {
+        createMessage.success('删除成功');
+      }
       // 触发单元格删除事件
-      function handleTableRemove(event) {
+      async function handleTableRemove(event) {
         // 把 event.deleteRows 传给后台进行删除（注意：这里不会传递前端逻辑新增的数据，因为不需要请求后台删除）
         console.log('待删除的数据: ', event.deleteRows);
         // 也可以只传ID，因为可以根据ID删除
@@ -462,16 +480,17 @@
         console.log('待删除的数据ids: ', deleteIds);
         // 模拟请求后台删除
         loading.value = true;
-        // window.setTimeout(() => {
-        //   loading.value = false;
-        //   createMessage.success('删除成功');
-        //   // 假设后台返回删除成功，必须要调用 confirmRemove() 方法，才会真正在表格里移除（会同时删除选中的逻辑新增的数据）
-        //   event.confirmRemove();
-        // }, 1000);
+        const res = await batchDelete({ ids: deleteIds }, handleDeleteSuccess);
+        loading.value = false;
+        console.log('..' + res);
+        // 假设后台返回删除成功，必须要调用 confirmRemove() 方法，才会真正在表格里移除（会同时删除选中的逻辑新增的数据）
+        if (res.success) {
+          event.confirmRemove();
+        }
       }
 
       // 单元格编辑完成之后触发的事件
-      function handleEditClosed(event) {
+      async function handleEditClosed(event) {
         let { $table, row, column } = event;
         let field = column.property;
         // 判断单元格值是否被修改
@@ -483,19 +502,7 @@
               // 【模拟保存】
               // let hideLoading = createMessage.loading(`正在保存"${column.title}"`, 0);
               console.log('即时保存数据：', row);
-              // defHttp
-              //   .put({
-              //     url: Api.saveRow,
-              //     params: row,
-              //   })
-              //   .then((res) => {
-              //     createMessage.success(`"${column.title}"保存成功！`);
-              //     // 局部更新单元格为已保存状态
-              //     $table.reloadRow(row, null, field);
-              //   })
-              //   .finally(() => {
-              //     hideLoading();
-              //   });
+              saveOrUpdateFiles(row, true);
             }
           });
         }

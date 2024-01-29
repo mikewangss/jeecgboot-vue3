@@ -107,13 +107,13 @@
             }
           }
           console.log('表单数据', formData);
-          const res = await supplierRegister(formData);
-          console.log('。。', res);
-          debugger;
-          result.value = res.success;
-          current.value++;
-          state.initSetp3 = true;
+          await supplierRegister(formData, handleSuccess);
         } catch (error) {}
+      }
+      function handleSuccess() {
+        result.value = true;
+        current.value++;
+        state.initSetp3 = true;
       }
       return {
         current,

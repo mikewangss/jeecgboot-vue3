@@ -10,9 +10,11 @@
           </a-form-item>
           <div v-show="type == 2">
             <a-form-item label="退回节点" name="targetKey" v-if="returnTaskList.length">
-              <a-radio-group v-model:value="form.targetKey" name="targetKey" @change="targetKeyChange">
-                <a-radio-button v-for="item in returnTaskList" :key="item.id" :value="item.id">{{ item.name }}</a-radio-button>
-              </a-radio-group>
+              <a-select v-model:value="form.targetKey" name="targetKey" @change="targetKeyChange">
+                <template v-for="item in returnTaskList" :key="`${item.id}`">
+                  <a-select-option :value="item.id">{{ item.name }}</a-select-option>
+                </template>
+              </a-select>
             </a-form-item>
             <span v-else>无可退回节点！</span>
           </div>
@@ -140,8 +142,8 @@
       function returnTask() {
         modalTaskTitle.value = '审批退回';
         modalTaskVisible.value = true;
-        returnList({ dataId: dataId }).then((res) => {
-          returnTaskList.value = res.result || [];
+        returnList({ dataId: dataId.value }).then((res) => {
+          returnTaskList.value = res || [];
           // console.log(returnTaskList)
         });
       }

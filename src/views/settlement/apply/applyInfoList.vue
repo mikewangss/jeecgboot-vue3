@@ -4,11 +4,11 @@
     <BasicTable @register="registerTable" :rowSelection="rowSelection">
       <!--操作栏-->
       <template #action="{ record }">
-        <act-historic-detail-btn :data-id="record.id" />
+        <ActHistoricDetailBtn :data-id="record.id" />
         <TableAction :actions="getTableAction(record)" />
       </template>
     </BasicTable>
-    <ProcessDetail @register="register1" :showApplyButton="false" />
+    <ProcessDetail @register="register1" :showApplyButton="false" v-show="active" />
   </div>
 </template>
 
@@ -22,10 +22,11 @@
   import { useDrawer } from '@/components/Drawer';
   import { defineComponent } from 'vue';
   import ProcessDetail from '@/views/settlement/workflow/compoments/process_detail.vue';
+  import ActHistoricDetailBtn from '@/views/flowable/components/ActHistoricDetailBtn.vue';
   export default defineComponent({
-    components: { ProcessDetail, BasicTable, TableAction },
+    components: { ProcessDetail, BasicTable, TableAction, ActHistoricDetailBtn },
     setup() {
-      let info = ref(null);
+      const active = ref(false);
       const taskId = ref('');
       const bizId = ref('');
       const processInstanceId = ref('');
@@ -73,6 +74,7 @@
        * 获取单个
        */
       async function detailInfo(record) {
+        active.value = true;
         bizId.value = record.id;
         openDrawer1(true, {
           process_instance_id: processInstanceId,
@@ -121,6 +123,7 @@
         searchInfo,
         rowSelection,
         bizId,
+        active,
       };
     },
   });

@@ -285,6 +285,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '分册',
@@ -293,6 +294,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     width: '180px',
     // 联动字段（即下一级的字段）
     linkageKey: 'bizType',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '文件类型',
@@ -300,6 +302,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     type: JVxeTypes.select,
     width: '180px',
     placeholder: '请选择${title}',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '描述',
@@ -308,6 +311,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '文件',
@@ -318,6 +322,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     width: '200px',
     placeholder: '请选择文件',
     defaultValue: '',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
   },
 ];
 

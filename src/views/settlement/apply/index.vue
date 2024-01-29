@@ -164,6 +164,11 @@
           changeFileList: reactive(changeFileList.value),
         };
       }
+      function handleSuccess() {
+        result.value = true;
+        current.value++;
+        initStep4.value = true;
+      }
       async function commit() {
         try {
           // const values = await validate();
@@ -174,19 +179,7 @@
           // });
           let formData = classifyIntoFormData();
           console.log('表单数据', formData);
-          const res = await saveOrUpdate(formData, false);
-          console.log('。。', res);
-          result.value = res.success;
-          current.value++;
-          initStep4.value = true;
-          // setTimeout(() => {
-          //   setProps({
-          //     submitButtonOptions: {
-          //       loading: false,
-          //     },
-          //   });
-          //   emit('next', values);
-          // }, 1500);
+          await saveOrUpdate(formData, handleSuccess);
         } catch (error) {}
       }
       return {
