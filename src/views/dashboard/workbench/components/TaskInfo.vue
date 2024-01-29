@@ -3,39 +3,51 @@
     <template #extra>
       <a-button type="link" size="small">更多</a-button>
     </template>
-    <ul class="task-list">
+    <ul class="task-list" v-if="taskItems.length > 0">
       <li v-for="(item, index) in taskItems" :key="index" class="task-item">
         <div class="task-details">
           <div class="task-row">
             <div class="task-col task-desc-col">
-              <a class="task-desc" @click="getApplyList(item)">{{ item.task_id }}</a>
+              <a class="task-desc" @click="getApplyList(item)">{{ item.id }}</a>
             </div>
             <div class="task-col">
-              <div class="task-name">{{ item.description }}</div>
+              <div class="task-name">{{ item.taskName }}</div>
             </div>
             <div class="task-col">
-              <div class="task-name">{{ item.name }}</div>
+              <div class="task-name">{{ item.assigneeName }}</div>
             </div>
             <div class="task-col">
-              <div class="task-date">{{ item.create_time }}</div>
+              <div class="task-date">{{ item.createTime }}</div>
             </div>
           </div>
         </div>
       </li>
     </ul>
+    <a-empty v-else />
   </Card>
 </template>
 <script lang="ts">
   import { Card, List } from 'ant-design-vue';
-  import { defineComponent, onMounted, ref } from 'vue';
+  import { defineComponent, onMounted, Ref, ref } from 'vue';
   import { todoList } from '../../../settlement/workflow/todoList.api';
   import { useUserStore } from '@/store/modules/user';
   import { router } from '@/router';
-
+  interface flowRecord {
+    id: string;
+    taskName: string;
+    createTime: string;
+    deptName: string;
+    assigneeName: string;
+    candidate: string;
+    finishTime: string;
+    duration: string;
+    assigneeId: string;
+    taskDefKey: string;
+  }
   export default defineComponent({
     components: { Card },
     setup() {
-      const taskItems = ref([]);
+      const taskItems: Ref<flowRecord[]> = ref([]);
       function getApplyList(item) {
         router.push({
           path: '/workflow/todoList',
@@ -45,10 +57,9 @@
       onMounted(async () => {
         // Fetch taskItems from your API
         try {
-          const userStore = useUserStore();
-          const username = userStore.getUserInfo?.username;
-          const response = await todoList({ userId: username }); // Implement your fetchTaskItems function
+          const response = await todoList({ pageNo: 0, pageSize: 10 }); // Implement your fetchTaskItems function
           taskItems.value = response; // Assuming your API returns an array of task items
+          console.log(taskItems);
         } catch (error) {
           console.error('Error fetching taskItems:', error);
         }

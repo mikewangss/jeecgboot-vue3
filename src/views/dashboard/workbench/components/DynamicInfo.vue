@@ -3,22 +3,23 @@
     <template #extra>
       <a-button type="link" size="small">更多</a-button>
     </template>
-    <List item-layout="horizontal" :data-source="dynamicInfoItems">
-      <template #renderItem="{ item }">
-        <ListItem>
-          <ListItemMeta>
-            <template #description>
-              {{ item.date }}
-            </template>
-            <!-- eslint-disable-next-line -->
-            <template #title> {{ item.name }} <span v-html="item.desc"> </span> </template>
-            <template #avatar>
-              <Icon :icon="item.avatar" :size="30" />
-            </template>
-          </ListItemMeta>
-        </ListItem>
-      </template>
-    </List>
+    <a-empty />
+    <!--    <List item-layout="horizontal" :data-source="dynamicInfoItems">-->
+    <!--      <template #renderItem="{ item }">-->
+    <!--        <ListItem>-->
+    <!--          <ListItemMeta>-->
+    <!--            <template #description>-->
+    <!--              {{ item.date }}-->
+    <!--            </template>-->
+    <!--            &lt;!&ndash; eslint-disable-next-line &ndash;&gt;-->
+    <!--            <template #title> {{ item.name }} <span v-html="item.desc"> </span> </template>-->
+    <!--            <template #avatar>-->
+    <!--              <Icon :icon="item.avatar" :size="30" />-->
+    <!--            </template>-->
+    <!--          </ListItemMeta>-->
+    <!--        </ListItem>-->
+    <!--      </template>-->
+    <!--    </List>-->
   </Card>
 </template>
 <script lang="ts" setup>
