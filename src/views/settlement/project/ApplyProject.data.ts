@@ -108,12 +108,12 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    label: '负责人',
+    label: '子分公司名称（发包人）',
     field: 'onwer',
     colProps: { span: 12 },
     component: 'JDictSelectTag',
     componentProps: {
-      dictCode: '',
+      dictCode: "apply_supplier,supplier_name,id,type='1' order by create_time",
     },
   },
   {
@@ -143,15 +143,15 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    label: '中标单位',
+    label: '施工单位名称',
     field: 'bidder',
     colProps: { span: 12 },
     component: 'JDictSelectTag',
     componentProps: {
-      dictCode: 'sys_depart,depart_name,id',
+      dictCode: "apply_supplier,supplier_name,id,type='0' order by create_time",
     },
     dynamicRules: ({ model, schema }) => {
-      return [{ required: true, message: '请输入中标单位!' }];
+      return [{ required: true, message: '请输入施工单位名称!' }];
     },
   },
   {
@@ -238,7 +238,16 @@ export const applyContractColumns: JVxeColumn[] = [
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
-
+  {
+    title: '项目期区',
+    key: 'period',
+    type: JVxeTypes.select,
+    options: [],
+    dictCode: 'project_period',
+    width: '200px',
+    placeholder: '请输入${title}',
+    defaultValue: '',
+  },
   {
     title: '合同状态',
     key: 'status',
@@ -253,23 +262,45 @@ export const applyContractColumns: JVxeColumn[] = [
     title: '开工时间',
     key: 'startDate',
     type: JVxeTypes.date,
-    width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
-    title: '竣工时间',
+    title: '预计完工时间',
+    key: 'estimatedDate',
+    type: JVxeTypes.date,
+    placeholder: '请输入${title}',
+    defaultValue: '',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
+  },
+  {
+    title: '竣备时间',
     key: 'endDate',
     type: JVxeTypes.date,
-    width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
-    title: '总价',
+    title: '总价(万元)',
     key: 'totalPrice',
+    type: JVxeTypes.inputNumber,
+    placeholder: '请输入${title}',
+    defaultValue: '',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
+  },
+  {
+    title: '已发生产值',
+    key: 'outputValue',
+    type: JVxeTypes.inputNumber,
+    placeholder: '请输入${title}',
+    defaultValue: '',
+    validateRules: [{ required: true, message: '${title}不能为空' }],
+  },
+  {
+    title: '已付款金额(万元)',
+    key: 'amountPaid',
     type: JVxeTypes.inputNumber,
     width: '200px',
     placeholder: '请输入${title}',

@@ -380,7 +380,7 @@
         // targetField.componentProps.disabled = false;
         if (targetField) {
           // 更新字段的 disabled 属性
-          updateSchema({ ...targetField, required: true, componentProps: { disabled: disabled } });
+          updateSchema({ ...targetField, required: !disabled, componentProps: { disabled: disabled } });
         }
       }
       async function initaildata(process_instance_id, dataId) {

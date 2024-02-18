@@ -1,16 +1,16 @@
 <template>
   <div class="step3">
-    <a-result status="success" title="感谢您的注册！" sub-title="审核通过后您会收到短信提醒" v-if="props.result">
+    <a-result status="success" title="感谢您的注册！" sub-title="审核通过后您会收到短信提醒">
       <template #extra>
-        <a-button type="primary" @@click.prevent="login"> 去登录 </a-button>
-        <a-button @@click.prevent="goHome"> 返回首页 </a-button>
+        <a-button type="primary" @click.prevent="login"> 去登录 </a-button>
+        <a-button @click.prevent="goHome"> 返回首页 </a-button>
       </template>
     </a-result>
-    <a-result status="error" title="抱歉~注册失败！" sub-title="请返回重新填写后再次尝试" v-if="!props.result">
-      <template #extra>
-        <a-button type="primary" @click.prevent="back"> 上一步 </a-button>
-      </template>
-    </a-result>
+    <!--    <a-result status="error" title="抱歉~注册失败！" sub-title="请返回重新填写后再次尝试" v-if="!props.result">-->
+    <!--      <template #extra>-->
+    <!--        <a-button type="primary" @click.prevent="back"> 上一步 </a-button>-->
+    <!--      </template>-->
+    <!--    </a-result>-->
   </div>
 </template>
 <script lang="ts">
@@ -24,7 +24,7 @@
       [Descriptions.name]: Descriptions,
       [Descriptions.Item.name]: Descriptions.Item,
     },
-    emits: ['redo'],
+    emits: ['prev'],
     setup(props, { emit }) {
       const router = useRouter();
       const goHome = () => {

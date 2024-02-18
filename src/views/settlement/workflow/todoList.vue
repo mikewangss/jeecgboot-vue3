@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" name="settlement-workflow">
-  import { ref, unref } from 'vue';
+  import { onMounted, ref, unref } from 'vue';
   import { useListPage } from '/@/hooks/system/useListPage';
   import ProcessUpdate from '@/views/settlement/workflow/compoments/process_update.vue';
   import SupplierUpdate from '@/views/settlement/workflow/compoments/supplier_update.vue';
@@ -30,6 +30,8 @@
   import { useUserStore } from '@/store/modules/user';
   import { defineComponent } from 'vue';
   import { BasicTable, TableAction } from '@/components/Table';
+  import { useAppStore } from '@/store/modules/app';
+  const appStore = useAppStore();
 
   export default defineComponent({
     components: { SupplierUpdate, ProcessUpdate, BasicTable, TableAction },
@@ -66,7 +68,36 @@
         },
       });
       const [registerTable, { reload }, { rowSelection, selectedRowKeys }] = tableContext;
-
+      onMounted(async () => {
+        // Fetch taskItems from your API
+        try {
+          debugger;
+          let params = appStore.getMessageHrefParams;
+          if (params) {
+            let detailId = params.detailId;
+            console.log(detailId);
+            let key = params.key;
+            if (key === 'diagram_Process_1704786066374') {
+              if (detailId) {
+                openDrawer1(true, {
+                  process_instance_id: detailId,
+                  bizId: '',
+                });
+              }
+            }
+            if (key === 'Process_1706093271175') {
+              if (detailId) {
+                openDrawer2(true, {
+                  process_instance_id: detailId,
+                  bizId: '',
+                });
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching taskItems:', error);
+        }
+      });
       /**
        * 获取单个
        */

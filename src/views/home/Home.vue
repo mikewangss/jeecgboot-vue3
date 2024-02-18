@@ -55,7 +55,7 @@
                   <UserOutlined />
                 </template>
               </a-avatar>
-              <p class="user-welcome">欢迎来到润巣网</p>
+              <p class="user-welcome">欢迎来到润匠智造网</p>
             </div>
             <div class="user-btns">
               <a-button @click="login">登录</a-button>

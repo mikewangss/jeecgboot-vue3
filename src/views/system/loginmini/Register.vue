@@ -14,7 +14,7 @@
         <div class="mt-5">
           <Step1 @next="handleStep1Next" v-show="current === 0" />
           <Step2 @prev="handleStepPrev" @next="handleStep2Next" v-show="current === 1" v-if="initSetp2" />
-          <Step3 v-show="current === 2" @redo="handleRedo" v-if="initSetp3" :result="result" />
+          <Step3 v-show="current === 2" @prev="handleStepPrev" v-if="initSetp3" :result="result" />
         </div> </div
     ></a-layout-content>
     <Footer />

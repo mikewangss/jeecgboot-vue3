@@ -67,16 +67,7 @@ export const batchDelete = (params, handleSuccess) => {
  * @param params
  */
 export const saveOrUpdate = (params, handleSuccess) => {
-  createConfirm({
-    iconType: 'warning',
-    title: '确认提交吗',
-    content: '请确认提交信息是否正确',
-    okText: '确认',
-    cancelText: '取消',
-    onOk: () => {
-      return defHttp.post({ url: Api.save, params }).then(() => {
-        handleSuccess();
-      });
-    },
+  return defHttp.post({ url: Api.edit, params }).then(() => {
+    handleSuccess();
   });
 };

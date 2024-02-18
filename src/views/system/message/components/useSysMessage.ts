@@ -202,6 +202,7 @@ export function useMessageHref(emit, props){
     let query:any = {
       detailId: busId
     };
+    debugger;
     // 额外参数处理
     if(msgAbstract){
       try {

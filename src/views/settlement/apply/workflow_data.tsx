@@ -45,7 +45,6 @@ export const schemas: FormSchema[] = [
     component: 'Input',
     label: '承包单位送审时间',
     defaultValue: '',
-
     colProps: {
       span: 12,
     },
@@ -55,7 +54,6 @@ export const schemas: FormSchema[] = [
     component: 'Input',
     label: '承包单位送审额',
     defaultValue: '',
-
     colProps: {
       span: 12,
     },
@@ -74,6 +72,7 @@ export const schemas: FormSchema[] = [
     field: 'secondAmounts',
     component: 'InputNumber',
     label: '复审审批金额',
+    subLabel: '(单位:元 )',
     defaultValue: '',
     colProps: {
       span: 12,
@@ -83,6 +82,7 @@ export const schemas: FormSchema[] = [
     field: 'thirdAmounts',
     component: 'InputNumber',
     label: '终审审批金额',
+    subLabel: '(单位:元 )',
     defaultValue: '',
     colProps: {
       span: 12,
@@ -92,6 +92,7 @@ export const schemas: FormSchema[] = [
     field: 'totalArea',
     component: 'InputNumber',
     label: '总面积',
+    subLabel: '(单位:平方米 )',
     defaultValue: '',
     colProps: {
       span: 12,
