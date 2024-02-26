@@ -250,7 +250,7 @@
   import WorkHandleBtn from './WorkHandleBtn.vue';
   import { BasicForm, useForm } from '@/components/Form';
   import { saveOrUpdate } from '@/views/settlement/apply/applyInfo.api';
-  import { saveOrUpdateFile, batchDelete as batchDeleteFile,saveOrUpdate as saveOrUpdateFiles } from '@/views/settlement/files/ApplyFiles.api';
+  import { saveOrUpdateFile, batchDelete as batchDeleteFile, saveOrUpdate as saveOrUpdateFiles } from '@/views/settlement/files/ApplyFiles.api';
   import { JVxeLinkageConfig } from '@/components/jeecg/JVxeTable/src/types';
   import { useMessage } from '@/hooks/web/useMessage';
   const { createMessage, createWarningModal } = useMessage();
@@ -408,8 +408,12 @@
             //当前审批节点-初审
             updateDisabledStatus('firstAmounts', false);
             updateDisabledStatus('totalArea', false);
+            //申请节点
+            reviewFilesShow.value = false;
+            finalFilesShow.value = false;
           } else if (currentFlowNodeId.value == 'Activity_1ltzfvn' || currentFlowNodeId.value == 'Activity_1vhi94l') {
             updateDisabledStatus('secondAmounts', false);
+            finalFilesShow.value = false;
           } else if (currentFlowNodeId.value == 'Activity_18zvw97' || currentFlowNodeId.value == 'Activity_1ltzfvn') {
             updateDisabledStatus('thirdAmounts', false);
           } else {

@@ -5,4 +5,4 @@ export const GITHUB_URL = 'https://github.com/jeecgboot/jeecg-boot';
 export const DOC_URL = 'http://help.jeecg.com';
 
 // site url
-export const SITE_URL = 'http://www.jeecg.com';
+export const SITE_URL = 'http://8.130.72.186/home';

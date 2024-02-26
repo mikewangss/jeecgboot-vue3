@@ -66,8 +66,9 @@ export const batchDelete = (params, handleSuccess) => {
  * 保存或者更新
  * @param params
  */
-export const saveOrUpdate = (params, handleSuccess) => {
-  return defHttp.post({ url: Api.edit, params }).then(() => {
+export const saveOrUpdate = (params, isUpdate, handleSuccess) => {
+  const url = isUpdate ? Api.edit : Api.save;
+  return defHttp.post({ url: url, params }).then(() => {
     handleSuccess();
   });
 };

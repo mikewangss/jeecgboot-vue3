@@ -179,9 +179,7 @@
       height: @header-height;
       padding: 10px 4px 10px 10px;
       img {
-        width: 107px;
-        height: 49px;
-        margin-left: 20px;
+        width: 78%;
       }
     }
 

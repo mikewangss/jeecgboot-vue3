@@ -1,5 +1,9 @@
 <template>
   <div :class="prefixCls" class="login-background-img">
+    <!-- 视频播放器 -->
+    <video class="background-video" controls autoplay loop muted>
+      <source :src="jeecg_bg" type="video/mp4" />
+    </video>
     <AppLocalePicker class="absolute top-4 right-4 enter-x xl:text-gray-600" :showText="false" />
     <AppDarkModeToggle class="absolute top-3 right-7 enter-x" />
     <div class="aui-logo" v-if="!getIsMobile">
@@ -15,12 +19,12 @@
     <div v-show="type === 'login'">
       <div class="aui-content">
         <div class="aui-container">
-          <div class="aui-form" style="min-height: 570px">
-            <div class="aui-image">
-              <div class="aui-image-text">
-                <!--                <img :src="adTextImg" />-->
-              </div>
-            </div>
+          <div class="aui-form" style="min-height: 480px">
+<!--            <div class="aui-image">-->
+<!--              <div class="aui-image-text">-->
+<!--                &lt;!&ndash;                <img :src="adTextImg" />&ndash;&gt;-->
+<!--              </div>-->
+<!--            </div>-->
             <div class="aui-formBox">
               <div class="aui-formWell">
                 <div class="aui-flex aui-form-nav investment_title">
@@ -161,6 +165,7 @@
   import MiniRegister from './MiniRegister.vue';
   import MiniCodelogin from './MiniCodelogin.vue';
   import logoImg from '/@/assets/loginmini/icon/jeecg_logo.png';
+  import jeecg_bg from '/@/assets/loginmini/icon/jeecg_bg.mp4';
   // import adTextImg from '/@/assets/loginmini/icon/jeecg_ad_text.png';
   import { AppLocalePicker, AppDarkModeToggle } from '/@/components/Application';
   import { useLocaleStore } from '/@/store/modules/locale';
@@ -564,5 +569,21 @@
     .aui-third-login a {
       background: transparent;
     }
+  }
+  .login-container {
+    /* 确保登录表单等内容在视频上层 */
+    position: relative;
+  }
+
+  .background-video {
+    /* 设置视频样式 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
   }
 </style>

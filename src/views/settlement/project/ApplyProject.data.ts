@@ -2,8 +2,9 @@ import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { rules } from '/@/utils/helper/validator';
 import { render } from '/@/utils/common/renderUtils';
-import {JVxeTypes, JVxeColumn, JVxeLinkageConfig} from '/@/components/jeecg/JVxeTable/types';
-import {ref} from "vue/dist/vue";
+import { JVxeTypes, JVxeColumn, JVxeLinkageConfig } from '/@/components/jeecg/JVxeTable/types';
+import { ref } from 'vue/dist/vue';
+import { getSupplierList } from '/@/views/settlement/project/ApplyProject.api';
 //列表数据
 export const columns: BasicColumn[] = [
   {
@@ -24,7 +25,7 @@ export const columns: BasicColumn[] = [
   {
     title: '负责主体',
     align: 'center',
-    dataIndex: 'onwer_dictText',
+    dataIndex: 'owner_dictText',
   },
   {
     title: '开始时间',
@@ -109,69 +110,89 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: '子分公司名称（发包人）',
-    field: 'onwer',
-    colProps: { span: 12 },
-    component: 'JDictSelectTag',
+    component: 'ApiSelect',
+    field: 'owner',
     componentProps: {
-      dictCode: "apply_supplier,supplier_name,id,type='1' order by create_time",
+      api: getSupplierList,
+      params: {
+        type: 0,
+      },
+      resultField: 'list',
+      labelField: 'supplierName',
+      valueField: 'id',
     },
-  },
-  {
-    label: '开始时间',
-    field: 'startDate',
+    required: true,
     colProps: { span: 12 },
-    component: 'DatePicker',
-    componentProps: {
-      showTime: true,
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
-    },
-    dynamicRules: ({ model, schema }) => {
-      return [{ required: true, message: '请输入开始时间!' }];
-    },
   },
-  {
-    label: '结束时间',
-    field: 'endDate',
-    colProps: { span: 12 },
-    component: 'DatePicker',
-    componentProps: {
-      showTime: true,
-      valueFormat: 'YYYY-MM-DD HH:mm:ss',
-    },
-    dynamicRules: ({ model, schema }) => {
-      return [{ required: true, message: '请输入结束时间!' }];
-    },
-  },
+  // {
+  //   field: 'owner',
+  //   component: 'Input',
+  //   label: '子分公司名称（发包人）',
+  //   required: true,
+  //   slot: 'remoteSearch',
+  //   colProps: { span: 12 },
+  // },
+  // {
+  //   label: '开始时间',
+  //   field: 'startDate',
+  //   colProps: { span: 12 },
+  //   component: 'DatePicker',
+  //   componentProps: {
+  //     showTime: true,
+  //     valueFormat: 'YYYY-MM-DD HH:mm:ss',
+  //   },
+  //   dynamicRules: ({ model, schema }) => {
+  //     return [{ required: true, message: '请输入开始时间!' }];
+  //   },
+  // },
+  // {
+  //   label: '结束时间',
+  //   field: 'endDate',
+  //   colProps: { span: 12 },
+  //   component: 'DatePicker',
+  //   componentProps: {
+  //     showTime: true,
+  //     valueFormat: 'YYYY-MM-DD HH:mm:ss',
+  //   },
+  //   dynamicRules: ({ model, schema }) => {
+  //     return [{ required: true, message: '请输入结束时间!' }];
+  //   },
+  // },
   {
     label: '施工单位名称',
+    component: 'ApiSelect',
     field: 'bidder',
-    colProps: { span: 12 },
-    component: 'JDictSelectTag',
     componentProps: {
-      dictCode: "apply_supplier,supplier_name,id,type='0' order by create_time",
+      api: getSupplierList,
+      params: {
+        type: 1,
+      },
+      resultField: 'list',
+      labelField: 'supplierName',
+      valueField: 'id',
     },
-    dynamicRules: ({ model, schema }) => {
-      return [{ required: true, message: '请输入施工单位名称!' }];
-    },
-  },
-  {
-    field: 'status',
-    component: 'RadioButtonGroup',
-    label: '是否结案',
+    required: true,
     colProps: { span: 12 },
-    componentProps: {
-      options: [
-        {
-          label: '结案',
-          value: '1',
-        },
-        {
-          label: '未结',
-          value: '0',
-        },
-      ],
-    },
   },
+
+  // {
+  //   field: 'status',
+  //   component: 'RadioButtonGroup',
+  //   label: '是否结案',
+  //   colProps: { span: 12 },
+  //   componentProps: {
+  //     options: [
+  //       {
+  //         label: '结案',
+  //         value: '1',
+  //       },
+  //       {
+  //         label: '未结',
+  //         value: '0',
+  //       },
+  //     ],
+  //   },
+  // },
   {
     label: '描述',
     colProps: { span: 12 },
@@ -259,32 +280,34 @@ export const applyContractColumns: JVxeColumn[] = [
     defaultValue: '',
   },
   {
-    title: '开工时间',
-    key: 'startDate',
+    title: '预计完工时间',
+    key: 'estimatedDate',
     type: JVxeTypes.date,
+    width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
-    title: '预计完工时间',
-    key: 'estimatedDate',
+    title: '实际开工时间',
+    key: 'startDate',
     type: JVxeTypes.date,
+    width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
-    validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '竣备时间',
     key: 'endDate',
     type: JVxeTypes.date,
+    width: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
-    validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '总价(万元)',
     key: 'totalPrice',
+    width: '200px',
     type: JVxeTypes.inputNumber,
     placeholder: '请输入${title}',
     defaultValue: '',
@@ -293,6 +316,7 @@ export const applyContractColumns: JVxeColumn[] = [
   {
     title: '已发生产值',
     key: 'outputValue',
+    width: '200px',
     type: JVxeTypes.inputNumber,
     placeholder: '请输入${title}',
     defaultValue: '',

@@ -1,6 +1,19 @@
 <template>
   <div>
-    <BasicForm @register="registerForm" :labelWidth="200" :actionColOptions="{ span: 24 }" :labelCol="{ span: 8 }" ref="formRef" />
+    <BasicForm @register="registerForm" :labelWidth="200" :actionColOptions="{ span: 24 }" :labelCol="{ span: 8 }" ref="formRef">
+      <template #remoteSearch="{ model, field }">
+        <ApiSelect
+          :api="getSupplierList"
+          showSearch
+          v-model:value="model[field]"
+          :filterOption="false"
+          resultField="list"
+          labelField="name"
+          valueField="id"
+          @search="onSearch"
+        />
+      </template>
+    </BasicForm>
     <!-- 子表单区域 -->
     <a-tabs v-model:activeKey="activeKey" animated @change="handleChangeTabs">
       <a-tab-pane tab="合同" key="applyContract" :forceRender="true">
@@ -46,15 +59,15 @@
 
 <script lang="ts">
   import { BasicForm, useForm } from '/@/components/Form/index';
-  import { computed, defineComponent, nextTick, onMounted, reactive, ref, unref } from 'vue';
+  import { computed, defineComponent, reactive, ref, unref } from 'vue';
   import { defHttp } from '/@/utils/http/axios';
   import { propTypes } from '/@/utils/propTypes';
   import { useJvxeMethod } from '/@/hooks/system/useJvxeMethods';
   import { getBpmFormSchema, applyContractColumns, applyFilesColumns } from '../ApplyProject.data';
-  import { saveOrUpdate, applyContractList, applyFilesList } from '../ApplyProject.api';
+  import { saveOrUpdate, applyContractList, applyFilesList, getSupplierList } from '../ApplyProject.api';
   import { getSubFileMenu } from '/@/views/settlement/files/ApplyFiles.api';
-  import { JVxeLinkageConfig, JVxeTableInstance } from '@/components/jeecg/JVxeTable/types';
-
+  import { JVxeLinkageConfig } from '@/components/jeecg/JVxeTable/types';
+  import { useDebounceFn } from '@vueuse/core';
   export default defineComponent({
     name: 'ApplyProjectForm',
     components: {
@@ -65,6 +78,10 @@
       formBpm: propTypes.bool.def(true),
     },
     setup(props) {
+      const keyword = ref<string>('');
+      const searchParams = computed<Recordable>(() => {
+        return { keyword: unref(keyword) };
+      });
       const [registerForm, { setFieldsValue, setProps }] = useForm({
         labelWidth: 150,
         schemas: getBpmFormSchema(props.formData),
@@ -146,8 +163,13 @@
         await setProps({ disabled: formDisabled.value });
       }
       initFormData();
-
+      function onSearch(value: string) {
+        keyword.value = value;
+      }
       return {
+        onSearch: useDebounceFn(onSearch, 300),
+        getSupplierList,
+        searchParams,
         registerForm,
         formDisabled,
         formRef,

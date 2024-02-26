@@ -114,6 +114,16 @@
             </a-button>
           </a-upload>
         </a-form-item>
+        <a-form-item name="others" label="其他" v-bind="validateInfos.others">
+          <a-upload v-model:fileList="modelRef.others" name="file" :action="uploadUrl" @change="handleChange">
+            <a-button>
+              <template #icon>
+                <UploadOutlined />
+              </template>
+              点击上传
+            </a-button>
+          </a-upload>
+        </a-form-item>
         <a-form-item :wrapper-col="{ span: 14, offset: 8 }" style="margin-top: 30px">
           <a-button @click.prevent="back">上一步</a-button>
           <a-button type="primary" style="margin-left: 10px" @click.prevent="onSubmit">下一步 </a-button>
@@ -153,6 +163,7 @@
         builtDrawings: [],
         acceptanceReport: [],
         completionAcknowledgment: [],
+        others: [],
       });
       function getValidateStr(field) {
         const arr = step2Schemas
@@ -198,7 +209,7 @@
         if (info.file.response) {
           if (info.file.status === 'done' && info.file.response.success) {
             createMessage.success(`${info.file.name} file uploaded successfully`);
-            modelRef.powerAttorney = info.fileList;
+            // modelRef.powerAttorney = info.fileList;
           } else if (info.file.status === 'done' && info.file.response.success == false) {
             createMessage.error(`${info.file.name} file upload failed.`);
             info.file.status = 'error';

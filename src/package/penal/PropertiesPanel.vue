@@ -243,6 +243,7 @@
         this.elementId = activatedElement.id;
         this.elementType = activatedElement.type.split(':')[1] || '';
         this.elementBusinessObject = JSON.parse(JSON.stringify(activatedElement.businessObject));
+        debugger;
         this.conditionFormVisible = !!(
           this.elementType === 'SequenceFlow' &&
           activatedElement.source &&

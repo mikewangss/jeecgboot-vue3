@@ -5,9 +5,9 @@
       <template v-if="!$slots['control-header']">
         <el-button-group key="file-control">
           <el-button :size="headerButtonSize" :type="headerButtonType" :icon="FolderOpened" @click="$refs.refFile.click()">打开文件</el-button>
+          <el-button :size="headerButtonSize" type="primary" @click="saveProcess()">保存</el-button>
           <el-tooltip effect="light">
             <template #content>
-              <el-button :size="headerButtonSize" type="primary" @click="saveProcess()">保存</el-button>
               <br />
               <el-button :size="headerButtonSize" type="primary" @click="downloadProcessAsXml()">下载为XML文件</el-button>
               <br />
@@ -429,7 +429,8 @@
         this.downloadProcess('xml');
       },
       saveProcess() {
-        let name = window.bpmnInstances.bpmnElement.id;
+        debugger;
+        let name = window.bpmnInstances.bpmnElement.businessObject.name;
         debugger;
         const params = {
           name: name,

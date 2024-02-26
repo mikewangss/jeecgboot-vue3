@@ -2,6 +2,7 @@ import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { rules } from '/@/utils/helper/validator';
 import { render } from '/@/utils/common/renderUtils';
+import {filterDictTextByCache} from "@/utils/dict/JDictSelectUtil";
 //列表数据
 export const columns: BasicColumn[] = [
   {
@@ -13,6 +14,17 @@ export const columns: BasicColumn[] = [
     title: '文件类型',
     align: 'center',
     dataIndex: 'bizType',
+    customRender: ({ text }) => {
+      return render.renderDict(text, 'apply_file_type');
+    },
+  },
+  {
+    title: '分册',
+    align: 'center',
+    dataIndex: 'fc',
+    customRender: ({ text }) => {
+      return render.renderDict(text, 'apply_fc');
+    },
   },
   {
     title: '是否可用',
@@ -30,11 +42,7 @@ export const columns: BasicColumn[] = [
     align: 'center',
     dataIndex: 'description',
   },
-  {
-    title: '分册',
-    align: 'center',
-    dataIndex: 'fc_dictText',
-  },
+
   {
     title: '文件',
     align: 'center',

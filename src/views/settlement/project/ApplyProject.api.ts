@@ -1,11 +1,17 @@
 import { defHttp } from '/@/utils/http/axios';
 import { useMessage } from '/@/hooks/web/useMessage';
-
 const { createConfirm } = useMessage();
-
+export interface selectParams {
+  id: number | string;
+}
+export interface DemoOptionsItem {
+  label: string;
+  value: string;
+}
 enum Api {
   list = '/settlement/applyProject/list',
   queryContractById = '/settlement/applyContract/queryById',
+  querySupplierList = '/settlement/applySupplier/querySupplierList',
   projectListApi = '/settlement/applyProject/myProjectList',
   save = '/settlement/applyProject/add',
   edit = '/settlement/applyProject/edit',
@@ -18,6 +24,10 @@ enum Api {
 }
 export const contractListApi = (params) => defHttp.get({ url: Api.applyContractList, params });
 export const projectListApi = (params) => defHttp.get({ url: Api.projectListApi, params });
+/**
+ * @description: Get sample options value
+ */
+export const getSupplierList = (params) => defHttp.get({ url: Api.querySupplierList, params });
 /**
  * 导出api
  * @param params
