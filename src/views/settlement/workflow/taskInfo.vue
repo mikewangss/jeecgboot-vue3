@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ProcessUpdate @register="register1" :showApplyButton="true" @success="handeleSuccess" v-show="active === '1'" />
+    <ProcessUpdate @register="register1" @success="handeleSuccess" v-show="active === '1'" />
     <SupplierUpdate @register="register2" :showApplyButton="true" @success="handeleSuccess" v-show="active === '2'" />
   </div>
 </template>

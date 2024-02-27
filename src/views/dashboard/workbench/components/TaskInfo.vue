@@ -8,13 +8,13 @@
         <div class="task-details">
           <div class="task-row">
             <div class="task-col task-desc-col">
-              <a class="task-desc" @click="getApplyList(item)">{{ item.id }}</a>
+              <a class="task-desc" @click="getApplyList(item)">{{ item.taskName }}</a>
             </div>
             <div class="task-col">
-              <div class="task-name">{{ item.taskName }}</div>
+              <div class="task-name">{{ item.procDefName }}</div>
             </div>
             <div class="task-col">
-              <div class="task-name">{{ item.assigneeName }}</div>
+              <div class="task-name">{{ item.startUserName }}</div>
             </div>
             <div class="task-col">
               <div class="task-date">{{ item.createTime }}</div>
@@ -50,7 +50,7 @@
       const taskItems: Ref<flowRecord[]> = ref([]);
       function getApplyList(item) {
         router.push({
-          path: '/workflow/todoList',
+          path: '/settlement/workflow/todoList',
           query: { taskId: item.task_id, processInstanceId: item.process_instance_id },
         });
       }
@@ -58,7 +58,7 @@
         // Fetch taskItems from your API
         try {
           const response = await todoList({ pageNo: 0, pageSize: 10 }); // Implement your fetchTaskItems function
-          taskItems.value = response; // Assuming your API returns an array of task items
+          taskItems.value = response.records; // Assuming your API returns an array of task items
           console.log(taskItems);
         } catch (error) {
           console.error('Error fetching taskItems:', error);

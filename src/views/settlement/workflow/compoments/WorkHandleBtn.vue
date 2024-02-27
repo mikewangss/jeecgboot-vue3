@@ -1,6 +1,6 @@
 <template>
   <span>
-    <a-button :type="btnType" @click="handle()">{{ text }}</a-button>
+    <a-button :type="btnType" @click="handle()" :danger="isDanger">{{ text }}</a-button>
     <a-modal :title="modalTaskTitle" :visible="modalTaskVisible" :footer="null" @cancel="handleCancel()">
       <div v-if="modalTaskVisible">
         <div v-if="type == handleType.reApply"> 确认无误并重新提交？ </div>
@@ -54,6 +54,7 @@
     name: 'WorkHandleBtn',
     components: {},
     props: {
+      isDanger: { type: Boolean, default: false }, // 默认为 false，表示不是危险按钮},
       btnType: { type: String, default: 'link', required: false },
       /* handleType 0通过 1驳回 2退回  */
       type: {
@@ -180,10 +181,10 @@
             .then((res) => {
               submitLoading.value = false;
               if (res == 'success') {
-                $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
+                // $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
                 emit('handleSuccess');
               } else {
-                $message.createErrorModal({ title: 'Tip', content: '操作失败' });
+                // $message.createErrorModal({ title: 'Tip', content: '操作失败' });
               }
             })
             .finally(() => {
@@ -197,10 +198,10 @@
               debugger;
               submitLoading.value = false;
               if (res == 'success') {
-                $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
+                // $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
                 emit('handleSuccess');
               } else {
-                $message.createErrorModal({ title: 'Tip', content: '操作失败' });
+                // $message.createErrorModal({ title: 'Tip', content: '操作失败' });
               }
             })
             .finally(() => {
@@ -218,11 +219,11 @@
             .then((res) => {
               submitLoading.value = false;
               if (res == 'success') {
-                $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
+                // $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
                 modalTaskVisible.value = false;
                 // emit('success');
               } else {
-                $message.createErrorModal({ title: 'Tip', content: '操作失败' });
+                // $message.createErrorModal({ title: 'Tip', content: '操作失败' });
               }
             })
             .finally(() => {

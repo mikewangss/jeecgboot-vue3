@@ -1,61 +1,69 @@
 <template>
   <BasicDrawer v-bind="$attrs" @register="register2" title="结算申请流程" width="50%">
     <PageWrapper title="结算审批单">
-      <template v-if="showApplyButton" #extra>
-        <WorkHandleBtn
-          @handleSuccess="handleSuccess"
-          @handleValidate="handleValidate"
-          btnType="primary"
-          :dataId="bizId"
-          :type="3"
-          text="提交"
-          v-if="currentFlowNodeId == 'start'"
-          :candidateUsers="[]"
-          :variables="{ assigneeList: [], outcome: '重新提交' }"
-        />
-        <WorkHandleBtn
-          @handleSuccess="handleSuccess"
-          :dataId="bizId"
-          :type="1"
-          text="保存"
-          v-if="currentFlowNodeId == 'start'"
-          :candidateUsers="[]"
-          :variables="{ assigneeList: [], outcome: '删除' }"
-        />
-        <WorkHandleBtn
-          @handleSuccess="handleSuccess"
-          @handleValidate="handleValidate"
-          btnType="primary"
-          :dataId="bizId"
-          :type="0"
-          text="通过"
-          v-if="currentFlowNodeId != 'start'"
-          :candidateUsers="[]"
-          :variables="{ assigneeList: [], outcome: '通过' }"
-        />
-        <!--        <WorkHandleBtn-->
-        <!--          @handleSuccess="handleSuccess"-->
-        <!--          :dataId="bizId"-->
-        <!--          :type="1"-->
-        <!--          text="驳回"-->
-        <!--          v-if="currentFlowNodeId != 'start'"-->
-        <!--          :candidateUsers="[]"-->
-        <!--          :variables="{ assigneeList: [], outcome: '驳回' }"-->
-        <!--        />-->
-        <WorkHandleBtn
-          @handleSuccess="handleSuccess"
-          :dataId="bizId"
-          :type="2"
-          text="退回"
-          v-if="currentFlowNodeId != 'start'"
-          :candidateUsers="[]"
-          :variables="{ assigneeList: [], outcome: '退回' }"
-        />
+      <template #extra>
+        <a-button btnType="primary" type="3" @click="handle(3)" v-if="showApplyButton && currentFlowNodeId == 'start'">提交</a-button>
+        <a-button btnType="primary" type="1" @click="handle(1)" v-if="showApplyButton && currentFlowNodeId == 'start'">保存</a-button>
+        <a-button btnType="primary" type="0" @click="handle(0)" v-if="showApplyButton && currentFlowNodeId != 'start'">通过</a-button>
+        <a-button btnType="primary" type="2" @click="handle(2)" danger v-if="showApplyButton && currentFlowNodeId != 'start'">退回</a-button>
       </template>
+      <!--      <template v-if="showApplyButton" #extra>-->
+      <!--        <WorkHandleBtn-->
+      <!--          @submitForm="submitForm"-->
+      <!--          @handleValidate="handleValidate"-->
+      <!--          btnType="primary"-->
+      <!--          :dataId="bizId"-->
+      <!--          :type="3"-->
+      <!--          text="提交"-->
+      <!--          v-if="currentFlowNodeId == 'start'"-->
+      <!--          :candidateUsers="[]"-->
+      <!--          :variables="{ assigneeList: [], outcome: '重新提交' }"-->
+      <!--        />-->
+      <!--        <WorkHandleBtn-->
+      <!--          @submitForm="submitForm"-->
+      <!--          :dataId="bizId"-->
+      <!--          :type="1"-->
+      <!--          text="保存"-->
+      <!--          v-if="currentFlowNodeId == 'start'"-->
+      <!--          :candidateUsers="[]"-->
+      <!--          :variables="{ assigneeList: [], outcome: '删除' }"-->
+      <!--        />-->
+      <!--        <WorkHandleBtn-->
+      <!--          @submitForm="submitForm"-->
+      <!--          @handleValidate="handleValidate"-->
+      <!--          btnType="primary"-->
+      <!--          :dataId="bizId"-->
+      <!--          :type="0"-->
+      <!--          text="通过"-->
+      <!--          v-if="currentFlowNodeId != 'start'"-->
+      <!--          :candidateUsers="[]"-->
+      <!--          :variables="{ assigneeList: [], outcome: '通过' }"-->
+      <!--        />-->
+      <!--        &lt;!&ndash;        <WorkHandleBtn&ndash;&gt;-->
+      <!--        &lt;!&ndash;          @submitForm="submitForm"&ndash;&gt;-->
+      <!--        &lt;!&ndash;          :dataId="bizId"&ndash;&gt;-->
+      <!--        &lt;!&ndash;          :type="1"&ndash;&gt;-->
+      <!--        &lt;!&ndash;          text="驳回"&ndash;&gt;-->
+      <!--        &lt;!&ndash;          v-if="currentFlowNodeId != 'start'"&ndash;&gt;-->
+      <!--        &lt;!&ndash;          :candidateUsers="[]"&ndash;&gt;-->
+      <!--        &lt;!&ndash;          :variables="{ assigneeList: [], outcome: '驳回' }"&ndash;&gt;-->
+      <!--        &lt;!&ndash;        />&ndash;&gt;-->
+      <!--        <WorkHandleBtn-->
+      <!--          @submitForm="submitForm"-->
+      <!--          btnType="primary"-->
+      <!--          :dataId="bizId"-->
+      <!--          :type="2"-->
+      <!--          :is-danger="true"-->
+      <!--          text="退回"-->
+      <!--          v-if="currentFlowNodeId != 'start'"-->
+      <!--          :candidateUsers="[]"-->
+      <!--          :variables="{ assigneeList: [], outcome: '退回' }"-->
+      <!--        />-->
+      <!--      </template>-->
       <template #footer>
         <a-tabs v-model:activeKey="activeKey" @tabClick="handleChangePanel">
           <a-tab-pane tab="申请明细" key="applyInfo" :forceRender="true">
-            <BasicForm @register="registerForm" />
+            <BasicForm @register="registerForm" ref="formRef" />
             <a-divider />
             <a-card style="margin-top: 10px">
               <p slot="title">
@@ -103,7 +111,7 @@
               :toolbarConfig="toolbarConfig"
               keep-source
               resizable
-              ref="requestFiles"
+              ref="requestFilesRef"
               :loading="requestFilesTable.loading"
               :columns="requestFilesTable.columns"
               :dataSource="requestFilesTable.dataSource"
@@ -116,7 +124,7 @@
               @edit-closed="handleEditClosed"
               @pageChange="handlePageChange"
               @selectRowChange="handleSelectRowChange"
-              :linkageConfig="linkageConfig"
+              :linkageConfig="linkageConfig3"
             />
           </a-tab-pane>
           <a-tab-pane tab="项目附件" key="projectFiles" :forceRender="true">
@@ -124,7 +132,7 @@
               :toolbarConfig="toolbarConfig"
               keep-source
               resizable
-              ref="projectFiles"
+              ref="projectFilesRef"
               :loading="projectFilesTable.loading"
               :columns="projectFilesTable.columns"
               :dataSource="projectFilesTable.dataSource"
@@ -137,7 +145,7 @@
               @edit-closed="handleEditClosed"
               @pageChange="handlePageChange"
               @selectRowChange="handleSelectRowChange"
-              :linkageConfig="linkageConfig"
+              :linkageConfig="linkageConfig2"
             />
           </a-tab-pane>
           <a-tab-pane tab="变更签证" key="changeFiles" :forceRender="true">
@@ -145,7 +153,7 @@
               :toolbarConfig="toolbarConfig"
               keep-source
               resizable
-              ref="changeFiles"
+              ref="changeFilesRef"
               :loading="changeFilesTable.loading"
               :columns="changeFilesTable.columns"
               :dataSource="changeFilesTable.dataSource"
@@ -158,7 +166,7 @@
               @edit-closed="handleEditClosed"
               @pageChange="handlePageChange"
               @selectRowChange="handleSelectRowChange"
-              :linkageConfig="linkageConfig"
+              :linkageConfig="linkageConfig1"
             />
           </a-tab-pane>
           <a-tab-pane tab="初审材料" key="preliminaryFiles" :forceRender="true" v-if="preliminaryFilesShow">
@@ -166,7 +174,7 @@
               :toolbarConfig="toolbarConfig"
               keep-source
               resizable
-              ref="preliminaryFiles"
+              ref="preliminaryFilesRef"
               :loading="preliminaryFilesTable.loading"
               :columns="preliminaryFilesTable.columns"
               :dataSource="preliminaryFilesTable.dataSource"
@@ -179,7 +187,7 @@
               @edit-closed="handleEditClosed"
               @pageChange="handlePageChange"
               @selectRowChange="handleSelectRowChange"
-              :linkageConfig="linkageConfig"
+              :linkageConfig="linkageConfig4"
             />
           </a-tab-pane>
           <a-tab-pane tab="复审材料" key="reviewFiles" :forceRender="true" v-if="reviewFilesShow">
@@ -187,7 +195,7 @@
               :toolbarConfig="toolbarConfig"
               keep-source
               resizable
-              ref="reviewFiles"
+              ref="reviewFilesRef"
               :loading="reviewFilesTable.loading"
               :columns="reviewFilesTable.columns"
               :dataSource="reviewFilesTable.dataSource"
@@ -200,7 +208,7 @@
               @edit-closed="handleEditClosed"
               @pageChange="handlePageChange"
               @selectRowChange="handleSelectRowChange"
-              :linkageConfig="linkageConfig"
+              :linkageConfig="linkageConfig5"
             />
           </a-tab-pane>
           <a-tab-pane tab="终审材料" key="finalFiles" :forceRender="true" v-if="finalFilesShow">
@@ -208,7 +216,7 @@
               :toolbarConfig="toolbarConfig"
               keep-source
               resizable
-              ref="finalFiles"
+              ref="finalFilesRef"
               :loading="finalFilesTable.loading"
               :columns="finalFilesTable.columns"
               :dataSource="finalFilesTable.dataSource"
@@ -221,30 +229,49 @@
               @edit-closed="handleEditClosed"
               @pageChange="handlePageChange"
               @selectRowChange="handleSelectRowChange"
-              :linkageConfig="linkageConfig"
+              :linkageConfig="linkageConfig6"
             />
           </a-tab-pane>
         </a-tabs>
       </template>
     </PageWrapper>
   </BasicDrawer>
+  <a-modal :title="modalTaskTitle" :visible="modalTaskVisible" :footer="null" @cancel="handleCancel()">
+    <div v-if="modalTaskVisible">
+      <div v-if="btnType == handleType.reApply"> 确认无误并重新提交？ </div>
+      <a-form :model="form" name="basic" :label-col="{ span: 4 }" :wrapper-col="{ span: 24 }" autocomplete="off" @finish="submitForm">
+        <a-form-item v-if="btnType !== handleType.reApply" label="处理意见" name="comment">
+          <a-textarea type="textarea" v-model:value="form.comment" :rows="5" />
+        </a-form-item>
+        <div v-show="btnType == 2">
+          <a-form-item label="退回节点" name="targetKey" v-if="returnTaskList.length">
+            <a-select v-model:value="form.targetKey" name="targetKey" @change="targetKeyChange">
+              <template v-for="item in returnTaskList" :key="`${item.id}`">
+                <a-select-option :value="item.id">{{ item.name }}</a-select-option>
+              </template>
+            </a-select>
+          </a-form-item>
+          <span v-else>无可退回节点！</span>
+        </div>
+        <a-form-item :wrapper-col="{ offset: 4, span: 16 }" style="text-align: center; padding-bottom: 20px">
+          <a-button type="primary" html-type="submit">提交</a-button>
+        </a-form-item>
+      </a-form>
+    </div>
+  </a-modal>
 </template>
 
 <script lang="tsx">
+  import { Modal } from 'ant-design-vue';
   import { defineComponent, reactive, ref, toRefs, watch, watchEffect, computed, Ref, UnwrapRef, toRaw, onMounted } from 'vue';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { Description } from '/@/components/Description/index';
   import { PageWrapper } from '/@/components/Page';
-  import { taskHiList } from '../todoList.api';
+  import { completeTask, rejectTask, returnList, returnTaskInterface, taskHiList } from '../todoList.api';
   import { useGlobSetting } from '@/hooks/setting';
   import { BasicTable } from '@/components/Table';
   import { schemas } from '@/views/settlement/apply/workflow_data';
-  import {
-    queryApplyFilesByProjectId,
-    queryApplyFilesByBizId,
-    getSubFileMenu,
-    batchDelete,
-  } from '@/views/settlement/files/ApplyFiles.api';
+  import { queryApplyFilesByProjectId, queryApplyFilesByBizId, getSubFileMenu, batchDelete } from '@/views/settlement/files/ApplyFiles.api';
   import { JVxeTable } from '@/components/jeecg/JVxeTable';
   import { applyFilesColumns } from '@/views/settlement/project/ApplyProject.data';
   import WorkHandleBtn from './WorkHandleBtn.vue';
@@ -253,13 +280,24 @@
   import { saveOrUpdateFile, batchDelete as batchDeleteFile, saveOrUpdate as saveOrUpdateFiles } from '@/views/settlement/files/ApplyFiles.api';
   import { JVxeLinkageConfig } from '@/components/jeecg/JVxeTable/src/types';
   import { useMessage } from '@/hooks/web/useMessage';
+  import { JVxeTableInstance } from '@/components/jeecg/JVxeTable/types';
+  import { useFormRules, useFormValid } from '@/views/sys/login/useLogin';
+  import { useUserStore } from '@/store/modules/user';
+  import user from '../../../../../mock/sys/user';
   const { createMessage, createWarningModal } = useMessage();
+  const userStore = useUserStore();
+
+  // interface FormState {
+  //   name: string;
+  //   delivery: boolean;
+  //   type: string[];
+  //   resource: string;
+  //   desc: string;
+  // }
   interface FormState {
-    name: string;
-    delivery: boolean;
-    type: string[];
-    resource: string;
-    desc: string;
+    comment: string;
+    targetKey: string;
+    candidateUsersSelecteds: string[];
   }
   interface flowRecord {
     id: string;
@@ -280,10 +318,10 @@
   export default defineComponent({
     components: { BasicForm, JVxeTable, BasicTable, Description, PageWrapper, BasicDrawer, WorkHandleBtn },
     props: {
-      showApplyButton: {
-        type: Boolean,
-        default: false,
-      },
+      // showApplyButton: {
+      //   type: Boolean,
+      //   default: false,
+      // },
     },
     emits: ['handeleSuccess'],
     setup(props, { emit }) {
@@ -294,13 +332,24 @@
       const finalFilesShow = ref(true);
       const preliminaryFilesShow = ref(true);
       const reviewFilesShow = ref(true);
+      const showApplyButton = ref(false);
       const approvalComment = ref('');
       const bizId = ref('');
       const projectId = ref('');
+      const requestFilesRef = ref<JVxeTableInstance>();
+      const projectFilesRef = ref<JVxeTableInstance>();
+      const changeFilesRef = ref<JVxeTableInstance>();
+      const preliminaryFilesRef = ref<JVxeTableInstance>();
+      const reviewFilesRef = ref<JVxeTableInstance>();
+      const finalFilesRef = ref<JVxeTableInstance>();
       const toolbarConfig = reactive({
         // add 新增按钮；remove 删除按钮；clearSelection 清空选择按钮
-        btn: ['add', 'save', 'remove', 'clearSelection'],
+        btn: [],
       });
+      const formRef = ref();
+      const userid = userStore.getUserInfo?.username;
+      // 创建一个响应式引用，用来覆盖 showApplyButton 的值
+
       // 选择的行
       const selectedRows = ref<Recordable[]>([]);
       // 数据源，控制表格的数据
@@ -340,17 +389,66 @@
         columns: applyFilesColumns,
         show: false,
       });
+
       const loading = ref(false);
       const activeKey = ref('applyInfo');
       const glob = useGlobSetting();
       const flowRecordList: Ref<flowRecord[]> = ref([]); // 流程流转数据
+      const todoUsers = ref([]);
+      const handleType = {
+        // 通过
+        pass: 0,
+        // 驳回
+        back: 1,
+        // 退回
+        return: 2,
+        // 重新提交
+        reApply: 3,
+        delegate: 4,
+      };
+      const btnType = ref(0);
+      const returnTaskList = ref([]);
+      const modalTaskVisible = ref(false);
+      const submitLoading = ref(false);
+      const form = reactive<FormState>({
+        comment: '',
+        targetKey: '',
+        candidateUsersSelecteds: [],
+      });
+
+      let modalTaskTitle = ref('');
+      function handleCancel() {
+        modalTaskVisible.value = false;
+      }
       //表单配置
       const [registerForm, { updateSchema, setFieldsValue, getFieldsValue, resetFields, validate, clearValidate }] = useForm({
         labelWidth: 150,
         schemas: schemas,
         showActionButtonGroup: false,
       });
+      function checkAndWarnIfDataNotSaved(tableRef) {
+        const table = tableRef.value;
+        if (table && table.getNewData() && table.getNewData().length > 0) {
+          Modal.warning({
+            title: '数据未保存',
+            content: '当前修改数据未保存，请先点击保存',
+          });
+          return true; // 表示有未保存的数据
+        }
+        return false; // 表示数据已保存或者没有表格对象
+      }
       async function handleChangePanel(key) {
+        // 调用函数进行检查
+        if (
+          checkAndWarnIfDataNotSaved(requestFilesRef) ||
+          checkAndWarnIfDataNotSaved(projectFilesRef) ||
+          checkAndWarnIfDataNotSaved(changeFilesRef) ||
+          checkAndWarnIfDataNotSaved(preliminaryFilesRef) ||
+          checkAndWarnIfDataNotSaved(reviewFilesRef) ||
+          checkAndWarnIfDataNotSaved(finalFilesRef)
+        ) {
+          return;
+        }
         activeKey.value = key;
         console.log(key);
         if (key == 'requestFiles') {
@@ -373,7 +471,7 @@
           finalFilesTable.dataSource = groupedArray;
         }
       }
-      onMounted(async () => {});
+
       function updateDisabledStatus(fieldName, disabled) {
         // 直接访问要更新的字段
         const targetField = schemas.find((field) => field.field === fieldName);
@@ -389,6 +487,14 @@
         projectId.value = newData.formData.projectId;
         currentFlowNodeId.value = newData.currentFlowNodeId;
         flowRecordList.value = newData.flowList;
+        todoUsers.value = newData.todoUsers;
+        debugger;
+        if (todoUsers.value.includes(userid)) {
+          showApplyButton.value = true;
+          toolbarConfig.btn = ['add', 'save', 'remove', 'clearSelection'];
+        } else {
+          showApplyButton.value = false;
+        }
         updateDisabledStatus('amounts', true);
         updateDisabledStatus('reviewDate', true);
         updateDisabledStatus('firstAmounts', true);
@@ -404,17 +510,25 @@
             finalFilesShow.value = false;
             updateDisabledStatus('amounts', false);
             updateDisabledStatus('reviewDate', false);
-          } else if (currentFlowNodeId.value == 'Activity_061uiis' || currentFlowNodeId.value == 'Activity_0ujjxwl') {
+          } else if (
+            currentFlowNodeId.value == 'Activity_061uiis' ||
+            currentFlowNodeId.value == 'Activity_0ujjxwl' ||
+            currentFlowNodeId.value == 'Activity_1keife4'
+          ) {
             //当前审批节点-初审
             updateDisabledStatus('firstAmounts', false);
             updateDisabledStatus('totalArea', false);
             //申请节点
             reviewFilesShow.value = false;
             finalFilesShow.value = false;
-          } else if (currentFlowNodeId.value == 'Activity_1ltzfvn' || currentFlowNodeId.value == 'Activity_1vhi94l') {
+          } else if (
+            currentFlowNodeId.value == 'Activity_1vhi94l' ||
+            currentFlowNodeId.value == 'Activity_11yqg39' ||
+            currentFlowNodeId.value == 'Activity_0tvz5zl'
+          ) {
             updateDisabledStatus('secondAmounts', false);
             finalFilesShow.value = false;
-          } else if (currentFlowNodeId.value == 'Activity_18zvw97' || currentFlowNodeId.value == 'Activity_1ltzfvn') {
+          } else if (currentFlowNodeId.value == 'Activity_18zvw97' || currentFlowNodeId.value == 'Activity_0lwfr9d') {
             updateDisabledStatus('thirdAmounts', false);
           } else {
           }
@@ -519,27 +633,178 @@
       function handleSelectRowChange(event) {
         selectedRows.value = event.selectedRows;
       }
-      // 联动配置
-      const linkageConfig = ref<JVxeLinkageConfig[]>([
-        // 可配置多个联动
-        { requestData: requestFileType, key: 'fc' },
-      ]);
-      /** 查询后台真实数据 */
-      async function requestFileType(parent) {
+      // const resConfig = async function requestFileType(parent) {
+      //   let result;
+      //   result = await getSubFileMenu({ parent: parent });
+      //   // 返回的数据里必须包含 value 和 text 字段
+      //   return result.map((item) => ({ value: item.id, text: item.name }));
+      // };
+      const resConfig = async function requestFileType(parent, filterId) {
         let result;
         result = await getSubFileMenu({ parent: parent });
         // 返回的数据里必须包含 value 和 text 字段
-        return result.map((item) => ({ value: item.id, text: item.name }));
-      }
-      function handleSuccess() {
-        let data = getFieldsValue();
-        saveOrUpdate(data, true);
-        emit('success');
-      }
-      async function handleValidate() {
+        return result.filter((item) => item.id === filterId || item.parent === filterId).map((item) => ({ value: item.id, text: item.name }));
+      };
+      const linkageConfig1 = ref<JVxeLinkageConfig[]>([
+        // 可配置多个联动
+        { requestData: (parent) => resConfig(parent, '1'), key: 'fc' },
+      ]);
+      const linkageConfig2 = ref<JVxeLinkageConfig[]>([
+        // 可配置多个联动
+        { requestData: (parent) => resConfig(parent, '2'), key: 'fc' },
+      ]);
+      const linkageConfig3 = ref<JVxeLinkageConfig[]>([
+        // 可配置多个联动
+        { requestData: (parent) => resConfig(parent, '3'), key: 'fc' },
+      ]);
+      const linkageConfig4 = ref<JVxeLinkageConfig[]>([
+        // 可配置多个联动
+        { requestData: (parent) => resConfig(parent, '4'), key: 'fc' },
+      ]);
+      const linkageConfig5 = ref<JVxeLinkageConfig[]>([
+        // 可配置多个联动
+        { requestData: (parent) => resConfig(parent, '5'), key: 'fc' },
+      ]);
+      const linkageConfig6 = ref<JVxeLinkageConfig[]>([
+        // 可配置多个联动
+        { requestData: (parent) => resConfig(parent, '6'), key: 'fc' },
+      ]);
+      function handleSuccess() {}
+      /** 查询后台真实数据 */
+      async function submitForm() {
+        if (
+          checkAndWarnIfDataNotSaved(requestFilesRef) ||
+          checkAndWarnIfDataNotSaved(projectFilesRef) ||
+          checkAndWarnIfDataNotSaved(changeFilesRef) ||
+          checkAndWarnIfDataNotSaved(preliminaryFilesRef) ||
+          checkAndWarnIfDataNotSaved(reviewFilesRef) ||
+          checkAndWarnIfDataNotSaved(finalFilesRef)
+        ) {
+          return;
+        }
+        const data = await validate();
+        if (!data) return;
         debugger;
-        const values = await validate();
-        console.log(values);
+        let formdata = getFieldsValue();
+        saveOrUpdate(formdata, true, handelSubmit);
+      }
+
+      function handle(type) {
+        btnType.value = type;
+        form.comment = '';
+        if (type === handleType.delegate) {
+          // delegateTask();
+        } else if (type === handleType.pass) {
+          passTask();
+        } else if (type === handleType.back) {
+          backTask();
+        } else if (type === handleType.return) {
+          returnTask();
+        } else if (type === handleType.reApply) {
+          reApply();
+        }
+      }
+
+      function reApply() {
+        modalTaskTitle.value = '确认重新提交';
+        modalTaskVisible.value = true;
+      }
+
+      function passTask() {
+        modalTaskTitle.value = '审批通过';
+        modalTaskVisible.value = true;
+      }
+
+      function backTask() {
+        modalTaskTitle.value = '审批驳回';
+        modalTaskVisible.value = true;
+      }
+
+      function returnTask() {
+        modalTaskTitle.value = '审批退回';
+        modalTaskVisible.value = true;
+        returnList({ dataId: bizId.value }).then((res) => {
+          returnTaskList.value = res || [];
+          // console.log(returnTaskList)
+        });
+      }
+
+      async function handelSubmit() {
+        console.log('提交');
+        submitLoading.value = true;
+        var formData = {
+          dataId: bizId.value,
+          candidateUsers: form.candidateUsersSelecteds,
+          values: {},
+          comment: form.comment,
+          targetKey: form.targetKey,
+        };
+        if (btnType.value == handleType.reApply) {
+          formData.comment = '重新提交';
+        }
+        if (!formData.comment) {
+          $message.createErrorModal({ title: 'Tip', content: '请输入审批意见！' });
+          submitLoading.value = false;
+          return;
+        }
+        if (btnType.value == handleType.reApply || btnType.value == handleType.pass) {
+          // 通过
+          completeTask(formData)
+            .then((res) => {
+              submitLoading.value = false;
+              if (res == 'success') {
+                // $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
+                emit('success');
+              } else {
+                // $message.createErrorModal({ title: 'Tip', content: '操作失败' });
+              }
+            })
+            .finally(() => {
+              submitLoading.value = false;
+              modalTaskVisible.value = false;
+            });
+        } else if (btnType.value == handleType.back) {
+          // 驳回
+          rejectTask(formData)
+            .then((res) => {
+              submitLoading.value = false;
+              if (res == 'success') {
+                // $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
+                emit('success');
+              } else {
+                // $message.createErrorModal({ title: 'Tip', content: '操作失败' });
+              }
+            })
+            .finally(() => {
+              submitLoading.value = false;
+              modalTaskVisible.value = false;
+            });
+        } else if (btnType.value == handleType.return) {
+          if (!formData.targetKey) {
+            $message.createErrorModal({ title: 'Tip', content: '请选择退回节点！' });
+            submitLoading.value = false;
+            return;
+          }
+          //退回
+          returnTaskInterface(formData)
+            .then((res) => {
+              submitLoading.value = false;
+              if (res == 'success') {
+                // $message.createSuccessModal({ title: 'Tip', content: '操作成功' });
+                modalTaskVisible.value = false;
+                emit('success');
+              } else {
+                // $message.createErrorModal({ title: 'Tip', content: '操作失败' });
+              }
+            })
+            .finally(() => {
+              submitLoading.value = false;
+            });
+        }
+      }
+      function targetKeyChange() {
+        form.candidateUsersSelecteds = [];
+        // $emit('targetKeyChange', form.targetKey);
       }
       return {
         mockData,
@@ -563,7 +828,12 @@
         bizId,
         flowRecordList,
         toolbarConfig,
-        linkageConfig,
+        linkageConfig1,
+        linkageConfig2,
+        linkageConfig3,
+        linkageConfig4,
+        linkageConfig5,
+        linkageConfig6,
         handleTableSave,
         handleTableRemove,
         handleEditClosed,
@@ -571,9 +841,26 @@
         handleSelectRowChange,
         setColor,
         registerForm,
-        handleSuccess,
-        handleValidate,
+        submitForm,
         currentFlowNodeId,
+        requestFilesRef,
+        projectFilesRef,
+        changeFilesRef,
+        preliminaryFilesRef,
+        reviewFilesRef,
+        finalFilesRef,
+        handle,
+        handelSubmit,
+        handleCancel,
+        modalTaskTitle,
+        modalTaskVisible,
+        returnTaskList,
+        targetKeyChange,
+        btnType,
+        handleType,
+        form,
+        formRef,
+        showApplyButton,
       };
     },
   });

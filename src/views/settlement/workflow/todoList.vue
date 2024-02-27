@@ -14,7 +14,7 @@
         <a-tag type="success" v-else class="pending">已办理</a-tag>
       </template>
     </BasicTable>
-    <ProcessUpdate @register="register1" :showApplyButton="true" @success="handeleSuccess" v-show="active === '1'" />
+    <ProcessUpdate @register="register1" @success="handeleSuccess" v-show="active === '1'" />
     <SupplierUpdate @register="register2" :showApplyButton="true" @success="handeleSuccess" v-show="active === '2'" />
   </div>
 </template>
@@ -121,6 +121,7 @@
         }
       }
       function handeleSuccess() {
+        debugger;
         if (procDefName.value.includes('结算')) {
           closeDrawer1();
         } else {
