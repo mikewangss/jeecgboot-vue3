@@ -55,6 +55,7 @@ export interface IJVxeColumn extends VxeColumnProps {
   token?: boolean; // 是否传递 token
   responseName?: string; // 返回取值名称
   action?: string; // 上传地址
+  allowPreview?: boolean; // 是否允许预览
   allowRemove?: boolean; // 是否允许删除
   allowDownload?: boolean; // 是否允许下载
   // 【下拉字典搜索】

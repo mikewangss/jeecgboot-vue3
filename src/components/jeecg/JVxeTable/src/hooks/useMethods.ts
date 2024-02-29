@@ -37,6 +37,7 @@ export function useMethods(props: JVxeTableProps, { emit }, data: JVxeDataProps,
     getIfRowById,
     getNewRowById,
     getDeleteData,
+    removeInsertRow,
     getSelectionData,
     getSelectedData,
     removeRows,
@@ -465,7 +466,10 @@ export function useMethods(props: JVxeTableProps, { emit }, data: JVxeDataProps,
     }
     return filterNewRows(tableData, false);
   }
-
+  function removeInsertRow() {
+    let xTable = getXTable();
+    xTable.removeInsertRow();
+  }
   /** 仅获取新增的数据 */
   function getNewData() {
     let newData = getNewDataWithId();

@@ -52,8 +52,12 @@
   import { list, deleteOne, batchDelete, getImportUrl, getExportUrl } from './ApplyFiles.api';
   import { downloadFile } from '/@/utils/common/renderUtils';
   import { useUserStore } from '/@/store/modules/user';
+  import { useGlobSetting } from '@/hooks/setting';
+  import { Base64 } from 'js-base64';
   const checkedKeys = ref<Array<string | number>>([]);
   const userStore = useUserStore();
+  const glob = useGlobSetting();
+
   //注册model
   const [registerModal, { openModal }] = useModal();
   //注册table数据
@@ -147,13 +151,28 @@
     ];
   }
   /**
+   * 预览
+   */
+  function handleView(record) {
+    if (record && record.file) {
+      console.log('glob.onlineUrl', glob.viewUrl);
+      let filePath = encodeURIComponent(Base64.encode(record.file));
+      //文档采用pdf预览高级模式
+      // if(filePath.endsWith(".pdf") || filePath.endsWith(".doc") || filePath.endsWith(".docx")){
+      //   filePath = filePath + '&officePreviewType=pdf'
+      // }
+      let url = `${glob.viewUrl}?url=` + filePath;
+      window.open(url, '_blank');
+    }
+  }
+  /**
    * 下拉操作栏
    */
   function getDropDownAction(record) {
     return [
       {
-        label: '详情',
-        onClick: handleDetail.bind(null, record),
+        label: '预览',
+        onClick: handleView.bind(null, record),
       },
       {
         label: '删除',

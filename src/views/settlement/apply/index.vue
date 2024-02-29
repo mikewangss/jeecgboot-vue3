@@ -1,5 +1,5 @@
 <template>
-  <PageWrapper title="结算申请" contentBackground content=" 将一个冗长或用户不熟悉的表单任务分成多个步骤，指导用户完成。" contentClass="p-4">
+  <PageWrapper title="结算申请" contentBackground content=" 请按照提示信息进行申报，注意申报材料的合规性" contentClass="p-4">
     <div class="step-form-form">
       <a-steps :current="current">
         <a-step title="结算主体信息" />

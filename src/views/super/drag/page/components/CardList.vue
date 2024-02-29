@@ -86,7 +86,6 @@
   import { useMessage } from '/@/hooks/web/useMessage';
   import { getFileAccessHttpUrl } from '/@/utils/common/compUtils';
   import { usePermission } from '/@/hooks/web/usePermission';
-  
   const { hasPermission } = usePermission();
   const ListItem = List.Item;
   const defCover = 'https://jeecgdev.oss-cn-beijing.aliyuncs.com/temp/designCover_1655434422024.png';
@@ -306,7 +305,7 @@
    * 判断是否有模板操作权限
    */
   function hasAuth(){
-    return hasPermission('drag:template:edit')
+    return hasPermission('drag:template:edit');
   }
   /**
    * 是否包含保护码

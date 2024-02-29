@@ -23,6 +23,9 @@
           </a-tooltip>
           <template #overlay>
             <a-menu>
+              <a-menu-item v-if="originColumn.allowPreview !== false" @click="handleClickPreviewFile">
+                <span><Icon icon="ant-design:eye-outlined" />&nbsp;预览</span>
+              </a-menu-item>
               <a-menu-item v-if="originColumn.allowDownload !== false" @click="handleClickDownloadFile">
                 <span><Icon icon="ant-design:download" />&nbsp;下载</span>
               </a-menu-item>

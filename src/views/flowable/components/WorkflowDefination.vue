@@ -8,45 +8,6 @@
       <div class="my-process-designer__canvas" ref="bpmn-canvas"></div>
     </div>
   </div>
-  <el-card style="margin-top: 10px">
-    <p slot="title">
-      <span>流程审批进度历史</span>
-    </p>
-    <el-row style="position: relative">
-      <div class="block">
-        <el-timeline>
-          <el-timeline-item v-for="(item, index) in flowRecordList" :key="index" :color="setColor(item.finishTime)">
-            <p style="font-weight: 700"
-              >{{ item.taskName }}
-              <i v-if="!item.finishTime" style="color: orange">(待办中。。。)</i>
-            </p>
-
-            <el-card :body-style="{ padding: '10px' }">
-              <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px"
-                >实际办理人： {{ item.assigneeName }} <el-tag type="info" size="small">{{ item.deptName }}</el-tag></label
-              >
-              <label v-if="item.candidate" style="font-weight: normal; margin-right: 30px">候选办理人： {{ item.candidate }}</label>
-              <label style="font-weight: normal">接收时间： </label><label style="color: #8a909c; font-weight: normal">{{ item.createTime }}</label>
-              <label v-if="item.finishTime" style="margin-left: 30px; font-weight: normal">办结时间： </label
-              ><label style="color: #8a909c; font-weight: normal">{{ item.finishTime }}</label>
-              <label v-if="item.duration" style="margin-left: 30px; font-weight: normal">耗时： </label
-              ><label style="color: #8a909c; font-weight: normal">{{ item.duration }}</label>
-
-              <p v-if="item.comment">
-                <!--  1 正常意见  2 退回意见 3 驳回意见                -->
-                <el-tag color="green" v-if="item.comment.type === '1'">
-                  <span v-if="item.comment.comment != '重新提交'">通过：</span>
-                  {{ item.comment.comment }}
-                </el-tag>
-                <el-tag color="orange" v-if="item.comment.type === '2'">退回： {{ item.comment.comment }}</el-tag>
-                <el-tag color="red" v-if="item.comment.type === '3'">驳回： {{ item.comment.comment }}</el-tag>
-              </p>
-            </el-card>
-          </el-timeline-item>
-        </el-timeline>
-      </div>
-    </el-row>
-  </el-card>
 </template>
 
 <script>
@@ -87,8 +48,7 @@
   import 'codemirror/theme/monokai.css';
   import 'codemirror/mode/javascript/javascript.js';
   import 'codemirror/mode/xml/xml.js';
-  import { saveXml } from '@/views/flowable/api/defination.api';
-  import { readXmlByDataId, taskHiList } from '@/views/settlement/workflow/todoList.api';
+  import { readXml, saveXml } from '@/views/flowable/api/defination.api';
 
   export default {
     name: 'MyProcessDesigner',
@@ -147,46 +107,7 @@
     computed: {
       additionalModules() {
         const Modules = [];
-        // 仅保留用户自定义扩展模块
-        // if (this.onlyCustomizeAddi) {
-        //   if (Object.prototype.toString.call(this.additionalModel) === '[object Array]') {
-        //     return this.additionalModel || [];
-        //   }
-        //   return [this.additionalModel];
-        // }
-
-        // // 插入用户自定义扩展模块
-        // if (Object.prototype.toString.call(this.additionalModel) === '[object Array]') {
-        //   Modules.push(...this.additionalModel);
-        // } else {
-        //   this.additionalModel && Modules.push(this.additionalModel);
-        // }
-
-        // 翻译模块
-        // const TranslateModule = {
-        //   translate: ['value', customTranslate(this.translations || translationsCN)],
-        // };
-        // Modules.push(TranslateModule);
-
-        // 模拟流转模块
-        // if (this.simulation) {
-        //   Modules.push(tokenSimulation);
-        // }
-
-        // 根据需要的流程类型设置扩展元素构建模块
-        // if (this.prefix === "bpmn") {
-        //   Modules.push(bpmnModdleExtension);
-        // }
         Modules.push(flowableModdleExtension);
-        // if (this.prefix === 'camunda') {
-        //   Modules.push(camundaModdleExtension);
-        // }
-        // if (this.prefix === 'flowable') {
-        // }
-        // if (this.prefix === 'activiti') {
-        //   Modules.push(activitiModdleExtension);
-        // }
-
         return Modules;
       },
       moddleExtensions() {
@@ -220,12 +141,6 @@
     mounted() {
       this.initBpmnModeler();
       this.createNewDiagram(this.value);
-      this.getFlowRecordList();
-      // this.$once("hook:beforeUnmount", () => {
-      //   if (this.bpmnModeler) this.bpmnModeler.destroy();
-      //   this.$emit("destroy", this.bpmnModeler);
-      //   this.bpmnModeler = null;
-      // });
     },
     beforeUnmount() {
       if (this.bpmnModeler) this.bpmnModeler.destroy();
@@ -240,47 +155,6 @@
           return '#b3bdbb';
         }
       },
-      /** 流程流转记录 */
-      async getFlowRecordList() {
-        const params = { dataId: this.dataId };
-        await taskHiList(params)
-          .then((res) => {
-            // console.log(res)
-            this.flowRecordList = res.flowList;
-            // this.finishOrder();
-            // 流程过程中不存在初始化表单 直接读取的流程变量中存储的表单值
-            if (res.formData) {
-              this.formData = res.formData;
-            }
-          })
-          .catch((res) => {
-            console.log(res);
-          });
-      },
-      // //整理顺序，把待办放最上面，并且只留一个（不然会签时会乱）
-      // finishOrder() {
-      //   let list = [];
-      //   let noFinish = undefined;
-      //   for (const flow of this.flowRecordList) {
-      //     if (flow.finishTime) {
-      //       // 办结的节点同时取有实际办理人的，因为会签会将所有的多实例都返回，需要过滤
-      //       if (flow.assigneeId) {
-      //         list.push(flow);
-      //       }
-      //     } else {
-      //       noFinish = flow;
-      //     }
-      //   }
-      //   if (noFinish.value) {
-      //     const find = list.find((obj) => obj.taskDefKey == noFinish.taskDefKey);
-      //     if (find) {
-      //       noFinish.value.taskName = '【会签中】' + noFinish.value.taskName;
-      //     }
-      //     this.flowRecordList = [noFinish, ...list];
-      //   } else {
-      //     this.flowRecordList = list;
-      //   }
-      // },
       initBpmnModeler() {
         if (this.bpmnModeler) return;
         this.bpmnModeler = new BpmnModeler({
@@ -292,41 +166,10 @@
         this.$emit('init-finished', this.bpmnModeler);
         // this.initModelListeners();
       },
-      // initModelListeners() {
-      //   const EventBus = this.bpmnModeler.get('eventBus');
-      //   const that = this;
-      //   // 注册需要的监听事件, 将. 替换为 - , 避免解析异常
-      //   this.events.forEach((event) => {
-      //     EventBus.on(event, function (eventObj) {
-      //       let eventName = event.replace(/\./g, '-');
-      //       let element = eventObj ? eventObj.element : null;
-      //       that.$emit(eventName, element, eventObj);
-      //     });
-      //   });
-      // 监听图形改变返回xml
-      // EventBus.on('commandStack.changed', async (event) => {
-      //   try {
-      //     this.recoverable = this.bpmnModeler.get('commandStack').canRedo();
-      //     this.revocable = this.bpmnModeler.get('commandStack').canUndo();
-      //     let { xml } = await this.bpmnModeler.saveXML({ format: true });
-      //     this.$emit('commandStack-changed', event);
-      //     this.$emit('update:modelValue', xml);
-      //     this.$emit('change', xml);
-      //   } catch (e) {
-      //     console.error(`[Process Designer Warn]: ${e.message || e}`);
-      //   }
-      // });
-      // 监听视图缩放变化
-      // this.bpmnModeler.on('canvas.viewbox.changed', ({ viewbox }) => {
-      //   this.$emit('canvas-viewbox-changed', { viewbox });
-      //   const { scale } = viewbox;
-      //   this.defaultZoom = Math.floor(scale * 100) / 100;
-      // });
-      // },
       /* 创建新的流程图 */
       async createNewDiagram() {
         // 发送请求，获取xml
-        const res = await readXmlByDataId(this.dataId);
+        const res = await readXml(this.dataId);
         this.xmlString = res;
         debugger;
         try {
@@ -485,19 +328,6 @@
           this.cmOptions.mode = 'xml';
           this.previewModelVisible = true;
         });
-      },
-      previewProcessJson() {
-        // const newConvert = new X2JS();
-        // this.bpmnModeler.saveXML({ format: true }).then(({ xml }) => {
-        //   const { definitions } = newConvert.xml2js(xml);
-        //   if (definitions) {
-        //     this.previewResult = JSON.stringify(definitions, null, 4);
-        //   } else {
-        //     this.previewResult = "";
-        //   }
-        //   this.previewType = "json";
-        //   this.previewModelVisible = true;
-        // });
       },
     },
   };

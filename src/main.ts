@@ -38,7 +38,6 @@ async function bootstrap() {
     app.component(key, icons[key]);
   });
   app.use(MyPD);
-
   // 多语言配置,异步情况:语言文件可以从服务器端获得
   await setupI18n(app);
 

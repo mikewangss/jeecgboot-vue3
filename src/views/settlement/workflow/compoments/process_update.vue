@@ -3,63 +3,10 @@
     <PageWrapper title="结算审批单">
       <template #extra>
         <a-button btnType="primary" type="3" @click="handle(3)" v-if="showApplyButton && currentFlowNodeId == 'start'">提交</a-button>
-        <a-button btnType="primary" type="1" @click="handle(1)" v-if="showApplyButton && currentFlowNodeId == 'start'">保存</a-button>
+<!--        <a-button btnType="primary" type="1" @click="handle(1)" v-if="showApplyButton && currentFlowNodeId == 'start'">保存</a-button>-->
         <a-button btnType="primary" type="0" @click="handle(0)" v-if="showApplyButton && currentFlowNodeId != 'start'">通过</a-button>
         <a-button btnType="primary" type="2" @click="handle(2)" danger v-if="showApplyButton && currentFlowNodeId != 'start'">退回</a-button>
       </template>
-      <!--      <template v-if="showApplyButton" #extra>-->
-      <!--        <WorkHandleBtn-->
-      <!--          @submitForm="submitForm"-->
-      <!--          @handleValidate="handleValidate"-->
-      <!--          btnType="primary"-->
-      <!--          :dataId="bizId"-->
-      <!--          :type="3"-->
-      <!--          text="提交"-->
-      <!--          v-if="currentFlowNodeId == 'start'"-->
-      <!--          :candidateUsers="[]"-->
-      <!--          :variables="{ assigneeList: [], outcome: '重新提交' }"-->
-      <!--        />-->
-      <!--        <WorkHandleBtn-->
-      <!--          @submitForm="submitForm"-->
-      <!--          :dataId="bizId"-->
-      <!--          :type="1"-->
-      <!--          text="保存"-->
-      <!--          v-if="currentFlowNodeId == 'start'"-->
-      <!--          :candidateUsers="[]"-->
-      <!--          :variables="{ assigneeList: [], outcome: '删除' }"-->
-      <!--        />-->
-      <!--        <WorkHandleBtn-->
-      <!--          @submitForm="submitForm"-->
-      <!--          @handleValidate="handleValidate"-->
-      <!--          btnType="primary"-->
-      <!--          :dataId="bizId"-->
-      <!--          :type="0"-->
-      <!--          text="通过"-->
-      <!--          v-if="currentFlowNodeId != 'start'"-->
-      <!--          :candidateUsers="[]"-->
-      <!--          :variables="{ assigneeList: [], outcome: '通过' }"-->
-      <!--        />-->
-      <!--        &lt;!&ndash;        <WorkHandleBtn&ndash;&gt;-->
-      <!--        &lt;!&ndash;          @submitForm="submitForm"&ndash;&gt;-->
-      <!--        &lt;!&ndash;          :dataId="bizId"&ndash;&gt;-->
-      <!--        &lt;!&ndash;          :type="1"&ndash;&gt;-->
-      <!--        &lt;!&ndash;          text="驳回"&ndash;&gt;-->
-      <!--        &lt;!&ndash;          v-if="currentFlowNodeId != 'start'"&ndash;&gt;-->
-      <!--        &lt;!&ndash;          :candidateUsers="[]"&ndash;&gt;-->
-      <!--        &lt;!&ndash;          :variables="{ assigneeList: [], outcome: '驳回' }"&ndash;&gt;-->
-      <!--        &lt;!&ndash;        />&ndash;&gt;-->
-      <!--        <WorkHandleBtn-->
-      <!--          @submitForm="submitForm"-->
-      <!--          btnType="primary"-->
-      <!--          :dataId="bizId"-->
-      <!--          :type="2"-->
-      <!--          :is-danger="true"-->
-      <!--          text="退回"-->
-      <!--          v-if="currentFlowNodeId != 'start'"-->
-      <!--          :candidateUsers="[]"-->
-      <!--          :variables="{ assigneeList: [], outcome: '退回' }"-->
-      <!--        />-->
-      <!--      </template>-->
       <template #footer>
         <a-tabs v-model:activeKey="activeKey" @tabClick="handleChangePanel">
           <a-tab-pane tab="申请明细" key="applyInfo" :forceRender="true">
@@ -89,16 +36,15 @@
                         ><label style="color: #8a909c; font-weight: normal">{{ item.finishTime }}</label>
                         <label v-if="item.duration" style="margin-left: 30px; font-weight: normal">耗时： </label
                         ><label style="color: #8a909c; font-weight: normal">{{ item.duration }}</label>
-
-                        <p v-if="item.comment">
+                        <div v-if="item.comment">
                           <!--  1 正常意见  2 退回意见 3 驳回意见                -->
                           <a-tag color="green" v-if="item.comment.type === '1'">
-                            <span v-if="item.comment.comment != '重新提交'">通过：</span>
-                            {{ item.comment.comment }}
+                            <span v-if="item.comment.comment != '重新提交'">通过</span>
                           </a-tag>
-                          <a-tag color="orange" v-if="item.comment.type === '2'">退回： {{ item.comment.comment }}</a-tag>
-                          <a-tag color="red" v-if="item.comment.type === '3'">驳回： {{ item.comment.comment }}</a-tag>
-                        </p>
+                          <a-tag color="orange" v-if="item.comment.type === '2'">退回</a-tag>
+                          <a-tag color="red" v-if="item.comment.type === '3'">驳回</a-tag>
+                          {{ item.comment.comment }}
+                        </div>
                       </a-card>
                     </el-timeline-item>
                   </el-timeline>
@@ -108,10 +54,11 @@
           </a-tab-pane>
           <a-tab-pane tab="报审结算材料" key="requestFiles" :forceRender="true">
             <JVxeTable
-              :toolbarConfig="toolbarConfig"
+              :toolbarConfig="toolbarConfig1"
               keep-source
               resizable
               ref="requestFilesRef"
+              :disabledRows="requestFilesTable.disabledRows"
               :loading="requestFilesTable.loading"
               :columns="requestFilesTable.columns"
               :dataSource="requestFilesTable.dataSource"
@@ -127,33 +74,14 @@
               :linkageConfig="linkageConfig3"
             />
           </a-tab-pane>
-          <a-tab-pane tab="项目附件" key="projectFiles" :forceRender="true">
-            <JVxeTable
-              :toolbarConfig="toolbarConfig"
-              keep-source
-              resizable
-              ref="projectFilesRef"
-              :loading="projectFilesTable.loading"
-              :columns="projectFilesTable.columns"
-              :dataSource="projectFilesTable.dataSource"
-              :height="340"
-              :rowNumber="true"
-              :rowSelection="true"
-              :toolbar="true"
-              @save="handleTableSave"
-              @removed="handleTableRemove"
-              @edit-closed="handleEditClosed"
-              @pageChange="handlePageChange"
-              @selectRowChange="handleSelectRowChange"
-              :linkageConfig="linkageConfig2"
-            />
-          </a-tab-pane>
+
           <a-tab-pane tab="变更签证" key="changeFiles" :forceRender="true">
             <JVxeTable
-              :toolbarConfig="toolbarConfig"
+              :toolbarConfig="toolbarConfig1"
               keep-source
               resizable
               ref="changeFilesRef"
+              :disabledRows="changeFilesTable.disabledRows"
               :loading="changeFilesTable.loading"
               :columns="changeFilesTable.columns"
               :dataSource="changeFilesTable.dataSource"
@@ -169,9 +97,31 @@
               :linkageConfig="linkageConfig1"
             />
           </a-tab-pane>
+          <a-tab-pane tab="项目附件" key="projectFiles" :forceRender="true">
+            <JVxeTable
+              :toolbarConfig="toolbarConfig2"
+              keep-source
+              resizable
+              ref="projectFilesRef"
+              :disabledRows="projectFilesTable.disabledRows"
+              :loading="projectFilesTable.loading"
+              :columns="projectFilesTable.columns"
+              :dataSource="projectFilesTable.dataSource"
+              :height="340"
+              :rowNumber="true"
+              :rowSelection="true"
+              :toolbar="true"
+              @save="handleTableSave"
+              @removed="handleTableRemove"
+              @edit-closed="handleEditClosed"
+              @pageChange="handlePageChange"
+              @selectRowChange="handleSelectRowChange"
+              :linkageConfig="linkageConfig2"
+            />
+          </a-tab-pane>
           <a-tab-pane tab="初审材料" key="preliminaryFiles" :forceRender="true" v-if="preliminaryFilesShow">
             <JVxeTable
-              :toolbarConfig="toolbarConfig"
+              :toolbarConfig="toolbarConfig2"
               keep-source
               resizable
               ref="preliminaryFilesRef"
@@ -192,7 +142,7 @@
           </a-tab-pane>
           <a-tab-pane tab="复审材料" key="reviewFiles" :forceRender="true" v-if="reviewFilesShow">
             <JVxeTable
-              :toolbarConfig="toolbarConfig"
+              :toolbarConfig="toolbarConfig3"
               keep-source
               resizable
               ref="reviewFilesRef"
@@ -213,7 +163,7 @@
           </a-tab-pane>
           <a-tab-pane tab="终审材料" key="finalFiles" :forceRender="true" v-if="finalFilesShow">
             <JVxeTable
-              :toolbarConfig="toolbarConfig"
+              :toolbarConfig="toolbarConfig4"
               keep-source
               resizable
               ref="finalFilesRef"
@@ -283,7 +233,8 @@
   import { JVxeTableInstance } from '@/components/jeecg/JVxeTable/types';
   import { useFormRules, useFormValid } from '@/views/sys/login/useLogin';
   import { useUserStore } from '@/store/modules/user';
-  import user from '../../../../../mock/sys/user';
+  import { usePermission } from '/@/hooks/web/usePermission';
+  const { hasPermission } = usePermission();
   const { createMessage, createWarningModal } = useMessage();
   const userStore = useUserStore();
 
@@ -342,7 +293,19 @@
       const preliminaryFilesRef = ref<JVxeTableInstance>();
       const reviewFilesRef = ref<JVxeTableInstance>();
       const finalFilesRef = ref<JVxeTableInstance>();
-      const toolbarConfig = reactive({
+      const toolbarConfig1 = reactive({
+        // add 新增按钮；remove 删除按钮；clearSelection 清空选择按钮
+        btn: [],
+      });
+      const toolbarConfig2 = reactive({
+        // add 新增按钮；remove 删除按钮；clearSelection 清空选择按钮
+        btn: [],
+      });
+      const toolbarConfig3 = reactive({
+        // add 新增按钮；remove 删除按钮；clearSelection 清空选择按钮
+        btn: [],
+      });
+      const toolbarConfig4 = reactive({
         // add 新增按钮；remove 删除按钮；clearSelection 清空选择按钮
         btn: [],
       });
@@ -358,36 +321,42 @@
         dataSource: [],
         columns: applyFilesColumns,
         show: false,
+        disabledRows: {},
       });
       const projectFilesTable = reactive({
         loading: false,
         dataSource: [],
         columns: applyFilesColumns,
         show: false,
+        disabledRows: {},
       });
       const changeFilesTable = reactive({
         loading: false,
         dataSource: [],
         columns: applyFilesColumns,
         show: false,
+        disabledRows: {},
       });
       const preliminaryFilesTable = reactive({
         loading: false,
         dataSource: [],
         columns: applyFilesColumns,
         show: false,
+        disabledRows: {},
       });
       const reviewFilesTable = reactive({
         loading: false,
         dataSource: [],
         columns: applyFilesColumns,
         show: false,
+        disabledRows: {},
       });
       const finalFilesTable = reactive({
         loading: false,
         dataSource: [],
         columns: applyFilesColumns,
         show: false,
+        disabledRows: {},
       });
 
       const loading = ref(false);
@@ -454,12 +423,42 @@
         if (key == 'requestFiles') {
           const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 3 });
           requestFilesTable.dataSource = groupedArray;
+          if (currentFlowNodeId.value == 'start') {
+            //开始节点限制
+            let filterRows = [];
+            for (const row of groupedArray) {
+              if (row['flag'] == '1') {
+                filterRows.push(row['id']);
+              }
+            }
+            requestFilesTable.disabledRows = { id: filterRows };
+          }
         } else if (key == 'projectFiles') {
           const groupedArray = await queryApplyFilesByProjectId({ projectId: projectId.value, fc: 2 });
           projectFilesTable.dataSource = groupedArray;
+          if (currentFlowNodeId.value == 'start') {
+            //开始节点限制
+            let filterRows = [];
+            for (const row of groupedArray) {
+              if (row['flag'] == '1') {
+                filterRows.push(row['id']);
+              }
+            }
+            projectFilesTable.disabledRows = { id: filterRows };
+          }
         } else if (key == 'changeFiles') {
           const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 1 });
           changeFilesTable.dataSource = groupedArray;
+          if (currentFlowNodeId.value == 'start') {
+            //开始节点限制
+            let filterRows = [];
+            for (const row of groupedArray) {
+              if (row['flag'] == '1') {
+                filterRows.push(row['id']);
+              }
+            }
+            changeFilesTable.disabledRows = { id: filterRows };
+          }
         } else if (key == 'preliminaryFiles') {
           const groupedArray = await queryApplyFilesByBizId({ bizId: bizId.value, fc: 4 });
           preliminaryFilesTable.dataSource = groupedArray;
@@ -488,10 +487,9 @@
         currentFlowNodeId.value = newData.currentFlowNodeId;
         flowRecordList.value = newData.flowList;
         todoUsers.value = newData.todoUsers;
-        debugger;
         if (todoUsers.value.includes(userid)) {
+          //待办用户是否包含当前用户
           showApplyButton.value = true;
-          toolbarConfig.btn = ['add', 'save', 'remove', 'clearSelection'];
         } else {
           showApplyButton.value = false;
         }
@@ -505,30 +503,40 @@
           console.log(currentFlowNodeId);
           if (currentFlowNodeId.value == 'start') {
             //申请节点
+            toolbarConfig1.btn = ['add', 'save', 'remove', 'clearSelection'];
             preliminaryFilesShow.value = false;
             reviewFilesShow.value = false;
             finalFilesShow.value = false;
             updateDisabledStatus('amounts', false);
             updateDisabledStatus('reviewDate', false);
+            updateDisabledStatus('flag', false);
           } else if (
+            //当前审批节点-初审
             currentFlowNodeId.value == 'Activity_061uiis' ||
             currentFlowNodeId.value == 'Activity_0ujjxwl' ||
             currentFlowNodeId.value == 'Activity_1keife4'
           ) {
-            //当前审批节点-初审
+            toolbarConfig2.btn = ['add', 'save', 'remove', 'clearSelection'];
             updateDisabledStatus('firstAmounts', false);
             updateDisabledStatus('totalArea', false);
             //申请节点
             reviewFilesShow.value = false;
             finalFilesShow.value = false;
           } else if (
+            //当前审批节点-二审
             currentFlowNodeId.value == 'Activity_1vhi94l' ||
             currentFlowNodeId.value == 'Activity_11yqg39' ||
             currentFlowNodeId.value == 'Activity_0tvz5zl'
           ) {
+            toolbarConfig3.btn = ['add', 'save', 'remove', 'clearSelection'];
             updateDisabledStatus('secondAmounts', false);
             finalFilesShow.value = false;
-          } else if (currentFlowNodeId.value == 'Activity_18zvw97' || currentFlowNodeId.value == 'Activity_0lwfr9d') {
+          } else if (
+            //当前审批节点-三审
+            currentFlowNodeId.value == 'Activity_18zvw97' ||
+            currentFlowNodeId.value == 'Activity_0lwfr9d'
+          ) {
+            toolbarConfig4.btn = ['add', 'save', 'remove', 'clearSelection'];
             updateDisabledStatus('thirdAmounts', false);
           } else {
           }
@@ -583,6 +591,8 @@
                 return 'success';
               });
             }
+            // 清空删除数据
+            target.removeInsertRow();
           }
         });
       }
@@ -625,7 +635,12 @@
           });
         }
       }
-
+      /**
+       * 判断是否有模板操作权限
+       */
+      function hasAuth() {
+        return hasPermission('drag:template:edit');
+      }
       // 当分页参数变化时触发的事件
       function handlePageChange(event) {}
 
@@ -682,8 +697,12 @@
         ) {
           return;
         }
-        const data = await validate();
-        if (!data) return;
+        if (btnType.value != handleType.back && btnType.value != handleType.return) {
+          const data = await validate();
+          if (!data) {
+            return;
+          }
+        }
         debugger;
         let formdata = getFieldsValue();
         saveOrUpdate(formdata, true, handelSubmit);
@@ -827,7 +846,10 @@
         approvalComment,
         bizId,
         flowRecordList,
-        toolbarConfig,
+        toolbarConfig1,
+        toolbarConfig2,
+        toolbarConfig3,
+        toolbarConfig4,
         linkageConfig1,
         linkageConfig2,
         linkageConfig3,

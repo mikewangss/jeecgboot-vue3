@@ -8,7 +8,8 @@
       </template>
       <!--操作栏-->
       <template #action="{ record }">
-        <TableAction :actions="getTableAction(record)" />
+        <WorkflowDetailBtn :data-id="record.deploymentId" />
+        <TableAction :actions="getTableAction(record)" :dropDownActions="getDropDownAction(record)" />
       </template>
     </BasicTable>
     <!-- 表单区域 -->
@@ -24,6 +25,7 @@
   import FlowableDesignModal from '../components/FlowableDesignModal.vue';
   import { columns, searchFormSchema } from '../api/defination.data';
   import { listDefinition, deleteOne, readXml } from '../api/defination.api';
+  import WorkflowDetailBtn from '@/views/flowable/components/WorkflowDetailBtn.vue';
   //注册model
   const [registerModal, { openModal }] = useModal();
   //注册table数据
@@ -85,6 +87,21 @@
     });
   }
   /**
+   * 预览
+   */
+  function handleView(record) {
+    if (record && record.file) {
+      console.log('glob.onlineUrl', glob.viewUrl);
+      let filePath = encodeURIComponent(Base64.encode(record.file));
+      //文档采用pdf预览高级模式
+      // if(filePath.endsWith(".pdf") || filePath.endsWith(".doc") || filePath.endsWith(".docx")){
+      //   filePath = filePath + '&officePreviewType=pdf'
+      // }
+      let url = `${glob.viewUrl}?url=` + filePath;
+      window.open(url, '_blank');
+    }
+  }
+  /**
    * 删除事件
    */
   async function handleDelete(record) {
@@ -106,11 +123,23 @@
         label: '编辑',
         onClick: handleEdit.bind(null, record),
       },
+    ];
+  }
+  /**
+   * 下拉操作栏
+   */
+  function getDropDownAction(record) {
+    return [
+      {
+        label: '预览',
+        onClick: handleView.bind(null, record),
+      },
       {
         label: '删除',
         popConfirm: {
           title: '是否确认删除',
           confirm: handleDelete.bind(null, record),
+          placement: 'topLeft',
         },
       },
     ];

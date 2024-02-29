@@ -3,7 +3,8 @@ import { FormSchema } from '/@/components/Table';
 import { rules } from '/@/utils/helper/validator';
 import { render } from '/@/utils/common/renderUtils';
 import { JVxeTypes, JVxeColumn, JVxeLinkageConfig } from '/@/components/jeecg/JVxeTable/types';
-import { ref } from 'vue/dist/vue';
+import { usePermission } from '/@/hooks/web/usePermission';
+const { isDisabledAuth, hasPermission, initBpmFormData } = usePermission();
 import { getSupplierList } from '/@/views/settlement/project/ApplyProject.api';
 //列表数据
 export const columns: BasicColumn[] = [
@@ -23,19 +24,9 @@ export const columns: BasicColumn[] = [
     dataIndex: 'unit_dictText',
   },
   {
-    title: '负责主体',
+    title: '子分公司名称（发包人）',
     align: 'center',
     dataIndex: 'owner_dictText',
-  },
-  {
-    title: '开始时间',
-    align: 'center',
-    dataIndex: 'startDate',
-  },
-  {
-    title: '结束时间',
-    align: 'center',
-    dataIndex: 'endDate',
   },
   {
     title: '中标单位',
@@ -211,6 +202,11 @@ export const formSchema: FormSchema[] = [
 //子表表格配置
 export const applyContractColumns: JVxeColumn[] = [
   {
+    title: 'id',
+    key: 'id',
+    type: JVxeTypes.hidden,
+  },
+  {
     title: '合同编号',
     key: 'contractNum',
     type: JVxeTypes.input,
@@ -334,6 +330,11 @@ export const applyContractColumns: JVxeColumn[] = [
 ];
 export const applyFilesColumns: JVxeColumn[] = [
   {
+    title: 'id',
+    key: 'id',
+    type: JVxeTypes.hidden,
+  },
+  {
     title: '文件名称',
     key: 'fileName',
     type: JVxeTypes.input,
@@ -360,15 +361,6 @@ export const applyFilesColumns: JVxeColumn[] = [
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
-    title: '描述',
-    key: 'description',
-    type: JVxeTypes.input,
-    width: '200px',
-    placeholder: '请输入${title}',
-    defaultValue: '',
-    validateRules: [{ required: true, message: '${title}不能为空' }],
-  },
-  {
     title: '文件',
     key: 'file',
     type: JVxeTypes.file,
@@ -378,6 +370,40 @@ export const applyFilesColumns: JVxeColumn[] = [
     placeholder: '请选择文件',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
+  },
+  {
+    title: '是否审批通过1',
+    key: 'flag',
+    type: JVxeTypes.select,
+    options: [
+      { title: '通过', value: '1' },
+      { title: '不通过', value: '0' },
+    ],
+    width: '100px',
+    placeholder: '请输入${title}',
+    defaultValue: '',
+    validateRules: [
+      {
+        required: hasPermission('settlement:apply_files:addComment'),
+        message: '${title}不能为空',
+      },
+    ],
+    disabled: !hasPermission('settlement:apply_files:addComment'),
+  },
+  {
+    title: '审批意见',
+    key: 'description',
+    type: JVxeTypes.textarea,
+    width: '200px',
+    placeholder: '请输入${title}',
+    defaultValue: '',
+    validateRules: [
+      {
+        required: hasPermission('settlement:apply_files:addComment'),
+        message: '${title}不能为空',
+      },
+    ],
+    disabled: !hasPermission('settlement:apply_files:addComment'),
   },
 ];
 
