@@ -6,6 +6,7 @@ import { JVxeTypes, JVxeColumn, JVxeLinkageConfig } from '/@/components/jeecg/JV
 import { usePermission } from '/@/hooks/web/usePermission';
 const { isDisabledAuth, hasPermission, initBpmFormData } = usePermission();
 import { getSupplierList } from '/@/views/settlement/project/ApplyProject.api';
+import {treeOptionsListApi} from "@/api/demo/tree";
 //列表数据
 export const columns: BasicColumn[] = [
   {
@@ -29,18 +30,18 @@ export const columns: BasicColumn[] = [
     dataIndex: 'owner_dictText',
   },
   {
-    title: '中标单位',
+    title: '施工单位名称',
     align: 'center',
     dataIndex: 'bidder_dictText',
   },
-  {
-    title: '是否结案',
-    align: 'center',
-    dataIndex: 'status',
-  },
+  // {
+  //   title: '是否结案',
+  //   align: 'center',
+  //   dataIndex: 'status',
+  // },
 ];
 //查询数据
-export const searchFormSchema: FormSchema[] = [
+/*export const searchFormSchema: FormSchema[] = [
   {
     label: '项目名称',
     field: 'name',
@@ -54,15 +55,13 @@ export const searchFormSchema: FormSchema[] = [
     colProps: { span: 6 },
   },
   {
-    label: '中标单位',
+    label: '施工单位名称',
     field: 'bidder',
-    component: 'JDictSelectTag',
-    componentProps: {
-      dictCode: 'sys_depart,depart_name,id',
-    },
+    component: 'ApiSelect',
+    slot: 'localSearch1',
     colProps: { span: 6 },
   },
-];
+];*/
 //表单数据
 export const formSchema: FormSchema[] = [
   {
@@ -75,7 +74,7 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    label: '项目编号',
+    label: '项目编号1',
     field: 'code',
     component: 'Input',
     colProps: { span: 12 },
@@ -85,83 +84,27 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'unit',
-    component: 'JTreeSelect',
+    component: 'JSelectDept',
     label: '所属单位',
+    componentProps: { showButton: false },
     colProps: { span: 12 },
-    helpMessage: ['component模式'],
-    componentProps: {
-      dict: 'sys_depart,depart_name,id',
-      pidField: 'parent_id',
-      hasChildField: 'iz_leaf',
-      converIsLeafVal: 0,
-    },
     dynamicRules: ({ model, schema }) => {
       return [{ required: true, message: '请输入所属单位!' }];
     },
   },
   {
     label: '子分公司名称（发包人）',
-    component: 'ApiSelect',
+    component: 'Input',
     field: 'owner',
-    componentProps: {
-      api: getSupplierList,
-      params: {
-        type: 0,
-      },
-      resultField: 'list',
-      labelField: 'supplierName',
-      valueField: 'id',
-    },
+    slot: 'localSearch',
     required: true,
     colProps: { span: 12 },
   },
-  // {
-  //   field: 'owner',
-  //   component: 'Input',
-  //   label: '子分公司名称（发包人）',
-  //   required: true,
-  //   slot: 'remoteSearch',
-  //   colProps: { span: 12 },
-  // },
-  // {
-  //   label: '开始时间',
-  //   field: 'startDate',
-  //   colProps: { span: 12 },
-  //   component: 'DatePicker',
-  //   componentProps: {
-  //     showTime: true,
-  //     valueFormat: 'YYYY-MM-DD HH:mm:ss',
-  //   },
-  //   dynamicRules: ({ model, schema }) => {
-  //     return [{ required: true, message: '请输入开始时间!' }];
-  //   },
-  // },
-  // {
-  //   label: '结束时间',
-  //   field: 'endDate',
-  //   colProps: { span: 12 },
-  //   component: 'DatePicker',
-  //   componentProps: {
-  //     showTime: true,
-  //     valueFormat: 'YYYY-MM-DD HH:mm:ss',
-  //   },
-  //   dynamicRules: ({ model, schema }) => {
-  //     return [{ required: true, message: '请输入结束时间!' }];
-  //   },
-  // },
   {
     label: '施工单位名称',
     component: 'ApiSelect',
     field: 'bidder',
-    componentProps: {
-      api: getSupplierList,
-      params: {
-        type: 1,
-      },
-      resultField: 'list',
-      labelField: 'supplierName',
-      valueField: 'id',
-    },
+    slot: 'localSearch1',
     required: true,
     colProps: { span: 12 },
   },

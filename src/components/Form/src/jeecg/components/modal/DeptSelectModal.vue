@@ -2,6 +2,7 @@
 <template>
   <div>
     <BasicModal v-bind="$attrs" @register="register" :title="modalTitle" width="500px" @ok="handleOk" destroyOnClose @visible-change="visibleChange">
+      <a-input-search placeholder="按部门名称搜索…" style="margin-bottom: 10px" @search="onSearch" allowClear />
       <BasicTree
         ref="treeRef"
         :treeData="treeData"
@@ -32,15 +33,16 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, unref } from 'vue';
+  import { defineComponent, nextTick, ref, unref } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { queryDepartTreeSync, queryTreeList } from '/@/api/common/api';
   import { useAttrs } from '/@/hooks/core/useAttrs';
   import { treeProps } from '/@/components/Form/src/jeecg/props/props';
   import { BasicTree, TreeActionType } from '/@/components/Tree';
   import { useTreeBiz } from '/@/components/Form/src/jeecg/hooks/useTreeBiz';
-  import {propTypes} from "/@/utils/propTypes";
+  import { propTypes } from '/@/utils/propTypes';
   import { omit } from 'lodash-es';
+  import {searchByKeywords} from "@/views/system/departUser/depart.user.api";
 
   export default defineComponent({
     name: 'DeptSelectModal',
@@ -55,7 +57,7 @@
         type: String,
         default: '部门选择',
       },
-      value: propTypes.oneOfType([propTypes.string, propTypes.array])
+      value: propTypes.oneOfType([propTypes.string, propTypes.array]),
     },
     emits: ['register', 'getSelectResult'],
     setup(props, { emit, refs }) {
@@ -63,15 +65,21 @@
       const [register, { closeModal }] = useModalInner();
       const attrs = useAttrs();
       const treeRef = ref<Nullable<TreeActionType>>(null);
-      
+      // 搜索关键字
+      // 当前展开的项
+      const expandedKeys = ref<any[]>([]);
+      const searchKeyword = ref('');
+      const loading = ref<boolean>(false);
+      // 树组件重新加载
+      const treeReloading = ref<boolean>(false);
       //update-begin-author:taoyan date:2022-10-28 for: 部门选择警告类型不匹配
-      let propValue = props.value === ''?[]:props.value;
+      let propValue = props.value === '' ? [] : props.value;
       //update-begin-author:liusq date:2023-05-26 for:  [issues/538]JSelectDept组件受 dynamicDisabled 影响
-      let temp = Object.assign({}, unref(props), unref(attrs), {value: propValue},{disabled: false});
+      let temp = Object.assign({}, unref(props), unref(attrs), { value: propValue }, { disabled: false });
       const getBindValue = omit(temp, 'multiple');
       //update-end-author:liusq date:2023-05-26 for:  [issues/538]JSelectDept组件受 dynamicDisabled 影响
-     //update-end-author:taoyan date:2022-10-28 for: 部门选择警告类型不匹配
-      
+      //update-end-author:taoyan date:2022-10-28 for: 部门选择警告类型不匹配
+
       const queryUrl = getQueryUrl();
       const [{ visibleChange, checkedKeys, getCheckStrictly, getSelectTreeData, onCheck, onLoadData, treeData, checkALL, expandAll, onSelect }] =
         useTreeBiz(treeRef, queryUrl, getBindValue, props);
@@ -93,7 +101,59 @@
           closeModal();
         });
       }
+      // 加载顶级部门信息
+      async function loadRootTreeData() {
+        try {
+          loading.value = true;
+          treeData.value = [];
+          const result = await queryDepartTreeSync();
+          if (Array.isArray(result)) {
+            treeData.value = result;
+          }
+          if (expandedKeys.value.length === 0) {
+            autoExpandParentNode();
+          }
+        } finally {
+          loading.value = false;
+        }
+      }
+      // 搜索事件
+      async function onSearch(value: string) {
+        if (value) {
+          try {
+            loading.value = true;
+            treeData.value = [];
+            let result = await searchByKeywords({ keyWord: value });
+            if (Array.isArray(result)) {
+              treeData.value = result;
+            }
+            autoExpandParentNode();
+          } finally {
+            loading.value = false;
+          }
+        } else {
+          loadRootTreeData();
+        }
+        searchKeyword.value = value;
+      }
+      // 自动展开父节点，只展开一级
+      function autoExpandParentNode() {
+        let item = treeData.value[0];
+        if (item) {
+          if (!item.isLeaf) {
+            expandedKeys.value = [item.key];
+          }
+          reloadTree();
+        }
+      }
 
+      // 重新加载树组件，防止无法默认展开数据
+      async function reloadTree() {
+        await nextTick();
+        treeReloading.value = true;
+        await nextTick();
+        treeReloading.value = false;
+      }
       /** 获取查询数据方法 */
       function getQueryUrl() {
         let queryFn = props.sync ? queryDepartTreeSync : queryTreeList;
@@ -119,6 +179,7 @@
         getCheckStrictly,
         visibleChange,
         onLoadData,
+        onSearch,
       };
     },
   });

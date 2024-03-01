@@ -2,6 +2,19 @@
   <div>
     <!--引用表格-->
     <BasicTable @register="registerTable" :rowSelection="rowSelection">
+      <template #form-custom="{ model, field }"
+        ><ApiSelect
+          :api="getSupplierList"
+          :params="selectParams1"
+          showSearch
+          v-model:value="model[field]"
+          :filterOption="false"
+          resultField="list"
+          labelField="supplierName"
+          valueField="id"
+          @search="debounceEmitChange"
+        />
+      </template>
       <!--插槽:table标题-->
       <template #tableTitle>
         <a-button type="primary" @click="handleAdd" preIcon="ant-design:plus-outlined"> 新增</a-button>
@@ -48,10 +61,13 @@
   import { useListPage } from '/@/hooks/system/useListPage';
   import { useModal } from '/@/components/Modal';
   import ApplyProjectModal from './components/ApplyProjectModal.vue';
-  import { columns, searchFormSchema } from './ApplyProject.data';
-  import { list, deleteOne, batchDelete, getImportUrl, getExportUrl } from './ApplyProject.api';
+  import { columns } from './ApplyProject.data';
+  import { useDebounceFn } from '@vueuse/core';
+  import { list, deleteOne, batchDelete, getImportUrl, getExportUrl, getSupplierList } from './ApplyProject.api';
   import { downloadFile } from '/@/utils/common/renderUtils';
   import { useUserStore } from '/@/store/modules/user';
+  import { ApiSelect } from '@/components/Form';
+  import { getFormConfig } from '@/views/settlement/project/components/tableData';
   const checkedKeys = ref<Array<string | number>>([]);
   const userStore = useUserStore();
   //注册model
@@ -63,14 +79,7 @@
       api: list,
       columns,
       canResize: false,
-      formConfig: {
-        //labelWidth: 120,
-        schemas: searchFormSchema,
-        autoSubmitOnEnter: true,
-        showAdvancedButton: true,
-        fieldMapToNumber: [],
-        fieldMapToTime: [],
-      },
+      formConfig: getFormConfig(),
       actionColumn: {
         width: 120,
         fixed: 'right',
@@ -85,9 +94,15 @@
       success: handleSuccess,
     },
   });
-
+  const keyword1 = ref<string>('');
   const [registerTable, { reload }, { rowSelection, selectedRowKeys }] = tableContext;
-
+  const selectParams1 = computed<Recordable>(() => {
+    return { keyword: unref(keyword1), type: '1' };
+  });
+  const debounceEmitChange = useDebounceFn(onSearch, 1000);
+  function onSearch(value: string) {
+    keyword1.value = value;
+  }
   /**
    * 新增事件
    */

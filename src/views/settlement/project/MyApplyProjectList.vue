@@ -55,7 +55,7 @@
     batchDelete,
     getImportUrl,
     getExportUrl,
-    projectListApi
+    myProjectPageList
   } from './ApplyProject.api';
   import { downloadFile } from '/@/utils/common/renderUtils';
   import { useUserStore } from '/@/store/modules/user';
@@ -67,7 +67,7 @@
   const { prefixCls, tableContext, onExportXls, onImportXls } = useListPage({
     tableProps: {
       title: '我的项目',
-      api: projectListApi,
+      api: myProjectPageList,
       columns,
       canResize: false,
       formConfig: {

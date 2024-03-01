@@ -1,18 +1,15 @@
 import { defHttp } from '/@/utils/http/axios';
 import { useMessage } from '/@/hooks/web/useMessage';
+import {DeptListItem} from "@/api/demo/model/systemModel";
 const { createConfirm } = useMessage();
-export interface selectParams {
-  id: number | string;
-}
-export interface DemoOptionsItem {
-  label: string;
-  value: string;
-}
+import { DemoOptionsItem, selectParams } from './components/optionsModel';
+
 enum Api {
   list = '/settlement/applyProject/list',
   queryContractById = '/settlement/applyContract/queryById',
   querySupplierList = '/settlement/applySupplier/querySupplierList',
   projectListApi = '/settlement/applyProject/myProjectList',
+  myProjectPageList = '/settlement/applyProject/myProjectPageList',
   save = '/settlement/applyProject/add',
   edit = '/settlement/applyProject/edit',
   deleteOne = '/settlement/applyProject/delete',
@@ -24,10 +21,11 @@ enum Api {
 }
 export const contractListApi = (params) => defHttp.get({ url: Api.applyContractList, params });
 export const projectListApi = (params) => defHttp.get({ url: Api.projectListApi, params });
+export const myProjectPageList = (params) => defHttp.get({ url: Api.myProjectPageList, params });
 /**
  * @description: Get sample options value
  */
-export const getSupplierList = (params) => defHttp.get({ url: Api.querySupplierList, params });
+export const getSupplierList = (params?: selectParams) => defHttp.get({ url: Api.querySupplierList, params });
 /**
  * 导出api
  * @param params

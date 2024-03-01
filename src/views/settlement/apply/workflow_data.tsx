@@ -5,6 +5,8 @@ import { render } from '@/utils/common/renderUtils';
 import { FormSchema } from '@/components/Form';
 import { Button } from '@/components/Button';
 import { DescItem } from '@/components/Description';
+import { usePermission } from '/@/hooks/web/usePermission';
+const { isDisabledAuth, hasPermission, initBpmFormData } = usePermission();
 export const schemas: FormSchema[] = [
   {
     field: 'id',
@@ -128,9 +130,9 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'bidder',
+    field: 'owner',
     component: 'Input',
-    label: '中标单位',
+    label: '子分公司名称（发包人）',
     defaultValue: '',
     colProps: {
       span: 12,
@@ -140,9 +142,9 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'status',
+    field: 'bidder',
     component: 'Input',
-    label: '项目状态',
+    label: '施工单位名称',
     defaultValue: '',
     colProps: {
       span: 12,
@@ -216,6 +218,19 @@ export const schemas: FormSchema[] = [
       disabled: true,
     },
   },
+  {
+    field: 'divider-basic',
+    component: 'Divider',
+    label: '终审结果',
+  },
+  {
+    label: '终审单',
+    field: 'finalFile',
+    component: 'JUpload',
+    componentProps: {
+      disabled: !hasPermission('settlement:apply_info:upload'),
+    },
+  },
 ];
 export const schema: DescItem[] = [
   {
@@ -261,12 +276,12 @@ export const schema2: DescItem[] = [
     label: '所属单位',
   },
   {
-    field: 'bidder',
-    label: '中标单位',
+    field: 'owner',
+    label: '子分公司名称（发包人）',
   },
   {
-    field: 'status',
-    label: '项目状态',
+    field: 'bidder',
+    label: '施工单位名称',
   },
 ];
 export const schema3: DescItem[] = [
@@ -293,6 +308,10 @@ export const schema3: DescItem[] = [
   {
     field: 'endDate',
     label: '合同结束时间',
+  },
+  {
+    field: 'finalFile',
+    label: '终审单',
   },
 ];
 export const columns: BasicColumn[] = [

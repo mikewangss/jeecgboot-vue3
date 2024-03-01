@@ -2,10 +2,10 @@
   <BasicDrawer v-bind="$attrs" @register="register2" title="结算申请流程" width="50%">
     <PageWrapper title="结算审批单">
       <template #extra>
-        <a-button btnType="primary" type="3" @click="handle(3)" v-if="showApplyButton && currentFlowNodeId == 'start'">提交</a-button>
+        <a-button type="primary" @click="handle(3)" v-if="showApplyButton && currentFlowNodeId == 'start'">提交</a-button>
 <!--        <a-button btnType="primary" type="1" @click="handle(1)" v-if="showApplyButton && currentFlowNodeId == 'start'">保存</a-button>-->
-        <a-button btnType="primary" type="0" @click="handle(0)" v-if="showApplyButton && currentFlowNodeId != 'start'">通过</a-button>
-        <a-button btnType="primary" type="2" @click="handle(2)" danger v-if="showApplyButton && currentFlowNodeId != 'start'">退回</a-button>
+        <a-button type="primary" @click="handle(0)" v-if="showApplyButton && currentFlowNodeId != 'start'">通过</a-button>
+        <a-button type="primary" @click="handle(2)" danger v-if="showApplyButton && currentFlowNodeId != 'start'">退回</a-button>
       </template>
       <template #footer>
         <a-tabs v-model:activeKey="activeKey" @tabClick="handleChangePanel">
