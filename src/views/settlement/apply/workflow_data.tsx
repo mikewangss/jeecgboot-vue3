@@ -227,8 +227,11 @@ export const schemas: FormSchema[] = [
     label: '终审单',
     field: 'finalFile',
     component: 'JUpload',
-    componentProps: {
-      disabled: !hasPermission('settlement:apply_info:upload'),
+    // componentProps: {
+    //   disabled: !hasPermission('settlement:apply_info:upload'),
+    // },
+    show: ({ values }) => {
+      return !hasPermission('settlement:apply_info:upload');
     },
   },
 ];

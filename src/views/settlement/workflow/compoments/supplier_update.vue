@@ -1,5 +1,5 @@
 <template>
-  <BasicDrawer v-bind="$attrs" @register="register2" title="结算申请流程" width="50%">
+  <BasicDrawer v-bind="$attrs" @register="register2" title="流程审批单" width="50%">
     <PageWrapper title="供应商入驻审批单">
       <template v-if="showApplyButton" #extra>
         <WorkHandleBtn
@@ -62,8 +62,9 @@
                       </p>
 
                       <a-card :body-style="{ padding: '10px' }">
-                        <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px"
-                          >实际办理人： {{ item.assigneeName }} <a-tag type="info" size="default">{{ item.deptName }}</a-tag></label
+                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px">办理人： {{ item.assigneeName }}</label>
+                        <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px">
+                          <a-tag type="info" size="default">{{ item.deptName }}</a-tag></label
                         >
                         <label v-if="item.candidate" style="font-weight: normal; margin-right: 30px">候选办理人： {{ item.candidate }}</label>
                         <label style="font-weight: normal">接收时间： </label

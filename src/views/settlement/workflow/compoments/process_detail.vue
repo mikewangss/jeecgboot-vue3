@@ -1,5 +1,5 @@
 <template>
-  <BasicDrawer v-bind="$attrs" @register="register2" title="结算申请流程" width="50%">
+  <BasicDrawer v-bind="$attrs" @register="register2" title="流程审批单" width="50%">
     <PageWrapper title="申请详情">
       <template #footer>
         <a-tabs v-model:activeKey="activeKey" @tabClick="handleChangePanel">

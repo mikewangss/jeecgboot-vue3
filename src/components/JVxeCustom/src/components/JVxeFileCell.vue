@@ -29,10 +29,10 @@
               <a-menu-item v-if="originColumn.allowDownload !== false" @click="handleClickDownloadFile">
                 <span><Icon icon="ant-design:download" />&nbsp;下载</span>
               </a-menu-item>
-              <a-menu-item v-if="originColumn.allowRemove !== false" @click="handleClickDeleteFile">
-                <span><Icon icon="ant-design:delete" />&nbsp;删除</span>
-              </a-menu-item>
-              <a-menu-item @click="handleMoreOperation">
+              <!--              <a-menu-item v-if="originColumn.allowRemove !== false" @click="handleClickDeleteFile">-->
+              <!--                <span><Icon icon="ant-design:delete" />&nbsp;删除</span>-->
+              <!--              </a-menu-item>-->
+              <a-menu-item v-if="hasPermission('settlement:apply_files:add')" @click="handleMoreOperation">
                 <span><Icon icon="ant-design:bars" />&nbsp;更多</span>
               </a-menu-item>
             </a-menu>
@@ -64,13 +64,47 @@
   import { JVxeComponent } from '/@/components/jeecg/JVxeTable/types';
   import { useJVxeCompProps } from '/@/components/jeecg/JVxeTable/hooks';
   import { useFileCell, enhanced, components } from '../hooks/useFileCell';
+  import { usePermission } from '/@/hooks/web/usePermission';
 
   export default defineComponent({
     name: 'JVxeFileCell',
     components: components,
     props: useJVxeCompProps(),
     setup(props: JVxeComponent.Props) {
-      return useFileCell(props, UploadTypeEnum.file);
+      const { changeRole, hasPermission } = usePermission();
+      const {
+        modalValue,
+        registerModel,
+        onModalChange,
+        uploadHeaders,
+        uploadAction,
+        hasFile,
+        cellProps,
+        handleChangeUpload,
+        originColumn,
+        innerFile,
+        handleClickPreviewFile,
+        ellipsisFileName,
+        handleClickDownloadFile,
+        handleMoreOperation,
+      } = useFileCell(props, UploadTypeEnum.file);
+      return {
+        modalValue,
+        registerModel,
+        onModalChange,
+        uploadHeaders,
+        uploadAction,
+        hasFile,
+        cellProps,
+        handleChangeUpload,
+        originColumn,
+        hasPermission,
+        innerFile,
+        handleClickPreviewFile,
+        ellipsisFileName,
+        handleClickDownloadFile,
+        handleMoreOperation,
+      };
     },
     // 【组件增强】注释详见：JVxeComponent.Enhanced
     enhanced: enhanced,

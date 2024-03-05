@@ -36,7 +36,7 @@
         >
         <a-form-item :wrapper-col="{ span: 14, offset: 8 }" style="margin-top: 30px">
           <a-button @click.prevent="back">上一步</a-button>
-          <a-button type="primary" style="margin-left: 10px" @click.prevent="onSubmit">提交</a-button>
+          <a-button type="primary" @click.prevent="onSubmit">下一步</a-button>
         </a-form-item>
       </a-form>
     </div>
@@ -48,11 +48,8 @@
   import { Form } from 'ant-design-vue';
   import { useI18n } from '@/hooks/web/useI18n';
   import { ref, reactive, toRaw, unref, defineComponent } from 'vue';
-  import { getCaptcha, register } from '/@/api/sys/user';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { SmsEnum } from '/@/views/sys/login/useLogin';
   import type { UploadChangeParam } from 'ant-design-vue';
-  import { rules } from '/@/utils/helper/validator';
   import { Rule } from 'ant-design-vue/es/form';
   const useForm = Form.useForm;
   export default defineComponent({
@@ -74,7 +71,7 @@
       const validatorRules: Record<string, Rule[]> = {
         unifiedSocialCreditCode: [
           { required: true, message: '请输入统一社会信用代码!' },
-          { pattern: /^[0-9A-Z]{18}$/, message: '统一社会信用代码格式有误', trigger: 'blur' },
+          // { pattern: /^[0-9A-Z]{18}$/, message: '统一社会信用代码格式有误', trigger: 'blur' },
         ],
         businessLicenseDate: [{ required: true, message: '请输入营业执照起止时间!' }],
         supplierName: [{ required: true, message: '请输入供应商名称!' }],
@@ -83,11 +80,11 @@
         businessLicenseFile: [{ required: true, message: '请上传营业执照!' }],
         legalPersonPhone: [
           { required: true, message: '请输入法人手机号!' },
-          { pattern: /^1[3456789]\d{9}$/, message: '手机号码格式有误', trigger: 'blur' },
+          // { pattern: /^1[3456789]\d{9}$/, message: '手机号码格式有误', trigger: 'blur' },
         ],
         legalPersonIdcard: [
           { required: true, message: '请输入法人身份证!' },
-          { pattern: '^\\d{6}(18|19|20)?\\d{2}(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|[xX])$', message: '身份证格式有误', trigger: 'blur' },
+          // { pattern: '^\\d{6}(18|19|20)?\\d{2}(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|[xX])$', message: '身份证格式有误', trigger: 'blur' },
         ],
       };
       const { resetFields, validate, validateInfos } = useForm(modelRef, validatorRules, {

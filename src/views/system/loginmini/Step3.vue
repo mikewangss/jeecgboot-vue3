@@ -1,59 +1,180 @@
 <template>
-  <div class="step3">
-    <a-result status="success" title="感谢您的注册！" sub-title="审核通过后您会收到短信提醒">
-      <template #extra>
-        <a-button type="primary" @click.prevent="login"> 去登录 </a-button>
-        <a-button @click.prevent="goHome"> 返回首页 </a-button>
-      </template>
-    </a-result>
-    <!--    <a-result status="error" title="抱歉~注册失败！" sub-title="请返回重新填写后再次尝试" v-if="!props.result">-->
-    <!--      <template #extra>-->
-    <!--        <a-button type="primary" @click.prevent="back"> 上一步 </a-button>-->
-    <!--      </template>-->
-    <!--    </a-result>-->
+  <div class="step1">
+    <div class="step1-form">
+      <a-form :model="modelRef" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-item label="项目名称" v-bind="validateInfos.projectName" required>
+          <a-input v-model:value="modelRef.projectName" />
+        </a-form-item>
+        <a-form-item label="所属区域" v-bind="validateInfos.region">
+          <JAreaLinkage v-model:value="modelRef.region" />
+        </a-form-item>
+        <a-form-item label="对接人姓名" v-bind="validateInfos.projectManger" required>
+          <a-input v-model:value="modelRef.projectManger" />
+        </a-form-item>
+        <a-form-item label="对接人电话" :rules="validateInfos.projectMangerPhone" required>
+          <a-input v-model:value="modelRef.projectMangerPhone" />
+        </a-form-item>
+        <a-form-item :wrapper-col="{ span: 14, offset: 8 }" style="margin-top: 30px">
+          <a-button @click.prevent="back">上一步</a-button>
+          <a-button type="primary" @click.prevent="onSubmit">提交</a-button>
+        </a-form-item>
+      </a-form>
+    </div>
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
-  import { Result, Descriptions } from 'ant-design-vue';
-  import { useRouter } from 'vue-router';
-
+  import { uploadUrl } from '/@/api/common/api';
+  import { UploadOutlined } from '@ant-design/icons-vue';
+  import { Form } from 'ant-design-vue';
+  import { useI18n } from '@/hooks/web/useI18n';
+  import { ref, reactive, toRaw, unref, defineComponent, inject } from 'vue';
+  import { useMessage } from '/@/hooks/web/useMessage';
+  import { Rule } from 'ant-design-vue/es/form';
+  import JAreaLinkage from '/@/components/Form/src/jeecg/components/JAreaLinkage.vue';
+  const useForm = Form.useForm;
   export default defineComponent({
     components: {
-      [Result.name]: Result,
-      [Descriptions.name]: Descriptions,
-      [Descriptions.Item.name]: Descriptions.Item,
+      UploadOutlined,
+      JAreaLinkage,
     },
-    emits: ['prev'],
-    setup(props, { emit }) {
-      const router = useRouter();
-      const goHome = () => {
-        router.push('/home');
+    setup(_, { emit }) {
+      const { t } = useI18n();
+      //接收下拉框选项
+      const options = ref<Recordable[]>([]);
+      //接收选择的值
+      const selectValues = inject('selectValues') || ref({});
+      const modelRef = reactive({
+        projectName: '',
+        region: '',
+        projectManger: '',
+        projectMangerPhone: '',
+      });
+      for (let i = 1; i < 10; i++) options.value.push({ label: '选项' + i, value: `${i}` });
+      const validatorRules: Record<string, Rule[]> = {
+        projectName: [{ required: true, message: '请输入项目名称!' }],
+        region: [{ required: true, message: '请输入项目所属区域!' }],
+        projectManger: [{ required: true, message: '请输入项目对接人!' }],
+        projectMangerPhone: [{ required: true, message: '请输入项目对接人电话!' }],
       };
+      const { resetFields, validate, validateInfos } = useForm(modelRef, validatorRules, {
+        // onValidate: (...args) => console.log(...args),
+      });
+      const { notification, createErrorModal, createMessage } = useMessage();
       const back = () => {
         emit('prev');
       };
-      const login = () => {
-        router.push('/login');
+      const onSubmit = () => {
+        validate()
+          .then((res) => {
+            emit('next', modelRef);
+            console.log(res, toRaw(modelRef));
+          })
+          .catch((err) => {
+            console.log('error', err);
+          });
       };
+      const reset = () => {
+        resetFields();
+      };
+      /**
+       * 下拉框值改变事件
+       */
+      function handleChange(value) {
+        modelRef.projectOwner = '1';
+      }
+
       return {
-        login,
+        labelCol: { span: 6 },
+        wrapperCol: { span: 14 },
+        validateInfos,
+        reset,
+        modelRef,
+        onSubmit,
+        t,
+        unref,
+        headers: {
+          authorization: 'authorization-text',
+        },
+        handleChange,
         back,
-        goHome,
-        props,
+        uploadUrl,
+        selectValues,
+        options,
       };
     },
   });
 </script>
 <style lang="less" scoped>
-  .step3 {
-    width: 600px;
-    margin: 0 auto;
+  .step1 {
+    &-form {
+      width: 550px;
+      margin: 0 auto;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      line-height: 32px;
+      color: @text-color;
+    }
+
+    h4 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      line-height: 22px;
+      color: @text-color;
+    }
+
+    p {
+      color: @text-color;
+    }
   }
 
-  .desc-wrap {
-    padding: 24px 40px;
-    margin-top: 24px;
-    background-color: @background-color-light;
+  .pay-select {
+    width: 20%;
+  }
+
+  .pay-input {
+    width: 70%;
+  }
+
+  .aui-input-line {
+    background: #f5f5f9;
+    position: relative;
+    margin: 12px 0 !important;
+  }
+
+  .aui-input-line .aui-icon {
+    position: absolute;
+    z-index: 2;
+    top: 10px;
+    left: 10px;
+    font-size: 20px !important;
+  }
+
+  .aui-input-line input {
+    //width: 100%;
+    //padding: 12px 10px;
+    //color: #333333;
+    //font-size: 14px;
+    background: unset;
+    //padding-left: 40px;
+  }
+
+  .aui-input-line .icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+
+  .aui-code-line {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-left: 3px solid #fff;
+    height: 30px;
+    padding: 0 15px;
+    line-height: 30px;
+    cursor: pointer;
   }
 </style>
