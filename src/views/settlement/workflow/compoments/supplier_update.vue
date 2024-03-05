@@ -62,7 +62,7 @@
                       </p>
 
                       <a-card :body-style="{ padding: '10px' }">
-                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px">办理人： {{ item.assigneeName }}</label>
+                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px">办理人： {{ item.assigneeName }}({{item.assigneeId}})</label>
                         <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px">
                           <a-tag type="info" size="default">{{ item.deptName }}</a-tag></label
                         >
@@ -104,8 +104,7 @@
   import { useGlobSetting } from '@/hooks/setting';
   import WorkHandleBtn from './WorkHandleBtn.vue';
   import { BasicForm, useForm } from '@/components/Form';
-  import { saveOrUpdate } from '@/views/settlement/supplier/ApplySupplier.api';
-  import { formSchema } from '@/views/settlement/supplier/ApplySupplier.data';
+  import { supplierFormSchema } from '@/views/settlement/supplier/ApplySupplier.data';
   interface flowRecord {
     id: string;
     taskName: string;
@@ -148,7 +147,7 @@
       //表单配置
       const [registerForm, { updateSchema, setFieldsValue, getFieldsValue, resetFields, validate, clearValidate }] = useForm({
         labelWidth: 150,
-        schemas: formSchema,
+        schemas: supplierFormSchema,
         showActionButtonGroup: false,
       });
       onMounted(async () => {});

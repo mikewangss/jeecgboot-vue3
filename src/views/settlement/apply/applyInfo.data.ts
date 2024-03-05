@@ -46,7 +46,7 @@ export const columns: BasicColumn[] = [
 //查询数据
 export const searchFormSchema: FormSchema[] = [];
 //表单数据
-export const formSchema: FormSchema[] = [
+export const applyFormSchema: FormSchema[] = [
   {
     label: '手机号',
     field: 'phoneNumber',
@@ -110,5 +110,5 @@ export const formSchema: FormSchema[] = [
  */
 export function getBpmFormSchema(_formData): FormSchema[] {
   // 默认和原始表单保持一致 如果流程中配置了权限数据，这里需要单独处理formSchema
-  return formSchema;
+  return applyFormSchema;
 }

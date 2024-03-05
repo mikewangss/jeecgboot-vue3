@@ -23,7 +23,7 @@
 
             <el-card :body-style="{ padding: '10px' }">
               <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px"
-                >实际办理人： {{ item.assigneeName }} <el-tag type="info" size="small">{{ item.deptName }}</el-tag></label
+                >实际办理人： {{ item.assigneeName }}({{item.assigneeId}}) <el-tag type="info" size="small">{{ item.deptName }}</el-tag></label
               >
               <label v-if="item.candidate" style="font-weight: normal; margin-right: 30px">候选办理人： {{ item.candidate }}</label>
               <label style="font-weight: normal">接收时间： </label><label style="color: #8a909c; font-weight: normal">{{ item.createTime }}</label>

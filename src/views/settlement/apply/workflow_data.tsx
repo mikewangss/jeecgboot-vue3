@@ -231,7 +231,7 @@ export const schemas: FormSchema[] = [
     //   disabled: !hasPermission('settlement:apply_info:upload'),
     // },
     show: ({ values }) => {
-      return !hasPermission('settlement:apply_info:upload');
+      return hasPermission('settlement:apply_info:upload');
     },
   },
 ];

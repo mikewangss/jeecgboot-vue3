@@ -26,7 +26,7 @@
                       </p>
 
                       <a-card :body-style="{ padding: '10px' }">
-                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px">办理人： {{ item.assigneeName }}</label>
+                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px">办理人： {{ item.assigneeName }}({{item.assigneeId}})</label>
                         <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px">
                           <a-tag type="info" size="default">{{ item.deptName }}</a-tag></label
                         >

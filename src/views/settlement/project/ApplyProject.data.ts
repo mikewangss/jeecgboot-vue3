@@ -7,6 +7,8 @@ import { usePermission } from '/@/hooks/web/usePermission';
 const { isDisabledAuth, hasPermission, initBpmFormData } = usePermission();
 import { getSupplierList } from '/@/views/settlement/project/ApplyProject.api';
 import {treeOptionsListApi} from "@/api/demo/tree";
+//查询数据
+export const searchFormSchema: FormSchema[] = [];
 //列表数据
 export const columns: BasicColumn[] = [
   {
@@ -74,7 +76,7 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    label: '项目编号1',
+    label: '项目编号',
     field: 'code',
     component: 'Input',
     colProps: { span: 12 },
@@ -102,7 +104,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: '施工单位名称',
-    component: 'ApiSelect',
+    component: 'Input',
     field: 'bidder',
     slot: 'localSearch1',
     required: true,

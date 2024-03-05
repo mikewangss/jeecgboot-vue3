@@ -24,7 +24,7 @@
           resultField="list"
           labelField="supplierName"
           valueField="id"
-          @search="debounceEmitChange"
+          @search="debounceEmitChange1"
         />
       </template>
     </BasicForm>
@@ -153,8 +153,12 @@
     return { keyword: unref(keyword1), type: '1' };
   });
   const debounceEmitChange = useDebounceFn(onSearch, 1000);
+  const debounceEmitChange1 = useDebounceFn(onSearch1, 1000);
   function onSearch(value: string) {
     keyword.value = value;
+  }
+  function onSearch1(value: string) {
+    keyword1.value = value;
   }
   //设置标题
   const title = computed(() => (!unref(isUpdate) ? '新增' : '编辑'));

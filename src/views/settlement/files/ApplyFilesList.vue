@@ -4,13 +4,23 @@
     <BasicTable @register="registerTable" :rowSelection="rowSelection">
       <!--插槽:table标题-->
       <template #tableTitle>
-        <a-button type="primary" @click="handleAdd" preIcon="ant-design:plus-outlined"> 新增</a-button>
-        <a-button type="primary" preIcon="ant-design:export-outlined" @click="onExportXls"> 导出</a-button>
-        <j-upload-button type="primary" preIcon="ant-design:import-outlined" @click="onImportXls">导入</j-upload-button>
+        <a-button type="primary" v-if="hasPermission('settlement:apply_files:add')" @click="handleAdd" preIcon="ant-design:plus-outlined">
+          新增</a-button
+        >
+        <a-button type="primary" v-if="hasPermission('settlement:apply_files:exportXls')" preIcon="ant-design:export-outlined" @click="onExportXls">
+          导出</a-button
+        >
+        <j-upload-button
+          type="primary"
+          v-if="hasPermission('settlement:apply_files:importExcel')"
+          preIcon="ant-design:import-outlined"
+          @click="onImportXls"
+          >导入</j-upload-button
+        >
         <a-dropdown v-if="selectedRowKeys.length > 0">
           <template #overlay>
             <a-menu>
-              <a-menu-item key="1" @click="batchHandleDelete">
+              <a-menu-item key="1" @click="batchHandleDelete" v-if="hasPermission('settlement:apply_files:delete')">
                 <Icon icon="ant-design:delete-outlined" />
                 删除
               </a-menu-item>
@@ -54,10 +64,11 @@
   import { useUserStore } from '/@/store/modules/user';
   import { useGlobSetting } from '@/hooks/setting';
   import { Base64 } from 'js-base64';
+  import { usePermission } from '@/hooks/web/usePermission';
   const checkedKeys = ref<Array<string | number>>([]);
   const userStore = useUserStore();
   const glob = useGlobSetting();
-
+  const { changeRole, hasPermission } = usePermission();
   //注册model
   const [registerModal, { openModal }] = useModal();
   //注册table数据
@@ -146,6 +157,7 @@
     return [
       {
         label: '编辑',
+        auth: 'settlement:apply_files:edit', //通过权限指令控制显示（有权限显示/无权限不显示）
         onClick: handleEdit.bind(null, record),
       },
     ];
@@ -176,6 +188,7 @@
       },
       {
         label: '删除',
+        auth: 'settlement:apply_files:delete', //通过权限指令控制显示（有权限显示/无权限不显示）
         popConfirm: {
           title: '是否确认删除',
           confirm: handleDelete.bind(null, record),

@@ -48,7 +48,7 @@ export const columns: BasicColumn[] = [
 //查询数据
 export const searchFormSchema: FormSchema[] = [];
 //表单数据
-export const formSchema: FormSchema[] = [
+export const supplierFormSchema: FormSchema[] = [
   {
     field: 'divider-basic',
     component: 'Divider',
@@ -213,5 +213,5 @@ export const formSchema: FormSchema[] = [
  */
 export function getBpmFormSchema(_formData): FormSchema[] {
   // 默认和原始表单保持一致 如果流程中配置了权限数据，这里需要单独处理formSchema
-  return formSchema;
+  return supplierFormSchema;
 }

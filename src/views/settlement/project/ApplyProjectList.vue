@@ -17,13 +17,13 @@
       </template>
       <!--插槽:table标题-->
       <template #tableTitle>
-        <a-button type="primary" @click="handleAdd" preIcon="ant-design:plus-outlined"> 新增</a-button>
-        <a-button type="primary" preIcon="ant-design:export-outlined" @click="onExportXls"> 导出</a-button>
-        <j-upload-button type="primary" preIcon="ant-design:import-outlined" @click="onImportXls">导入</j-upload-button>
+        <a-button type="primary" v-if="hasPermission('settlement:apply_project:add')" @click="handleAdd" preIcon="ant-design:plus-outlined"> 新增</a-button>
+        <a-button type="primary" v-if="hasPermission('settlement:apply_project:exportXls')" preIcon="ant-design:export-outlined" @click="onExportXls"> 导出</a-button>
+        <j-upload-button type="primary" v-if="hasPermission('settlement:apply_project:importExcel')" preIcon="ant-design:import-outlined" @click="onImportXls">导入</j-upload-button>
         <a-dropdown v-if="selectedRowKeys.length > 0">
           <template #overlay>
             <a-menu>
-              <a-menu-item key="1" @click="batchHandleDelete">
+              <a-menu-item key="1" @click="batchHandleDelete" v-if="hasPermission('settlement:apply_project:delete')" >
                 <Icon icon="ant-design:delete-outlined" />
                 删除
               </a-menu-item>
@@ -68,10 +68,12 @@
   import { useUserStore } from '/@/store/modules/user';
   import { ApiSelect } from '@/components/Form';
   import { getFormConfig } from '@/views/settlement/project/components/tableData';
+  import {usePermission} from "@/hooks/web/usePermission";
   const checkedKeys = ref<Array<string | number>>([]);
   const userStore = useUserStore();
   //注册model
   const [registerModal, { openModal }] = useModal();
+  const { changeRole, hasPermission } = usePermission();
   //注册table数据
   const { prefixCls, tableContext, onExportXls, onImportXls } = useListPage({
     tableProps: {
@@ -157,6 +159,7 @@
     return [
       {
         label: '编辑',
+        auth: 'settlement:apply_project:edit', //通过权限指令控制显示（有权限显示/无权限不显示）
         onClick: handleEdit.bind(null, record),
       },
     ];
@@ -173,6 +176,7 @@
       },
       {
         label: '删除',
+        auth: 'settlement:apply_project:delete', //通过权限指令控制显示（有权限显示/无权限不显示）
         popConfirm: {
           title: '是否确认删除',
           confirm: handleDelete.bind(null, record),

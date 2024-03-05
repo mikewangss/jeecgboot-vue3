@@ -8,7 +8,7 @@
   import { ref, computed, unref } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from '../applyInfo.data';
+  import { applyFormSchema } from '../applyInfo.data';
   import { saveOrUpdate } from '../applyInfo.api';
   // Emits声明
   const emit = defineEmits(['register', 'success']);
@@ -16,7 +16,7 @@
   //表单配置
   const [registerForm, { setProps, resetFields, setFieldsValue, validate }] = useForm({
     //labelWidth: 150,
-    schemas: formSchema,
+    schemas: applyFormSchema,
     showActionButtonGroup: false,
     baseColProps: { span: 24 },
   });
