@@ -101,6 +101,6 @@
   }
 
   .task-desc-col {
-    flex: 4; /* Adjust the flex value for the first column to make it longer */
+    flex: 2; /* Adjust the flex value for the first column to make it longer */
   }
 </style>

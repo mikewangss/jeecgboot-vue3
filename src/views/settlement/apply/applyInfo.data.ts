@@ -23,14 +23,19 @@ export const columns: BasicColumn[] = [
     },
   },
   {
-    title: '承包单位送审额',
+    title: '施工单位送审额',
     align: 'center',
     dataIndex: 'amounts',
   },
   {
-    title: '承包单位送审时间',
+    title: '施工单位送审时间',
     align: 'center',
     dataIndex: 'reviewDate',
+  },
+  {
+    title: '结算状态',
+    align: 'center',
+    dataIndex: 'status',
   },
   {
     title: '创建人',

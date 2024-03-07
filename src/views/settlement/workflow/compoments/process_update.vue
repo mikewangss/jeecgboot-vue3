@@ -535,7 +535,8 @@
           } else if (
             //当前审批节点-三审
             currentFlowNodeId.value == 'Activity_18zvw97' ||
-            currentFlowNodeId.value == 'Activity_0lwfr9d'
+            currentFlowNodeId.value == 'Activity_0lwfr9d' ||
+            currentFlowNodeId.value == 'Activity_1cfbee5'
           ) {
             toolbarConfig4.btn = ['add', 'save', 'remove', 'clearSelection'];
             updateDisabledStatus('thirdAmounts', false);

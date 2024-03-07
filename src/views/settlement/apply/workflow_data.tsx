@@ -45,7 +45,7 @@ export const schemas: FormSchema[] = [
   {
     field: 'reviewDate',
     component: 'Input',
-    label: '承包单位送审时间',
+    label: '施工单位送审时间',
     defaultValue: '',
     colProps: {
       span: 12,
@@ -54,7 +54,7 @@ export const schemas: FormSchema[] = [
   {
     field: 'amounts',
     component: 'Input',
-    label: '承包单位送审额',
+    label: '施工单位送审额',
     defaultValue: '',
     colProps: {
       span: 12,
@@ -246,11 +246,11 @@ export const schema: DescItem[] = [
   },
   {
     field: 'amounts',
-    label: '承包单位送审额',
+    label: '施工单位送审额',
   },
   {
     field: 'reviewDate',
-    label: '承包单位送审时间',
+    label: '施工单位送审时间',
   },
   {
     field: 'firstAmounts',

@@ -21,7 +21,7 @@ export const step1Schemas: FormSchema[] = [
     required: true,
   },
   {
-    label: '承包单位',
+    label: '施工单位',
     component: 'ApiSelect',
     field: 'supplierId',
     componentProps: {

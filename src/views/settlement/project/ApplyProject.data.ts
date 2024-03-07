@@ -6,7 +6,11 @@ import { JVxeTypes, JVxeColumn, JVxeLinkageConfig } from '/@/components/jeecg/JV
 import { usePermission } from '/@/hooks/web/usePermission';
 const { isDisabledAuth, hasPermission, initBpmFormData } = usePermission();
 import { getSupplierList } from '/@/views/settlement/project/ApplyProject.api';
-import {treeOptionsListApi} from "@/api/demo/tree";
+import { treeOptionsListApi } from '@/api/demo/tree';
+// 生成唯一编号的函数
+function generateUniqueNumber() {
+  return 'No' + Math.random().toString(36).substr(2, 9); // 生成随机字符串
+}
 //查询数据
 export const searchFormSchema: FormSchema[] = [];
 //列表数据
@@ -78,6 +82,7 @@ export const formSchema: FormSchema[] = [
   {
     label: '项目编号',
     field: 'code',
+    defaultValue: generateUniqueNumber(),
     component: 'Input',
     colProps: { span: 12 },
     dynamicRules: ({ model, schema }) => {
@@ -157,14 +162,14 @@ export const applyContractColumns: JVxeColumn[] = [
     type: JVxeTypes.input,
     width: '200px',
     placeholder: '请输入${title}',
-    defaultValue: '',
+    defaultValue: generateUniqueNumber(),
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '合同名称',
     key: 'contractName',
     type: JVxeTypes.input,
-    width: '200px',
+    minWidth: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
@@ -173,7 +178,7 @@ export const applyContractColumns: JVxeColumn[] = [
     title: '签订时间',
     key: 'signDate',
     type: JVxeTypes.date,
-    width: '200px',
+    minWidth: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
@@ -184,7 +189,7 @@ export const applyContractColumns: JVxeColumn[] = [
     type: JVxeTypes.select,
     options: [],
     dictCode: 'contract_type',
-    width: '200px',
+    minWidth: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
@@ -195,7 +200,7 @@ export const applyContractColumns: JVxeColumn[] = [
     type: JVxeTypes.select,
     options: [],
     dictCode: 'major_type',
-    width: '200px',
+    minWidth: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
@@ -206,7 +211,7 @@ export const applyContractColumns: JVxeColumn[] = [
     type: JVxeTypes.select,
     options: [],
     dictCode: 'project_period',
-    width: '200px',
+    minWidth: '140px',
     placeholder: '请输入${title}',
     defaultValue: '',
   },
@@ -216,7 +221,7 @@ export const applyContractColumns: JVxeColumn[] = [
     type: JVxeTypes.select,
     options: [],
     dictCode: 'contract_status',
-    width: '200px',
+    minWidth: '140px',
     placeholder: '请输入${title}',
     defaultValue: '',
   },
@@ -224,7 +229,7 @@ export const applyContractColumns: JVxeColumn[] = [
     title: '预计完工时间',
     key: 'estimatedDate',
     type: JVxeTypes.date,
-    width: '200px',
+    width: '150px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
@@ -233,7 +238,7 @@ export const applyContractColumns: JVxeColumn[] = [
     title: '实际开工时间',
     key: 'startDate',
     type: JVxeTypes.date,
-    width: '200px',
+    width: '150px',
     placeholder: '请输入${title}',
     defaultValue: '',
   },
@@ -241,7 +246,7 @@ export const applyContractColumns: JVxeColumn[] = [
     title: '竣备时间',
     key: 'endDate',
     type: JVxeTypes.date,
-    width: '200px',
+    width: '150px',
     placeholder: '请输入${title}',
     defaultValue: '',
   },
@@ -257,19 +262,19 @@ export const applyContractColumns: JVxeColumn[] = [
   {
     title: '已发生产值',
     key: 'outputValue',
-    width: '200px',
+    width: '150px',
     type: JVxeTypes.inputNumber,
     placeholder: '请输入${title}',
-    defaultValue: '',
+    defaultValue: '0',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
     title: '已付款金额(万元)',
     key: 'amountPaid',
     type: JVxeTypes.inputNumber,
-    width: '200px',
+    width: '150px',
     placeholder: '请输入${title}',
-    defaultValue: '',
+    defaultValue: '0',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
 ];
@@ -283,7 +288,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     title: '文件名称',
     key: 'fileName',
     type: JVxeTypes.input,
-    width: '200px',
+    minWidth: '200px',
     placeholder: '请输入${title}',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
@@ -292,7 +297,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     title: '分册',
     key: 'fc',
     type: JVxeTypes.select,
-    width: '180px',
+    minWidth: '180px',
     // 联动字段（即下一级的字段）
     linkageKey: 'bizType',
     validateRules: [{ required: true, message: '${title}不能为空' }],
@@ -301,7 +306,7 @@ export const applyFilesColumns: JVxeColumn[] = [
     title: '文件类型',
     key: 'bizType',
     type: JVxeTypes.select,
-    width: '180px',
+    minWidth: '180px',
     placeholder: '请选择${title}',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
@@ -311,13 +316,13 @@ export const applyFilesColumns: JVxeColumn[] = [
     type: JVxeTypes.file,
     token: true,
     responseName: 'message',
-    width: '200px',
+    minWidth: '200px',
     placeholder: '请选择文件',
     defaultValue: '',
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
-    title: '是否审批通过1',
+    title: '是否审批通过',
     key: 'flag',
     type: JVxeTypes.select,
     options: [
@@ -325,8 +330,9 @@ export const applyFilesColumns: JVxeColumn[] = [
       { title: '不通过', value: '0' },
     ],
     width: '100px',
+    fixed: 'right',
     placeholder: '请输入${title}',
-    defaultValue: '',
+    defaultValue: '1',
     validateRules: [
       {
         required: hasPermission('settlement:apply_files:addComment'),
@@ -339,9 +345,10 @@ export const applyFilesColumns: JVxeColumn[] = [
     title: '审批意见',
     key: 'description',
     type: JVxeTypes.textarea,
-    width: '200px',
+    minWidth: '200px',
+    fixed: 'right',
     placeholder: '请输入${title}',
-    defaultValue: '',
+    defaultValue: '无',
     validateRules: [
       {
         required: hasPermission('settlement:apply_files:addComment'),

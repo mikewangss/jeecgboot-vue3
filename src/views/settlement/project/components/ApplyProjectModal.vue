@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" destroyOnClose :title="title" width="70%" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" destroyOnClose :title="title" width="100%" @ok="handleSubmit">
     <BasicForm @register="registerForm" :labelWidth="200" :actionColOptions="{ span: 24 }" :labelCol="{ span: 12 }" ref="formRef">
       <template #localSearch="{ model, field }">
         <ApiSelect
@@ -38,7 +38,7 @@
           :loading="applyContractTable.loading"
           :columns="applyContractTable.columns"
           :dataSource="applyContractTable.dataSource"
-          :height="340"
+          height="auto"
           :rowNumber="true"
           :rowSelection="true"
           :disabled="formDisabled"
@@ -51,7 +51,7 @@
           :loading="applyFilesTable.loading"
           :columns="applyFilesTable.columns"
           :dataSource="applyFilesTable.dataSource"
-          :height="340"
+          height="auto"
           :rowNumber="true"
           :rowSelection="true"
           :disabled="formDisabled"
