@@ -59,6 +59,14 @@ export function useBasicFormSchema() {
       },
     },
     {
+      field: 'region',
+      label: '区域',
+      component: 'JAreaLinkage',
+      componentProps: {
+        placeholder: '请选择区域',
+      },
+    },
+    {
       field: 'address',
       label: '地址',
       component: 'Input',
