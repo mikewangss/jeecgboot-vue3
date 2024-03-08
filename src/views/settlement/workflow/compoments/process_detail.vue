@@ -1,5 +1,5 @@
 <template>
-  <BasicDrawer v-bind="$attrs" @register="register2" title="流程审批单" width="50%">
+  <BasicDrawer v-bind="$attrs" @register="register2" title="流程审批单" width="70%">
     <PageWrapper title="申请详情">
       <template #footer>
         <a-tabs v-model:activeKey="activeKey" @tabClick="handleChangePanel">
@@ -40,7 +40,9 @@
                       </p>
 
                       <a-card :body-style="{ padding: '10px' }">
-                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px">办理人： {{ item.assigneeName }}({{item.assigneeId}})</label>
+                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px"
+                          >办理人： {{ item.assigneeName }}({{ item.assigneeId }})</label
+                        >
                         <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px">
                           <a-tag type="info" size="default">{{ item.deptName }}</a-tag></label
                         >
@@ -52,15 +54,15 @@
                         <label v-if="item.duration" style="margin-left: 30px; font-weight: normal">耗时： </label
                         ><label style="color: #8a909c; font-weight: normal">{{ item.duration }}</label>
 
-                        <p v-if="item.comment">
+                        <div v-if="item.comment">
                           <!--  1 正常意见  2 退回意见 3 驳回意见                -->
                           <a-tag color="green" v-if="item.comment.type === '1'">
-                            <span v-if="item.comment.comment != '重新提交'">通过：</span>
-                            {{ item.comment.comment }}
+                            <span v-if="item.comment.comment != '重新提交'">通过</span>
                           </a-tag>
-                          <a-tag color="orange" v-if="item.comment.type === '2'">退回： {{ item.comment.comment }}</a-tag>
-                          <a-tag color="red" v-if="item.comment.type === '3'">驳回： {{ item.comment.comment }}</a-tag>
-                        </p>
+                          <a-tag color="orange" v-if="item.comment.type === '2'">退回</a-tag>
+                          <a-tag color="red" v-if="item.comment.type === '3'">驳回</a-tag>
+                          {{ item.comment.comment }}
+                        </div>
                       </a-card>
                     </el-timeline-item>
                   </el-timeline>
@@ -116,7 +118,7 @@
               :linkageConfig="linkageConfig"
             />
           </a-tab-pane>
-          <a-tab-pane tab="初审材料" key="preliminaryFiles" :forceRender="true"  v-if="preliminaryFilesShow">
+          <a-tab-pane tab="初审材料" key="preliminaryFiles" :forceRender="true" v-if="preliminaryFilesShow">
             <JVxeTable
               keep-source
               resizable
@@ -132,7 +134,7 @@
               :linkageConfig="linkageConfig"
             />
           </a-tab-pane>
-          <a-tab-pane tab="复审材料" key="reviewFiles" :forceRender="true"  v-if="reviewFilesShow">
+          <a-tab-pane tab="复审材料" key="reviewFiles" :forceRender="true" v-if="reviewFilesShow">
             <JVxeTable
               keep-source
               resizable
@@ -185,6 +187,7 @@
   import WorkHandleBtn from './WorkHandleBtn.vue';
   import { JVxeLinkageConfig } from '@/components/jeecg/JVxeTable/src/types';
   import { useUserStore } from '@/store/modules/user';
+  import { JUploadModal } from '@/components/Form/src/jeecg/components/JUpload';
 
   interface flowRecord {
     id: string;
@@ -203,7 +206,7 @@
     };
   }
   export default defineComponent({
-    components: { JVxeTable, BasicTable, Description, PageWrapper, BasicDrawer, WorkHandleBtn },
+    components: { JUploadModal, JVxeTable, BasicTable, Description, PageWrapper, BasicDrawer, WorkHandleBtn },
     props: {
       showApplyButton: {
         type: Boolean,
@@ -217,6 +220,7 @@
       const mockData = ref({});
       const mockData2 = ref({});
       const mockData3 = ref({});
+      const finalFile = ref('');
       const finalFilesShow = ref(true);
       const preliminaryFilesShow = ref(true);
       const reviewFilesShow = ref(true);
@@ -268,6 +272,7 @@
         mockData.value = newData.formData;
         mockData2.value = newData.formData;
         mockData3.value = newData.formData;
+        finalFile.value = newData.formData.finalFile;
         bizId.value = newData.formData.id;
         projectId.value = newData.formData.projectId;
         currentFlowNodeId.value = newData.currentFlowNodeId;
@@ -354,6 +359,7 @@
         finalFilesShow,
         preliminaryFilesShow,
         reviewFilesShow,
+        finalFile,
       };
     },
   });

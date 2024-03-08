@@ -1,9 +1,9 @@
 <template>
-  <BasicDrawer v-bind="$attrs" @register="register2" title="结算申请流程" width="50%">
+  <BasicDrawer v-bind="$attrs" @register="register2" title="结算申请流程" width="70%">
     <PageWrapper title="结算审批单">
       <template #extra>
         <a-button type="primary" @click="handle(3)" v-if="showApplyButton && currentFlowNodeId == 'start'">提交</a-button>
-<!--        <a-button btnType="primary" type="1" @click="handle(1)" v-if="showApplyButton && currentFlowNodeId == 'start'">保存</a-button>-->
+        <!--        <a-button btnType="primary" type="1" @click="handle(1)" v-if="showApplyButton && currentFlowNodeId == 'start'">保存</a-button>-->
         <a-button type="primary" @click="handle(0)" v-if="showApplyButton && currentFlowNodeId != 'start'">通过</a-button>
         <a-button type="primary" @click="handle(2)" danger v-if="showApplyButton && currentFlowNodeId != 'start'">退回</a-button>
       </template>
@@ -26,7 +26,9 @@
                       </p>
 
                       <a-card :body-style="{ padding: '10px' }">
-                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px">办理人： {{ item.assigneeName }}({{item.assigneeId}})</label>
+                        <label v-if="item.assigneeName" style="font-weight: normal; margin-right: 30px"
+                          >办理人： {{ item.assigneeName }}({{ item.assigneeId }})</label
+                        >
                         <label v-if="item.assigneeName && item.finishTime" style="font-weight: normal; margin-right: 30px">
                           <a-tag type="info" size="default">{{ item.deptName }}</a-tag></label
                         >
@@ -213,7 +215,7 @@
 </template>
 
 <script lang="tsx">
-  import { Modal } from 'ant-design-vue';
+  import { Modal, notification } from 'ant-design-vue';
   import { defineComponent, reactive, ref, toRefs, watch, watchEffect, computed, Ref, UnwrapRef, toRaw, onMounted } from 'vue';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { Description } from '/@/components/Description/index';
@@ -275,7 +277,7 @@
       //   default: false,
       // },
     },
-    emits: ['handeleSuccess'],
+    emits: ['handleSuccess'],
     setup(props, { emit }) {
       const currentFlowNodeId = ref('');
       const mockData = ref({});
@@ -385,7 +387,12 @@
         targetKey: '',
         candidateUsersSelecteds: [],
       });
-
+      function createMsg(type, message, description) {
+        notification[type]({
+          message: message,
+          description: description,
+        });
+      }
       let modalTaskTitle = ref('');
       function handleCancel() {
         modalTaskVisible.value = false;
@@ -686,7 +693,6 @@
         // 可配置多个联动
         { requestData: (parent) => resConfig(parent, '6'), key: 'fc' },
       ]);
-      function handleSuccess() {}
       /** 查询后台真实数据 */
       async function submitForm() {
         if (
@@ -764,7 +770,7 @@
           formData.comment = '重新提交';
         }
         if (!formData.comment) {
-          $message.createErrorModal({ title: 'Tip', content: '请输入审批意见！' });
+          createMsg('error', '错误提示', '请输入审批意见！');
           submitLoading.value = false;
           return;
         }
@@ -802,7 +808,7 @@
             });
         } else if (btnType.value == handleType.return) {
           if (!formData.targetKey) {
-            $message.createErrorModal({ title: 'Tip', content: '请选择退回节点！' });
+            createMsg('error', '错误提示', '请选择退回节点！');
             submitLoading.value = false;
             return;
           }

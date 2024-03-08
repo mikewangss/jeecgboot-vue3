@@ -312,10 +312,6 @@ export const schema3: DescItem[] = [
     field: 'endDate',
     label: '合同结束时间',
   },
-  {
-    field: 'finalFile',
-    label: '终审单',
-  },
 ];
 export const columns: BasicColumn[] = [
   {

@@ -5,7 +5,7 @@
     <div class="step2-form">
       <a-form :model="modelRef" :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-item name="constructionDrawings" label="施工图会审纪要" extra="">
-          <a-upload v-model:fileList="modelRef.constructionDrawings" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.constructionDrawings" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传
@@ -13,7 +13,7 @@
           </a-upload></a-form-item
         >
         <a-form-item name="geoElevation" label="原始地貌标高测量记录">
-          <a-upload v-model:fileList="modelRef.geoElevation" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.geoElevation" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传
@@ -21,7 +21,7 @@
           </a-upload></a-form-item
         >
         <a-form-item name="changeDesign" label="设计变更及实施情况签证">
-          <a-upload v-model:fileList="modelRef.changeDesign" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.changeDesign" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传
@@ -29,7 +29,7 @@
           </a-upload></a-form-item
         >
         <a-form-item name="technicalApproval" label="技术核定单及实施情况签证">
-          <a-upload v-model:fileList="modelRef.technicalApproval" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.technicalApproval" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传
@@ -37,7 +37,7 @@
           </a-upload></a-form-item
         >
         <a-form-item name="projectContact" label="工程联系单及实施情况签证">
-          <a-upload v-model:fileList="modelRef.projectContact" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.projectContact" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传
@@ -45,7 +45,7 @@
           </a-upload></a-form-item
         >
         <a-form-item name="supervisionNotice" label="监理通知单及实施情况签证">
-          <a-upload v-model:fileList="modelRef.supervisionNotice" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.supervisionNotice" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传
@@ -53,7 +53,7 @@
           </a-upload></a-form-item
         >
         <a-form-item name="otherVisas" label="其它签证">
-          <a-upload v-model:fileList="modelRef.otherVisas" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.otherVisas" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传
@@ -61,7 +61,7 @@
           </a-upload></a-form-item
         >
         <a-form-item name="costRelated" label="造价相关的会议纪要">
-          <a-upload v-model:fileList="modelRef.costRelated" name="file" :action="uploadUrl">
+          <a-upload :multiple="true" v-model:fileList="modelRef.costRelated" name="file" :action="uploadUrl">
             <a-button>
               <template #icon><UploadOutlined /></template>
               点击上传

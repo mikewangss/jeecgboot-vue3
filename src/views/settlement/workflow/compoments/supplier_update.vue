@@ -1,5 +1,5 @@
 <template>
-  <BasicDrawer v-bind="$attrs" @register="register2" title="流程审批单" width="50%">
+  <BasicDrawer v-bind="$attrs" @register="register2" title="流程审批单" width="70%">
     <PageWrapper title="供应商入驻审批单">
       <template v-if="showApplyButton" #extra>
         <WorkHandleBtn

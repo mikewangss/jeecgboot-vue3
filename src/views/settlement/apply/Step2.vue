@@ -5,7 +5,7 @@
     <div class="step2-form">
       <a-form :model="modelRef" :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-item name="powerAttorney" label="授权委托书" extra="承包人授权结算人员的授权委托书" v-bind="validateInfos.powerAttorney" required>
-          <a-upload v-model:fileList="modelRef.powerAttorney" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.powerAttorney" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -15,7 +15,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="InformationCommitment" label="结算承诺书" v-bind="validateInfos.InformationCommitment" required>
-          <a-upload v-model:fileList="modelRef.InformationCommitment" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.InformationCommitment" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -25,7 +25,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="projectStatement" label="工程结算书" v-bind="validateInfos.projectStatement" required>
-          <a-upload v-model:fileList="modelRef.projectStatement" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.projectStatement" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -35,7 +35,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="quantityCalculation" label="工程量计算书" v-bind="validateInfos.quantityCalculation" required>
-          <a-upload v-model:fileList="modelRef.quantityCalculation" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.quantityCalculation" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -45,7 +45,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="materials" label="甲供材领、退用清单" v-bind="validateInfos.materials" required>
-          <a-upload v-model:fileList="modelRef.materials" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.materials" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -55,7 +55,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="feeAcknowledgment" label="费用确认单" v-bind="validateInfos.feeAcknowledgment" required>
-          <a-upload v-model:fileList="modelRef.feeAcknowledgment" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.feeAcknowledgment" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -65,7 +65,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="securityProof" label="安全证明文件" v-bind="validateInfos.securityProof" required>
-          <a-upload v-model:fileList="modelRef.securityProof" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.securityProof" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -75,7 +75,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="CommencementConstruction" label="工程开工报告" v-bind="validateInfos.CommencementConstruction" required>
-          <a-upload v-model:fileList="modelRef.CommencementConstruction" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.CommencementConstruction" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -85,7 +85,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="builtDrawings" label="竣工图纸" v-bind="validateInfos.builtDrawings" required>
-          <a-upload v-model:fileList="modelRef.builtDrawings" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.builtDrawings" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -95,7 +95,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="acceptanceReport" label="竣工报告或验收报告" v-bind="validateInfos.acceptanceReport" required>
-          <a-upload v-model:fileList="modelRef.acceptanceReport" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.acceptanceReport" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -105,7 +105,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="completionAcknowledgment" label="完工界面确认单" v-bind="validateInfos.completionAcknowledgment" required>
-          <a-upload v-model:fileList="modelRef.completionAcknowledgment" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.completionAcknowledgment" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />
@@ -115,7 +115,7 @@
           </a-upload>
         </a-form-item>
         <a-form-item name="others" label="其他" v-bind="validateInfos.others">
-          <a-upload v-model:fileList="modelRef.others" name="file" :action="uploadUrl" @change="handleChange">
+          <a-upload :multiple="true" v-model:fileList="modelRef.others" name="file" :action="uploadUrl" @change="handleChange">
             <a-button>
               <template #icon>
                 <UploadOutlined />

@@ -14,8 +14,8 @@
         <a-tag type="success" v-else class="pending">已办理</a-tag>
       </template>
     </BasicTable>
-    <ProcessUpdate @register="register1" @success="handeleSuccess" v-show="active === '1'" />
-    <SupplierUpdate @register="register2" :showApplyButton="true" @success="handeleSuccess" v-show="active === '2'" />
+    <ProcessUpdate @register="register1" @success="handleSuccess" v-show="active === '1'" />
+    <SupplierUpdate @register="register2" :showApplyButton="true" @success="handleSuccess" v-show="active === '2'" />
   </div>
 </template>
 
@@ -73,11 +73,11 @@
         try {
           debugger;
           let params = appStore.getMessageHrefParams;
-          if (params) {
+          if (params && params.detailId) {
             let detailId = params.detailId;
             console.log(detailId);
             let key = params.key;
-            if (key === 'diagram_Process_1704786066374') {
+            if (key === 'diagram_Process_1704786066374' || key === 'diagram_Process_212223231455') {
               if (detailId) {
                 openDrawer1(true, {
                   process_instance_id: detailId,
@@ -120,14 +120,11 @@
           });
         }
       }
-      function handeleSuccess() {
-        debugger;
-        if (procDefName.value.includes('结算')) {
-          closeDrawer1();
-        } else {
-          closeDrawer2();
-        }
+      function handleSuccess() {
+        closeDrawer1();
+        closeDrawer2();
         reload();
+        appStore.setMessageHrefParams('');
       }
       /**
        * 编辑事件
@@ -135,13 +132,6 @@
       function handleEdit(record: Recordable) {
         console.log('111');
         detailInfo(record);
-      }
-
-      /**
-       * 成功回调
-       */
-      function handleSuccess() {
-        (selectedRowKeys.value = []) && reload();
       }
 
       /**
@@ -164,7 +154,7 @@
         registerTable,
         getTableAction,
         searchInfo,
-        handeleSuccess,
+        handleSuccess,
         active,
       };
     },
