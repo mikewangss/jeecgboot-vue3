@@ -74,15 +74,15 @@
                         <label v-if="item.duration" style="margin-left: 30px; font-weight: normal">耗时： </label
                         ><label style="color: #8a909c; font-weight: normal">{{ item.duration }}</label>
 
-                        <p v-if="item.comment">
+                        <div v-if="item.comment">
                           <!--  1 正常意见  2 退回意见 3 驳回意见                -->
                           <a-tag color="green" v-if="item.comment.type === '1'">
-                            <span v-if="item.comment.comment != '重新提交'">通过：</span>
-                            {{ item.comment.comment }}
+                            <span v-if="item.comment.comment != '重新提交'">通过</span>
                           </a-tag>
-                          <a-tag color="orange" v-if="item.comment.type === '2'">退回： {{ item.comment.comment }}</a-tag>
-                          <a-tag color="red" v-if="item.comment.type === '3'">驳回： {{ item.comment.comment }}</a-tag>
-                        </p>
+                          <a-tag color="orange" v-if="item.comment.type === '2'">退回</a-tag>
+                          <a-tag color="red" v-if="item.comment.type === '3'">驳回</a-tag>
+                          {{ item.comment.comment }}
+                        </div>
                       </a-card>
                     </el-timeline-item>
                   </el-timeline>

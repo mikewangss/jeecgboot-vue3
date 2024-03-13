@@ -4,7 +4,7 @@
     <BasicTable @register="registerTable" :rowSelection="rowSelection">
       <!--操作栏-->
       <template #action="{ record }">
-        <ActHistoricDetailBtn :data-id="record.id" />
+<!--        <ActHistoricDetailBtn :data-id="record.id" />-->
         <TableAction :actions="getTableAction(record)" />
       </template>
     </BasicTable>
@@ -17,12 +17,13 @@
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { useListPage } from '/@/hooks/system/useListPage';
   import { columns, searchFormSchema } from './applyInfo.data';
-  import { list, queryById } from './applyInfo.api';
+  import { list, queryById, deleteOne } from './applyInfo.api';
   import { useUserStore } from '/@/store/modules/user';
   import { useDrawer } from '@/components/Drawer';
   import { defineComponent } from 'vue';
   import ProcessDetail from '@/views/settlement/workflow/compoments/process_detail.vue';
   import ActHistoricDetailBtn from '@/views/flowable/components/ActHistoricDetailBtn.vue';
+
   export default defineComponent({
     components: { ProcessDetail, BasicTable, TableAction, ActHistoricDetailBtn },
     setup() {
@@ -95,8 +96,9 @@
       function handleSuccess() {
         (selectedRowKeys.value = []) && reload();
       }
-      function handleDelete(record: Recordable) {
+      async function handleDelete(record: Recordable) {
         console.log(record);
+        await deleteOne({ id: record.id }, handleSuccess);
       }
       /**
        * 操作栏
@@ -108,9 +110,13 @@
             onClick: handleEdit.bind(null, record),
           },
           {
-            label: '删除',
+            label: '撤销',
             onClick: handleDelete.bind(null, record),
           },
+          // {
+          //   label: '下载终审单',
+          //   onClick: handleDelete.bind(null, record),
+          // },
         ];
       }
 

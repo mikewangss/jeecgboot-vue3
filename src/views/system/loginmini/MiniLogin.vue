@@ -1,9 +1,9 @@
 <template>
   <div :class="prefixCls" class="login-background-img">
     <!-- 视频播放器 -->
-    <video class="background-video" controls autoplay loop muted>
-      <source :src="jeecg_bg" type="video/mp4" />
-    </video>
+<!--    <video class="background-video" controls autoplay loop muted>-->
+<!--      <source :src="jeecg_bg" type="video/mp4" />-->
+<!--    </video>-->
     <AppLocalePicker class="absolute top-4 right-4 enter-x xl:text-gray-600" :showText="false" />
     <AppDarkModeToggle class="absolute top-3 right-7 enter-x" />
     <div class="aui-logo" v-if="!getIsMobile">

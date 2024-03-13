@@ -36,6 +36,12 @@ export const columns: BasicColumn[] = [
     title: '结算状态',
     align: 'center',
     dataIndex: 'status',
+    customRender: ({ text }) => {
+      // 判断 outcome 是否存在
+      const outcome = text && text.outcome ? text.outcome : '审批中'; // 使用 'N/A' 或其他备用文本
+      const color = text != '结算归档' ? 'yellow' : 'blue'; // 根据审批结果设置标签类型
+      return render.renderTag(outcome, color);
+    },
   },
   {
     title: '创建人',

@@ -8,7 +8,13 @@
         <a-form-item label="所属区域" v-bind="validateInfos.region">
           <JAreaLinkage v-model:value="modelRef.region" />
         </a-form-item>
-        <a-form-item label="对接人姓名" v-bind="validateInfos.projectManger" required>
+        <a-form-item label="合作单位" v-bind="validateInfos.depart">
+          <a-select v-model:value="modelRef.depart" placeholder="请正确选择合作方">
+            <a-select-option value="A01A02">雨润控股-建设集团</a-select-option>
+            <a-select-option value="A01A01">雨润控股-地产集团</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="集团对接人" v-bind="validateInfos.projectManger" required>
           <a-input v-model:value="modelRef.projectManger" />
         </a-form-item>
         <a-form-item label="对接人电话" :rules="validateInfos.projectMangerPhone" required>
@@ -46,6 +52,7 @@
       const modelRef = reactive({
         projectName: '',
         region: '',
+        depart:'',
         projectManger: '',
         projectMangerPhone: '',
       });
@@ -53,6 +60,7 @@
       const validatorRules: Record<string, Rule[]> = {
         projectName: [{ required: true, message: '请输入项目名称!' }],
         region: [{ required: true, message: '请输入项目所属区域!' }],
+        depart: [{ required: true, message: '请选择甲方单位名称!' }],
         projectManger: [{ required: true, message: '请输入项目对接人!' }],
         projectMangerPhone: [{ required: true, message: '请输入项目对接人电话!' }],
       };
