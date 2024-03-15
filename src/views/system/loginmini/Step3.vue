@@ -12,6 +12,7 @@
           <a-select v-model:value="modelRef.depart" placeholder="请正确选择合作方">
             <a-select-option value="A01A02">雨润控股-建设集团</a-select-option>
             <a-select-option value="A01A01">雨润控股-地产集团</a-select-option>
+            <a-select-option value="A01A03">雨润控股-农产品集团</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="集团对接人" v-bind="validateInfos.projectManger" required>

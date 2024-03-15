@@ -26,7 +26,7 @@
               :schema="schema3"
             />
             <a-divider />
-            <a-card style="margin-top: 10px">
+            <a-card style="margin-top: 10px" v-if="commentHistoryShow">
               <p slot="title">
                 <span>流程审批进度历史</span>
               </p>
@@ -224,6 +224,7 @@
       const finalFilesShow = ref(true);
       const preliminaryFilesShow = ref(true);
       const reviewFilesShow = ref(true);
+      const commentHistoryShow = ref(true);
       const approvalComment = ref('');
       const bizId = ref('');
       const projectId = ref('');
@@ -268,6 +269,7 @@
       const glob = useGlobSetting();
       const flowRecordList: Ref<flowRecord[]> = ref([]); // 流程流转数据
       async function initaildata(process_instance_id, dataId) {
+        activeKey.value = 'applyInfo';
         const newData = await taskHiList({ process_instance_id: process_instance_id, dataId: dataId });
         mockData.value = newData.formData;
         mockData2.value = newData.formData;
@@ -282,6 +284,7 @@
           preliminaryFilesShow.value = false;
           reviewFilesShow.value = false;
           finalFilesShow.value = false;
+          commentHistoryShow.value=false;
         }
       }
       const [register2] = useDrawerInner((data) => {
@@ -360,6 +363,7 @@
         preliminaryFilesShow,
         reviewFilesShow,
         finalFile,
+        commentHistoryShow,
       };
     },
   });
