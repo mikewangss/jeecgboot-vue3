@@ -6,7 +6,7 @@
           <div> {{ item.updateTime }} </div>
         </template>
         <template #extra>
-          <img width="272" alt="logo" :src="`${glob.domainUrl}/sys/common/static/${item.img}`" />
+          <img width="272" alt="logo" :src="item.img" />
         </template>
         <a-list-item-meta :description="item.description">
           <template #title>

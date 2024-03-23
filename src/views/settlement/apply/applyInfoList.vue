@@ -4,8 +4,19 @@
     <BasicTable @register="registerTable" :rowSelection="rowSelection">
       <!--操作栏-->
       <template #action="{ record }">
-<!--        <ActHistoricDetailBtn :data-id="record.id" />-->
+        <!--        <ActHistoricDetailBtn :data-id="record.id" />-->
         <TableAction :actions="getTableAction(record)" />
+      </template>
+
+      <!--字段回显插槽-->
+      <template #bodyCell="{ column, record, index, text }">
+        <template v-if="column.dataIndex === 'finalFile'">
+          <!--文件字段回显插槽-->
+          <span v-if="!text" style="font-size: 12px; font-style: italic">无文件</span>
+          <a-button v-else :ghost="true" type="primary" preIcon="ant-design:download-outlined" size="small" @click="downloadFile(text)"
+            >下载</a-button
+          >
+        </template>
       </template>
     </BasicTable>
     <ProcessDetail @register="register1" :showApplyButton="false" v-show="active" />
@@ -23,6 +34,7 @@
   import { defineComponent } from 'vue';
   import ProcessDetail from '@/views/settlement/workflow/compoments/process_detail.vue';
   import ActHistoricDetailBtn from '@/views/flowable/components/ActHistoricDetailBtn.vue';
+  import { downloadFile } from '@/utils/common/renderUtils';
 
   export default defineComponent({
     components: { ProcessDetail, BasicTable, TableAction, ActHistoricDetailBtn },
@@ -132,6 +144,7 @@
         active,
       };
     },
+    methods: { downloadFile },
   });
 </script>
 
