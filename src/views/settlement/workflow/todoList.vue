@@ -77,7 +77,7 @@
             let detailId = params.detailId;
             console.log(detailId);
             let key = params.key;
-            if (key === 'diagram_Process_1704786066374' || key === 'diagram_Process_212223231455') {
+            if (key === 'diagram_Process_1704786066374' || key === 'diagram_Process_212223231455' || key === 'diagram_Process_3326374') {
               if (detailId) {
                 openDrawer1(true, {
                   process_instance_id: detailId,
