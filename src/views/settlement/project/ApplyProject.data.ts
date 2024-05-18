@@ -251,7 +251,7 @@ export const applyContractColumns: JVxeColumn[] = [
     defaultValue: '',
   },
   {
-    title: '总价(万元)',
+    title: '总价(元)',
     key: 'totalPrice',
     width: '200px',
     type: JVxeTypes.inputNumber,
@@ -269,7 +269,7 @@ export const applyContractColumns: JVxeColumn[] = [
     validateRules: [{ required: true, message: '${title}不能为空' }],
   },
   {
-    title: '已付款金额(万元)',
+    title: '已付款金额(元)',
     key: 'amountPaid',
     type: JVxeTypes.inputNumber,
     width: '150px',

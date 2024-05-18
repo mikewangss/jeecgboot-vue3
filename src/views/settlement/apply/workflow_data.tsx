@@ -142,18 +142,6 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'bidder',
-    component: 'Input',
-    label: '施工单位名称',
-    defaultValue: '',
-    colProps: {
-      span: 12,
-    },
-    componentProps: {
-      disabled: true,
-    },
-  },
-  {
     field: 'divider-basic',
     component: 'Divider',
     label: '合同基本信息',
@@ -174,6 +162,18 @@ export const schemas: FormSchema[] = [
     field: 'contractName',
     component: 'Input',
     label: '合同名称',
+    defaultValue: '',
+    colProps: {
+      span: 12,
+    },
+    componentProps: {
+      disabled: true,
+    },
+  },
+  {
+    field: 'bidder',
+    component: 'Input',
+    label: '施工单位名称',
     defaultValue: '',
     colProps: {
       span: 12,

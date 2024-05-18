@@ -273,6 +273,16 @@ export const step2Schemas: FormSchema[] = [
     helpMessage: ['已完工程界面确认单（须发包、承包、监理三方签章确认）'],
     labelWidth: '200px',
   },
+  {
+    field: 'others',
+    component: 'JUpload',
+    label: '其他',
+    buss: '40',
+    defaultValue: '',
+    required: false,
+    helpMessage: ['其他'],
+    labelWidth: '200px',
+  },
 ];
 
 export const step3Schemas: FormSchema[] = [
